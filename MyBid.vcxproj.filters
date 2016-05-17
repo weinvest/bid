@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="OCR">
+      <UniqueIdentifier>{cffa23b8-ff6d-4415-aa19-507d51a8f29b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\MyBid.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MyBid.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyBid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyBidDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrainingDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RecognizeDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BidWorkDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ocr\Common.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ocr\FontLoader.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ocr\FontTraining.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ocr\Recognizer.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ocr\ScreenImage.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="OCREngine.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenSelectionDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IOCRListener.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="CpuTime.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MyBid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyBidDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrainingDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RecognizeDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ocr\FontLoader.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="ocr\FontTraining.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="ocr\Recognizer.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="ocr\ScreenImage.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="OCREngine.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenSelectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BidWorkDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MyBid.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
