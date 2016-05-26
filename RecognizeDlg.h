@@ -22,8 +22,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual void OnNewRecognizer(const CString& name, CRecognizer* pRecognizer);
-	virtual void OnDelRecognizer(const CString& name, CRecognizer* pRecognizer);
+	void OnNewRecognizer(const CString& name, CRecognizer* pRecognizer) override;
+	void OnDelRecognizer(const CString& name, CRecognizer* pRecognizer) override;
 
 	afx_msg void OnStnDblclickReImage();
 	afx_msg void OnCbnSelchangeReFontName();

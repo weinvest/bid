@@ -212,8 +212,8 @@ void CMyBidDlg::OnTcnSelchangeMainTab(NMHDR *pNMHDR, LRESULT *pResult)
 	case 2:
 		{
 			m_pTrainingDlg.ShowWindow(false);
-			m_pRecognizeDlg.ShowWindow(true);
-	        m_pBidWorkDlg.ShowWindow(false);
+			m_pRecognizeDlg.ShowWindow(false);
+	        m_pBidWorkDlg.ShowWindow(true);
 		}
 		break;
 	default:

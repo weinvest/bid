@@ -130,7 +130,6 @@ void CRecognizeDlg::OnPaint()
    }
 }
 
-
 void CRecognizeDlg::OnBnClickedRebtbRecognize()
 {
 	if(nullptr != mCurrentRecognizer)
