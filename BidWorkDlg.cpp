@@ -133,6 +133,7 @@ void CBidWorkDlg::OnPaint()
 	DrawImage(IDC_BIDPI_PRICE_INPUT, mPriceInputImg);
 	DrawImage(IDC_BIDPI_PRICE_CONFIRM, mPriceConfirmImg);
 	DrawImage(IDC_BIDPI_VERIFYBOX, mVerifyBoxImg);
+	DrawImage(IDC_SCREEN_TEST, mScreenTest);
 }
 
 

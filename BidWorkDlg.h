@@ -42,6 +42,8 @@ private:
 	CScreenImage mLowestPriceTimeImg;
 	CScreenImage mPriceInputImg;
 	CScreenImage mVerifyBoxImg;
+
+	CScreenImage mScreenTest;
 public:
 	afx_msg void OnPaint();
 	virtual BOOL OnInitDialog();

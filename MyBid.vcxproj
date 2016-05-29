@@ -43,6 +43,8 @@
     <LinkIncremental>true</LinkIncremental>
     <EmbedManifest>false</EmbedManifest>
     <GenerateManifest>false</GenerateManifest>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -53,7 +55,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ocr</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ocr;info</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="BidWorkDlg.h" />
     <ClInclude Include="CpuTime.h" />
+    <ClInclude Include="info\InfoEngine.h" />
     <ClInclude Include="IOCRListener.h" />
     <ClInclude Include="MyBid.h" />
     <ClInclude Include="MyBidDlg.h" />
@@ -119,10 +122,12 @@
     <ClInclude Include="ScreenSelectionDialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Thread.h" />
     <ClInclude Include="TrainingDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BidWorkDlg.cpp" />
+    <ClCompile Include="info\InfoEngine.cpp" />
     <ClCompile Include="MyBid.cpp" />
     <ClCompile Include="MyBidDlg.cpp" />
     <ClCompile Include="OCREngine.cpp" />
@@ -136,6 +141,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Thread.cpp" />
     <ClCompile Include="TrainingDlg.cpp" />
   </ItemGroup>
   <ItemGroup>

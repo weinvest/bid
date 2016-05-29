@@ -16,6 +16,9 @@
     <Filter Include="OCR">
       <UniqueIdentifier>{cffa23b8-ff6d-4415-aa19-507d51a8f29b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Info">
+      <UniqueIdentifier>{2acc9f72-1f41-45ab-90e4-6c0d8a7712e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -78,6 +81,12 @@
     <ClInclude Include="CpuTime.h">
       <Filter>OCR</Filter>
     </ClInclude>
+    <ClInclude Include="info\InfoEngine.h">
+      <Filter>Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Info</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -115,6 +124,12 @@
     </ClCompile>
     <ClCompile Include="BidWorkDlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="info\InfoEngine.cpp">
+      <Filter>Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
