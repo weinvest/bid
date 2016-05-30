@@ -23,11 +23,11 @@ void CRecognizer::Initialize(KnowledgeT& knowledge, int sepCount)
 
 bool CRecognizer::Recognize(CString& outValue, CString& outFeature, CScreenImage* pImage)
 {
-	mImgFeatures.clear();
-	pImage->ScanAndSplit(outFeature, mImgFeatures, mSepCount);
+	std::vector<CString> imageFeatures(16);
+	pImage->ScanAndSplit(outFeature, imageFeatures, mSepCount);
 
-	for(auto& itFeature = mImgFeatures.begin();
-		itFeature != mImgFeatures.end();
+	for(auto& itFeature = imageFeatures.begin();
+		itFeature != imageFeatures.end();
 		++itFeature)
 	{
 		auto itChar = mKnowledge.find(*itFeature);
@@ -44,11 +44,12 @@ bool CRecognizer::Recognize(CString& outValue, CString& outFeature, CScreenImage
 
 bool CRecognizer::RecognizeEx(CString& outValue, CString& outFeature, CScreenImage* pImage)
 {
-	mImgFeatures.clear();
-	pImage->ScanAndSplit(outFeature, mImgFeatures, mSepCount);
+	std::vector<CString> imageFeatures(16);
 
-	for(auto& itFeature = mImgFeatures.begin();
-		itFeature != mImgFeatures.end();
+	pImage->ScanAndSplit(outFeature, imageFeatures, mSepCount);
+
+	for(auto& itFeature = imageFeatures.begin();
+		itFeature != imageFeatures.end();
 		++itFeature)
 	{
 		auto itChar = mKnowledge.find(*itFeature);

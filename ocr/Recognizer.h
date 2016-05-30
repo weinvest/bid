@@ -25,7 +25,6 @@ private:
 	KnowledgeT mKnowledge;
 	int mSepCount;
 
-	std::vector<CString> mImgFeatures;
 
 	mutable int *mLCSTable;
 };

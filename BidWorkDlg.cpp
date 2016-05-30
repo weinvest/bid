@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "ScreenSelectionDialog.h"
 #include "OCREngine.h"
+#include "InfoEngine.h"
 // CBidWorkDlg dialog
 
 IMPLEMENT_DYNAMIC(CBidWorkDlg, CDialogEx)
@@ -50,6 +51,7 @@ void CBidWorkDlg::OnDoubleClickCaptureCurrentTime()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_TIME_RECT_INDEX, rect, InfoEngine::TIME);
 	mCurrentTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
 }
@@ -61,6 +63,7 @@ void CBidWorkDlg::OnDoubleClickCaptureLowestPrice()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_LOWEST_PRICE_INDEX, rect, InfoEngine::PRICE);
 	mLowestPriceImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
 }
@@ -72,6 +75,7 @@ void CBidWorkDlg::OnDoubleClickCaptureLowestPriceTime()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, rect, InfoEngine::TIME);
 	mLowestPriceTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
 }
@@ -105,6 +109,7 @@ void CBidWorkDlg::OnDoubleClickCapturePriceRange()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	InfoEngine::GetInstance()->SetRect(InfoEngine::PRICE_RANGE_INDEX, rect, InfoEngine::PRICE_RANGE);
 	mPriceRangeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
 }
@@ -133,7 +138,6 @@ void CBidWorkDlg::OnPaint()
 	DrawImage(IDC_BIDPI_PRICE_INPUT, mPriceInputImg);
 	DrawImage(IDC_BIDPI_PRICE_CONFIRM, mPriceConfirmImg);
 	DrawImage(IDC_BIDPI_VERIFYBOX, mVerifyBoxImg);
-	DrawImage(IDC_SCREEN_TEST, mScreenTest);
 }
 
 
