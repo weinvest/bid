@@ -84,9 +84,6 @@
     <ClInclude Include="info\InfoEngine.h">
       <Filter>Info</Filter>
     </ClInclude>
-    <ClInclude Include="Thread.h">
-      <Filter>Info</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -126,9 +123,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="info\InfoEngine.cpp">
-      <Filter>Info</Filter>
-    </ClCompile>
-    <ClCompile Include="Thread.cpp">
       <Filter>Info</Filter>
     </ClCompile>
   </ItemGroup>

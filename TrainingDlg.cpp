@@ -27,6 +27,7 @@ CTrainingDlg::CTrainingDlg(CWnd* pParent /*=NULL*/)
 	chars.insert('0'); chars.insert('3'); chars.insert('6');chars.insert('9');
 	chars.insert('1'); chars.insert('4'); chars.insert('7');chars.insert(':');
 	chars.insert('2'); chars.insert('5'); chars.insert('8');chars.insert('-');
+	chars.insert('|');
 	mCurrentTraining->Initialize(chars);
 	mSepCount = 1;
 	mStrKnowledge = _T("");

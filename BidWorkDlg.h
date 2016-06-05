@@ -2,9 +2,11 @@
 
 #include "ScreenImage.h"
 #include "IOCRListener.h"
+#include "InfoEngine.h"
+#include "afxcmn.h"
 // CBidWorkDlg dialog
 
-class CBidWorkDlg : public CDialogEx, public IOCRListener
+class CBidWorkDlg : public CDialogEx, public IOCRListener, public IInfoListener
 {
 	DECLARE_DYNAMIC(CBidWorkDlg)
 
@@ -17,6 +19,7 @@ public:
 
 	void OnNewRecognizer(const CString& name, CRecognizer* pRecognizer) override;
 	void OnDelRecognizer(const CString& name, CRecognizer* pRecognizer) override;
+	void OnUpdate(size_t updateFields) override;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -47,4 +50,8 @@ public:
 	afx_msg void OnPaint();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnFontNameChanged();
+	CListCtrl mDataListCtrl;
+
+	std::shared_ptr<std::thread> mInfoThread;
+	CString mConfPath;
 };

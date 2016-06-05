@@ -2,23 +2,21 @@
 #define _INFO_ENGINE_H
 #include <set>
 #include <array>
+#include <thread>
+#include <atomic>
+#include <condition_variable>
+#include <memory>
 #include "ScreenImage.h"
 #include "Recognizer.h"
 
-class IInfoListener
-{
-public:
-	virtual ~IInfoListener() {}
-
-	virtual void OnUpdate(size_t updateFields) = 0;
-};
+class IInfoListener;
 
 struct BidTime
 {
-    int hour:6;
-	int minute:6;
-	int second:6;
-	int milliseconds:14;
+	uint32_t hour:6;
+	uint32_t minute:6;
+	uint32_t second:6;
+	uint32_t milliseconds:14;
 };
 
 struct PriceRange
@@ -57,14 +55,20 @@ public:
 			PriceRange priceRange;
 		};
 		CScreenImage img;
+
+		void ToString(CString& out, size_t idx) const;
 	};
 
 	static const size_t CURRENT_TIME_RECT_INDEX = 0;
 	static const size_t CURRENT_LOWEST_PRICE_INDEX = 1;
 	static const size_t CURRENT_LOWEST_PRICE_TIME_INDEX = 2;
-	static const size_t PRICE_RANGE_INDEX = 4;
+	static const size_t CURRENT_ACCEPTABLE_PRICE_RANGE = 3;
+	static const size_t COUNT_OF_INFOS = 4;
 
 	static InfoEngine* GetInstance();
+
+	void Load(const CString& path);
+	void Save(const CString& path);
 
 	void SetRect(size_t idx, CRect& rect, DataType dtype);
 
@@ -72,18 +76,38 @@ public:
 	void Registe(IInfoListener* pListener);
 	void UnRegiste(IInfoListener* pListener);
 
-	void Start( void );
+	const Data& GetInfo(size_t idx) const { return mInfoRects[idx]; }
 
+	void Start( void );
+	void Step(void);
 	void Stop( void );
 private:
+	InfoEngine();
+
 	static bool IsEmptyRect(CRect& rect);
 	static int Convert2Int(CString& str, int from, int to);
 	void CollectData(size_t index);
 
-
-	std::array<Data, 8> mInfoRects;
+	std::array<Data, COUNT_OF_INFOS> mInfoRects;
+	std::array<std::shared_ptr<std::thread>, COUNT_OF_INFOS> mThreads;
+	
+	std::atomic<int> mFininshCount;
+	std::mutex mRunMutex;
+	std::condition_variable mRunCondition;
+	std::mutex mFinishMutex;
+	std::condition_variable mFinishCondition;
 
 	std::set<IInfoListener*> mListeners;
 	CRecognizer* mRecognizer;
+	bool mIsRuning;
+	std::atomic<int> mUpdateFields;
+};
+
+class IInfoListener
+{
+public:
+	virtual ~IInfoListener() {}
+
+	virtual void OnUpdate(size_t updateFields) = 0;
 };
 #endif

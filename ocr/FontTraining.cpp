@@ -88,6 +88,10 @@ void CFontTraining::Save(std::ostream& oStream)
 
 void  CFontTraining::Clear()
 {
-	mFeatures.clear();
+	for (auto& p : mFeatures)
+	{
+		p.second.clear();
+	}
+
 	mKnowledge.clear();
 }
