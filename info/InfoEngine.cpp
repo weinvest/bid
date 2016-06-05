@@ -89,24 +89,28 @@ void InfoEngine::UnRegiste(IInfoListener* pListener)
 
 void InfoEngine::Start( void )
 {
-	mIsRuning = true;
-	for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
-	{
-		mThreads[iThread] = std::make_shared<std::thread>(std::bind(&InfoEngine::CollectData, this, iThread));
-	}
+	//mIsRuning = true;
+	//for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
+	//{
+	//	mThreads[iThread] = std::make_shared<std::thread>(std::bind(&InfoEngine::CollectData, this, iThread));
+	//}
 }
 
 void InfoEngine::Step(void)
 {
-	mUpdateFields = 0;
-	mFininshCount.store(0);
-	mRunCondition.notify_all();
-    
-	{
-		std::unique_lock<std::mutex> lock(mFinishMutex);
-		mFinishCondition.wait_for(lock, std::chrono::seconds(10), [this]() { return mFininshCount.load() == COUNT_OF_INFOS; });
-	}
+	//mUpdateFields = 0;
+	//mFininshCount.store(0);
+	//mRunCondition.notify_all();
+ //   
+	//{
+	//	std::unique_lock<std::mutex> lock(mFinishMutex);
+	//	mFinishCondition.wait_for(lock, std::chrono::seconds(10), [this]() { return mFininshCount.load() == COUNT_OF_INFOS; });
+	//}
 
+	for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
+	{
+		CollectData(iThread);
+	}
 	for (auto pListener : mListeners)
 	{
 		pListener->OnUpdate(mUpdateFields.load());
@@ -115,19 +119,19 @@ void InfoEngine::Step(void)
 
 void InfoEngine::Stop( void )
 {
-	if (mIsRuning)
-	{
-		mIsRuning = false;
+	//if (mIsRuning)
+	//{
+	//	mIsRuning = false;
 
-		for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
-		{
-			auto pThread = mThreads[iThread];
-			if (nullptr != pThread && pThread->joinable())
-			{
-				pThread->join();
-			}
-		}
-	}
+	//	for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
+	//	{
+	//		auto pThread = mThreads[iThread];
+	//		if (nullptr != pThread && pThread->joinable())
+	//		{
+	//			pThread->join();
+	//		}
+	//	}
+	//}
 }
 
 void InfoEngine::SetRect(size_t idx, CRect& rect, DataType dtype)
@@ -147,12 +151,12 @@ void InfoEngine::CollectData(size_t index)
 {
 	auto& info = mInfoRects[index];
 
-	while (mIsRuning)
+	//while (mIsRuning)
 	{
-		{
-			std::unique_lock<std::mutex> lock(mRunMutex);
-			mRunCondition.wait(lock);
-		}
+		//{
+		//	std::unique_lock<std::mutex> lock(mRunMutex);
+		//	mRunCondition.wait(lock);
+		//}
 
 		if (!IsEmptyRect(info.rect))
 		{
@@ -193,11 +197,11 @@ void InfoEngine::CollectData(size_t index)
 			}//if (mRecognizer->RecognizeEx(value, outFeature, &info.img))
 		}//if (!IsEmptyRect(info.rect))
 
-		mFininshCount.fetch_add(1);
-		{
-			std::unique_lock<std::mutex> lock(mFinishMutex);
-			mFinishCondition.notify_one();
-		}
+		//mFininshCount.fetch_add(1);
+		//{
+		//	std::unique_lock<std::mutex> lock(mFinishMutex);
+		//	mFinishCondition.notify_one();
+		//}
 	}
 }
 
