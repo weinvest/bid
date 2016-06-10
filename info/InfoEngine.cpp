@@ -73,8 +73,23 @@ void InfoEngine::Save(const CString& path)
 	}
 }
 
+void InfoEngine::SetReferencePoint(size_t x, size_t y)
+{
+	if (-1 != mReferencePoint.x && -1 != mReferencePoint.y)
+	{
+		auto diff = CPoint(x, y) - mReferencePoint;
+
+		for (size_t idx = 0; idx < COUNT_OF_INFOS; ++idx)
+		{
+			auto& info = mInfoRects[idx];
+			info.rect += diff;
+		}
+	}
+}
+
 InfoEngine::InfoEngine()
 	:mFininshCount(0)
+	, mReferencePoint(-1, -1)
 {}
 
 void InfoEngine::Registe(IInfoListener* pListener)

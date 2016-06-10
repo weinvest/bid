@@ -8,13 +8,16 @@
 #include "ScreenSelectionDialog.h"
 #include "OCREngine.h"
 #include "InfoEngine.h"
+#include "ActionEngine.h"
 // CBidWorkDlg dialog
 
 IMPLEMENT_DYNAMIC(CBidWorkDlg, CDialogEx)
 
 CBidWorkDlg::CBidWorkDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBidWorkDlg::IDD, pParent)
-	, mConfPath("conf/rects")
+	, mInfoConfPath("conf/info_rects")
+	, mActionConfPath("conf/act_rects")
+	, mRectChanged(false)
 {
 
 }
@@ -41,6 +44,11 @@ BEGIN_MESSAGE_MAP(CBidWorkDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYBOX, &CBidWorkDlg::OnDoubleClickCaptureVerifybox)
 	ON_WM_PAINT()
 	ON_CBN_SELCHANGE(IDC_BID_FONT_NAME, &CBidWorkDlg::OnFontNameChanged)
+	ON_STN_DBLCLK(IDC_BIDPI_BID_RESULT_BUTTON, &CBidWorkDlg::OnDoubleClickBidResultButtonArea)
+	ON_STN_DBLCLK(IDC_BIDPI_POSTION_REFERENCE, &CBidWorkDlg::OnDoubleClickPostionReferenceArea)
+	ON_STN_DBLCLK(IDC_BIDPI_VERIFY_CODE_INPUT, &CBidWorkDlg::OnDoubleClickVerifyCodeInputArea)
+	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_CONFIRM, &CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea)
+	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_PICTURE, &CBidWorkDlg::OnDoubleClickVerifyCodePictureArea)
 END_MESSAGE_MAP()
 
 
@@ -56,7 +64,7 @@ void CBidWorkDlg::OnDoubleClickCaptureCurrentTime()
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_TIME_RECT_INDEX, rect, InfoEngine::TIME);
 	mCurrentTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
+	InfoEngine::GetInstance()->Save(mInfoConfPath);
 }
 
 
@@ -69,7 +77,7 @@ void CBidWorkDlg::OnDoubleClickCaptureLowestPrice()
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_LOWEST_PRICE_INDEX, rect, InfoEngine::PRICE);
 	mLowestPriceImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
+	InfoEngine::GetInstance()->Save(mInfoConfPath);
 }
 
 
@@ -82,31 +90,7 @@ void CBidWorkDlg::OnDoubleClickCaptureLowestPriceTime()
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, rect, InfoEngine::TIME);
 	mLowestPriceTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
-}
-
-
-void CBidWorkDlg::OnDoubleClickCapturePriceConfirm()
-{
-	CRect rect;
-	CScreenSelectionDialog dlg(rect);
-	dlg.DoModal();
-
-	mPriceConfirmImg.CaptureRect(rect);
-	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
-}
-
-
-void CBidWorkDlg::OnDoubleClickCapturePriceInput()
-{
-	CRect rect;
-	CScreenSelectionDialog dlg(rect);
-	dlg.DoModal();
-
-	mPriceInputImg.CaptureRect(rect);
-	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
+	InfoEngine::GetInstance()->Save(mInfoConfPath);
 }
 
 
@@ -116,11 +100,37 @@ void CBidWorkDlg::OnDoubleClickCapturePriceRange()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
-	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE , rect, InfoEngine::PRICE_RANGE);
+	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, rect, InfoEngine::PRICE_RANGE);
 	mPriceRangeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
+	InfoEngine::GetInstance()->Save(mInfoConfPath);
 }
+
+void CBidWorkDlg::OnDoubleClickCapturePriceConfirm()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_PRICE_SUBMIT_BUTTON_AREA, rect);
+	mPriceConfirmImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
+
+void CBidWorkDlg::OnDoubleClickCapturePriceInput()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_PRICE_INPUT_AREA, rect);
+	mPriceInputImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
 
 
 void CBidWorkDlg::OnDoubleClickCaptureVerifybox()
@@ -129,9 +139,10 @@ void CBidWorkDlg::OnDoubleClickCaptureVerifybox()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
-	mVerifyBoxImg.CaptureRect(rect);
+	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_INPUT_AREA, rect);
+	mVerifyCodeInputImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
-	InfoEngine::GetInstance()->Save(mConfPath);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
 }
 
 void CBidWorkDlg::OnUpdate(size_t updateFields)
@@ -159,13 +170,26 @@ void CBidWorkDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 	// TODO: Add your message handler code here
 	// Do not call CDialogEx::OnPaint() for painting messages
-	DrawImage(IDC_BIDPI_LOWEST_PRICE, mLowestPriceImg);
-	DrawImage(IDC_BIDPI_LOWEST_PRICE_TIME, mLowestPriceTimeImg);
-	DrawImage(IDC_BIDPI_PRICE_RANGE, mPriceRangeImg);
-	DrawImage(IDC_BIDPI_CURRENT_TIME, mCurrentTimeImg);
-	DrawImage(IDC_BIDPI_PRICE_INPUT, mPriceInputImg);
-	DrawImage(IDC_BIDPI_PRICE_CONFIRM, mPriceConfirmImg);
-	DrawImage(IDC_BIDPI_VERIFYBOX, mVerifyBoxImg);
+	if (mRectChanged)
+	{
+		DrawImage(IDC_BIDPI_LOWEST_PRICE, mLowestPriceImg);
+		DrawImage(IDC_BIDPI_LOWEST_PRICE_TIME, mLowestPriceTimeImg);
+		DrawImage(IDC_BIDPI_PRICE_RANGE, mPriceRangeImg);
+		DrawImage(IDC_BIDPI_CURRENT_TIME, mCurrentTimeImg);
+
+		DrawImage(IDC_BIDPI_PRICE_INPUT, mPriceInputImg);
+		DrawImage(IDC_BIDPI_PRICE_CONFIRM, mPriceConfirmImg);
+
+		DrawImage(IDC_BIDPI_VERIFY_CODE_INPUT, mVerifyCodeInputImg);
+		DrawImage(IDC_BIDPI_VERIFYCODE_PICTURE, mVerifyCodePictureImg);
+		DrawImage(IDC_BIDPI_VERIFYCODE_CONFIRM, mVerifyCodeConfirmImg);
+
+		DrawImage(IDC_BIDPI_BID_RESULT_BUTTON, mBidResultImg);
+	}
+	else
+	{
+		DrawImage(IDC_BIDPI_BIG_VERIFY_CODE_PICTURE, mVerifyCodePictureImg);
+	}
 }
 
 
@@ -228,7 +252,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, "目前数据库接收的价格区间");
 
 	InfoEngine::GetInstance()->Registe(this);
-	InfoEngine::GetInstance()->Load(mConfPath);
+	InfoEngine::GetInstance()->Load(mInfoConfPath);
 	mInfoThread = std::make_shared<std::thread>([this]()
 	{
 		auto pInfoEngine = InfoEngine::GetInstance();
@@ -263,3 +287,70 @@ void CBidWorkDlg::OnNewRecognizer(const CString& name, CRecognizer* pRecognizer)
 
 void CBidWorkDlg::OnDelRecognizer(const CString& name, CRecognizer* pRecognizer)
 {}
+
+
+void CBidWorkDlg::OnDoubleClickBidResultButtonArea()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_RESULT_CONFIRM_BUTTON_AREA, rect);
+	mBidResultImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
+
+void CBidWorkDlg::OnDoubleClickPostionReferenceArea()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetReferencePoint(rect.left, rect.top);
+	InfoEngine::GetInstance()->SetReferencePoint(rect.left, rect.top);
+	mPositionRefImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+	InfoEngine::GetInstance()->Save(mInfoConfPath);
+}
+
+
+void CBidWorkDlg::OnDoubleClickVerifyCodeInputArea()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_INPUT_AREA, rect);
+	mVerifyCodeInputImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
+
+void CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_CONFIRM_BUTTON_AREA, rect);
+	mVerifyCodeConfirmImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
+
+void CBidWorkDlg::OnDoubleClickVerifyCodePictureArea()
+{
+	CRect rect;
+	CScreenSelectionDialog dlg(rect);
+	dlg.DoModal();
+
+	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_PICTURE_AREA, rect);
+	mVerifyCodePictureImg.CaptureRect(rect);
+	AfxGetMainWnd()->ShowWindow(SW_SHOW);
+	ActionEngine::GetInstance()->Save(mActionConfPath);
+}

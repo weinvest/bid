@@ -70,6 +70,7 @@ public:
 	void Load(const CString& path);
 	void Save(const CString& path);
 
+	void SetReferencePoint(size_t x, size_t y);
 	void SetRect(size_t idx, CRect& rect, DataType dtype);
 
 	void SetRecognizer(CRecognizer* pRecognizer) { mRecognizer = pRecognizer; }
@@ -101,6 +102,8 @@ private:
 	CRecognizer* mRecognizer;
 	bool mIsRuning;
 	std::atomic<int> mUpdateFields;
+
+	CPoint mReferencePoint;
 };
 
 class IInfoListener

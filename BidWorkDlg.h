@@ -38,14 +38,22 @@ private:
 	void DrawImage(int id, CScreenImage& img);
 	void ReBuildNameCombox();
 
+	bool mRectChanged;
 	CScreenImage mCurrentTimeImg;
 	CScreenImage mLowestPriceImg;
-	CScreenImage mPriceConfirmImg;
 	CScreenImage mPriceRangeImg;
 	CScreenImage mLowestPriceTimeImg;
-	CScreenImage mPriceInputImg;
-	CScreenImage mVerifyBoxImg;
 
+	CScreenImage mPriceInputImg;
+	CScreenImage mPriceConfirmImg;
+
+	CScreenImage mVerifyCodeInputImg;
+	CScreenImage mVerifyCodePictureImg;
+	CScreenImage mVerifyCodeConfirmImg;
+
+	CScreenImage mBidResultImg;
+
+	CScreenImage mPositionRefImg;
 public:
 	afx_msg void OnPaint();
 	virtual BOOL OnInitDialog();
@@ -53,5 +61,11 @@ public:
 	CListCtrl mDataListCtrl;
 
 	std::shared_ptr<std::thread> mInfoThread;
-	CString mConfPath;
+	CString mInfoConfPath;
+	CString mActionConfPath;
+	afx_msg void OnDoubleClickBidResultButtonArea();
+	afx_msg void OnDoubleClickPostionReferenceArea();
+	afx_msg void OnDoubleClickVerifyCodeInputArea();
+	afx_msg void OnDoubleClickVerifyCodeConfirmArea();
+	afx_msg void OnDoubleClickVerifyCodePictureArea();
 };
