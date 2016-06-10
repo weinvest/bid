@@ -4,6 +4,7 @@
 #include "IOCRListener.h"
 #include "InfoEngine.h"
 #include "afxcmn.h"
+#include "afxwin.h"
 // CBidWorkDlg dialog
 
 class CBidWorkDlg : public CDialogEx, public IOCRListener, public IInfoListener
@@ -68,4 +69,5 @@ public:
 	afx_msg void OnDoubleClickVerifyCodeInputArea();
 	afx_msg void OnDoubleClickVerifyCodeConfirmArea();
 	afx_msg void OnDoubleClickVerifyCodePictureArea();
+	CComboBox mStrategyCombox;
 };

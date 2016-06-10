@@ -22,6 +22,9 @@
     <Filter Include="Action">
       <UniqueIdentifier>{d6691ddf-a90b-4400-8513-23cfdf76d5f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Strategy">
+      <UniqueIdentifier>{e668d3df-9185-4a26-9a73-9fb633370fbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -90,6 +93,15 @@
     <ClInclude Include="act\ActionEngine.h">
       <Filter>Action</Filter>
     </ClInclude>
+    <ClInclude Include="strategy\SmartStrategy.h">
+      <Filter>Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="strategy\StrategyManager.h">
+      <Filter>Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="strategy\IStrategy.h">
+      <Filter>Strategy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -133,6 +145,12 @@
     </ClCompile>
     <ClCompile Include="act\ActionEngine.cpp">
       <Filter>Action</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\SmartStrategy.cpp">
+      <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\StrategyManager.cpp">
+      <Filter>Strategy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

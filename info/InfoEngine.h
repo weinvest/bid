@@ -17,6 +17,8 @@ struct BidTime
 	uint32_t minute:6;
 	uint32_t second:6;
 	uint32_t milliseconds:14;
+
+	friend bool operator < (const BidTime& lhs, const BidTime& rhs);
 };
 
 struct PriceRange

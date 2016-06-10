@@ -7,6 +7,31 @@
 #include <fstream>
 #include "InfoEngine.h"
 
+bool operator < (const BidTime& lhs, const BidTime& rhs)
+{
+	if (lhs.hour < rhs.hour)
+	{
+		return true;
+	}
+
+	if (lhs.minute < rhs.minute)
+	{
+		return true;
+	}
+
+	if (lhs.second < rhs.second)
+	{
+		return true;
+	}
+
+	if (lhs.milliseconds < rhs.milliseconds)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 InfoEngine* InfoEngine::GetInstance()
 {
 	static InfoEngine gInstance;
@@ -49,6 +74,10 @@ void InfoEngine::Load(const CString& path)
 	if (inFile.is_open())
 	{
 		std::string line;
+		std::getline(inFile, line);
+		std::stringstream s(line);
+		s >> mReferencePoint.x >> mReferencePoint.y;
+
 		while (std::getline(inFile, line))
 		{
 			std::stringstream s(line);
@@ -65,7 +94,7 @@ void InfoEngine::Load(const CString& path)
 void InfoEngine::Save(const CString& path)
 {
 	std::ofstream file((LPCTSTR)path, std::ios_base::binary | std::ios_base::out);
-
+	file << mReferencePoint.x << " " << mReferencePoint.y << '\n';
 	for (size_t idx = 0; idx < COUNT_OF_INFOS; ++idx)
 	{
 		auto& info = mInfoRects[idx];

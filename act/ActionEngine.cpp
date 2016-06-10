@@ -26,7 +26,7 @@ void ActionEngine::SetRect(size_t idx, const CRect& rect)
 }
 
 bool ActionEngine::InputPrice(int price)
-{
+{	
 	mKeyboardSimulator->KeyPress(VirtualKeyCode::BACK);
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA));
 	mMouseSimulator->LeftButtonClick();
@@ -94,7 +94,7 @@ void ActionEngine::Save(const CString& path)
 {
 	std::ofstream file((LPCTSTR)path, std::ios_base::binary | std::ios_base::out);
 
-	file << mReferencePoint.x << " " << mReferencePoint.y;
+	file << mReferencePoint.x << " " << mReferencePoint.y << '\n';
 	for (size_t idx = 0; idx < COUNT_OF_AREA; ++idx)
 	{
 		auto& info = mAreas[idx];

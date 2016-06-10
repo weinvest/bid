@@ -9,6 +9,8 @@
 #include "OCREngine.h"
 #include "InfoEngine.h"
 #include "ActionEngine.h"
+#include "StrategyManager.h"
+#include "IStrategy.h"
 // CBidWorkDlg dialog
 
 IMPLEMENT_DYNAMIC(CBidWorkDlg, CDialogEx)
@@ -31,6 +33,7 @@ void CBidWorkDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BID_FONT_NAME, mFontNameCombox);
 	DDX_Control(pDX, IDC_BID_DATA, mDataListCtrl);
+	DDX_Control(pDX, IDC_COMBOX_STRATEGY, mStrategyCombox);
 }
 
 
@@ -250,6 +253,13 @@ BOOL CBidWorkDlg::OnInitDialog()
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_INDEX, "目前最低可成交价");
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, "最低可成交价出价时间");
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, "目前数据库接收的价格区间");
+
+	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
+	{
+		InfoEngine::GetInstance()->Registe(pStrategy);
+		mStrategyCombox.AddString(pStrategy->GetName());
+	}
+	mStrategyCombox.SetCurSel(0);
 
 	InfoEngine::GetInstance()->Registe(this);
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
