@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ocr;info;act;strategy</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>ocr;info;act;strategy;utils</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,11 +126,13 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenSelectionDialog.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="strategy\ActInTime.h" />
     <ClInclude Include="strategy\IStrategy.h" />
     <ClInclude Include="strategy\SmartStrategy.h" />
     <ClInclude Include="strategy\StrategyManager.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TrainingDlg.h" />
+    <ClInclude Include="utils\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="act\ActionEngine.cpp" />
@@ -149,9 +151,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="strategy\ActInTime.cpp" />
+    <ClCompile Include="strategy\IStrategy.cpp" />
     <ClCompile Include="strategy\SmartStrategy.cpp" />
     <ClCompile Include="strategy\StrategyManager.cpp" />
     <ClCompile Include="TrainingDlg.cpp" />
+    <ClCompile Include="utils\Log.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyBid.rc" />

@@ -19,11 +19,12 @@ struct BidTime
 	uint32_t milliseconds:14;
 
 	friend bool operator < (const BidTime& lhs, const BidTime& rhs);
+	void Parse(const CString& time);
 };
 
 struct PriceRange
 {
-	static const int PRICE_BASE = 50000;
+	static const int PRICE_BASE = 80000;
 	int lowest:16;
 	int highest:16;
 
@@ -84,11 +85,12 @@ public:
 	void Start( void );
 	void Step(void);
 	void Stop( void );
+
+	static bool IsEmptyRect(CRect& rect);
+	static int Convert2Int(const CString& str, int from, int to);
 private:
 	InfoEngine();
 
-	static bool IsEmptyRect(CRect& rect);
-	static int Convert2Int(CString& str, int from, int to);
 	void CollectData(size_t index);
 
 	std::array<Data, COUNT_OF_INFOS> mInfoRects;

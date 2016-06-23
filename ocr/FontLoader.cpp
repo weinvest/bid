@@ -17,7 +17,7 @@ void CFontLoader::Load(KnowledgeT& outKnowledge, int& sepCount, const CString& p
 	CFile file(path, CFile::modeRead);
 
 	std::string content;
-	content.resize(file.GetLength());
+	content.resize((int)file.GetLength());
 
 	file.Read((void*)content.data(), content.size());
 	file.Close();

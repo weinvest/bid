@@ -64,6 +64,7 @@ void CBidWorkDlg::OnDoubleClickCaptureCurrentTime()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_TIME_RECT_INDEX, rect, InfoEngine::TIME);
 	mCurrentTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -90,6 +91,7 @@ void CBidWorkDlg::OnDoubleClickCaptureLowestPriceTime()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, rect, InfoEngine::TIME);
 	mLowestPriceTimeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -103,6 +105,7 @@ void CBidWorkDlg::OnDoubleClickCapturePriceRange()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	InfoEngine::GetInstance()->SetRect(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, rect, InfoEngine::PRICE_RANGE);
 	mPriceRangeImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -115,6 +118,7 @@ void CBidWorkDlg::OnDoubleClickCapturePriceConfirm()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_PRICE_SUBMIT_BUTTON_AREA, rect);
 	mPriceConfirmImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -128,6 +132,7 @@ void CBidWorkDlg::OnDoubleClickCapturePriceInput()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_PRICE_INPUT_AREA, rect);
 	mPriceInputImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -142,6 +147,7 @@ void CBidWorkDlg::OnDoubleClickCaptureVerifybox()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_INPUT_AREA, rect);
 	mVerifyCodeInputImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -188,6 +194,7 @@ void CBidWorkDlg::OnPaint()
 		DrawImage(IDC_BIDPI_VERIFYCODE_CONFIRM, mVerifyCodeConfirmImg);
 
 		DrawImage(IDC_BIDPI_BID_RESULT_BUTTON, mBidResultImg);
+		mRectChanged = false;
 	}
 	else
 	{
@@ -254,6 +261,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, "最低可成交价出价时间");
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, "目前数据库接收的价格区间");
 
+	ActionEngine::GetInstance()->Load(mActionConfPath);
 	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
 	{
 		InfoEngine::GetInstance()->Registe(pStrategy);
@@ -305,6 +313,7 @@ void CBidWorkDlg::OnDoubleClickBidResultButtonArea()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::BID_RESULT_CONFIRM_BUTTON_AREA, rect);
 	mBidResultImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -318,6 +327,7 @@ void CBidWorkDlg::OnDoubleClickPostionReferenceArea()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetReferencePoint(rect.left, rect.top);
 	InfoEngine::GetInstance()->SetReferencePoint(rect.left, rect.top);
 	mPositionRefImg.CaptureRect(rect);
@@ -333,6 +343,7 @@ void CBidWorkDlg::OnDoubleClickVerifyCodeInputArea()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_INPUT_AREA, rect);
 	mVerifyCodeInputImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -346,6 +357,7 @@ void CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_CONFIRM_BUTTON_AREA, rect);
 	mVerifyCodeConfirmImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
@@ -359,6 +371,7 @@ void CBidWorkDlg::OnDoubleClickVerifyCodePictureArea()
 	CScreenSelectionDialog dlg(rect);
 	dlg.DoModal();
 
+	mRectChanged = true;
 	ActionEngine::GetInstance()->SetRect(ActionEngine::SECURITY_CODE_PICTURE_AREA, rect);
 	mVerifyCodePictureImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);

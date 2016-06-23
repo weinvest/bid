@@ -25,6 +25,9 @@
     <Filter Include="Strategy">
       <UniqueIdentifier>{e668d3df-9185-4a26-9a73-9fb633370fbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{e6d173a5-4486-4212-90d8-a827c9862a86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -102,6 +105,12 @@
     <ClInclude Include="strategy\IStrategy.h">
       <Filter>Strategy</Filter>
     </ClInclude>
+    <ClInclude Include="strategy\ActInTime.h">
+      <Filter>Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Log.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -151,6 +160,15 @@
     </ClCompile>
     <ClCompile Include="strategy\StrategyManager.cpp">
       <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\IStrategy.cpp">
+      <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\ActInTime.cpp">
+      <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Log.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

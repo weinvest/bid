@@ -27,7 +27,6 @@ void ActionEngine::SetRect(size_t idx, const CRect& rect)
 
 bool ActionEngine::InputPrice(int price)
 {	
-	mKeyboardSimulator->KeyPress(VirtualKeyCode::BACK);
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA));
 	mMouseSimulator->LeftButtonClick();
 
@@ -42,7 +41,6 @@ bool ActionEngine::InputPrice(int price)
 
 bool ActionEngine::InputSecurityCode(const CString& SecurityCode)
 {
-	mKeyboardSimulator->KeyPress(VirtualKeyCode::BACK);
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_INPUT_AREA));
 	mMouseSimulator->LeftButtonClick();
 
@@ -65,6 +63,7 @@ void ActionEngine::CloseBidReslt()
 {
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_RESULT_CONFIRM_BUTTON_AREA));
 	mMouseSimulator->LeftButtonClick();
+	mKeyboardSimulator->KeyPress(VirtualKeyCode::BACK);
 }
 
 void ActionEngine::Load(const CString& path)
@@ -114,5 +113,10 @@ void ActionEngine::SetReferencePoint(size_t x, size_t y)
 			info.rect += diff;
 			info.center = info.rect.CenterPoint();
 		}
+	}
+	else
+	{
+		mReferencePoint.x = x;
+		mReferencePoint.y = y;
 	}
 }

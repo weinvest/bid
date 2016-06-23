@@ -4,6 +4,7 @@
 #include "StdAfx.h"
 #include "ScreenImage.h"
 #include "afx.h"
+#include "Log.h"
 /****************************************************************************************
  Function:   CScreenImage::CaptureRect
  Purpose:    captures a screen rectangle
@@ -58,19 +59,21 @@ void CScreenImage::Output()
 		   BYTE r = GetRValue(c);
 		   BYTE g = GetGValue(c);
 		   BYTE b = GetBValue(c);
-		   //if(255 == r && 255 == g && 255 == b)
-		   //{
-			  // TRACE(" ");
-		   //}
-		   //else
-		   //{
-			  // TRACE("1");
-		   //}
-		   TRACE("(%3d,%3d,%3d)", r,g,b);
+		   if(255 == r && 255 == g && 255 == b)
+		   {
+			   //TRACE(" ");
+			   LOG_INFO0(" ");
+		   }
+		   else
+		   {
+			   //TRACE("1");
+			   LOG_INFO0("1");
+		   }
+		   //TRACE("(%3d,%3d,%3d)", r,g,b);
 	   }
-	   TRACE("\n");
+	   LOG_INFO0("\n");
    }
-
+   return;
    for(int w = 0; w < GetWidth(); ++w)
    {
 	   int i = 0;
@@ -96,7 +99,7 @@ void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<CString>& outFe
 {
 	static const CString EMPTY_STRING;
 	outFeatures.emplace_back(EMPTY_STRING);
-	//Output();
+	Output();
 	bool ignoreZero = true;
 	int continueZero = 0;
 	for(int w = 0; w < GetWidth(); ++w)

@@ -32,6 +32,22 @@ bool operator < (const BidTime& lhs, const BidTime& rhs)
 	return false;
 }
 
+void BidTime::Parse(const CString& value)
+{
+	if (value.GetLength() >= 8)
+	{
+		int startPos = 0;
+		hour = InfoEngine::Convert2Int(value, startPos, startPos + 2);
+		minute = InfoEngine::Convert2Int(value, startPos + 3, startPos + 5);
+		second = InfoEngine::Convert2Int(value, startPos + 6, startPos + 8);
+
+		if (value.GetLength() > 9)
+		{
+			milliseconds = InfoEngine::Convert2Int(value, startPos + 9, startPos + 12);
+		}
+	}
+}
+
 InfoEngine* InfoEngine::GetInstance()
 {
 	static InfoEngine gInstance;
@@ -114,6 +130,11 @@ void InfoEngine::SetReferencePoint(size_t x, size_t y)
 			info.rect += diff;
 		}
 	}
+	else
+	{
+		mReferencePoint.x = x;
+		mReferencePoint.y = y;
+	}
 }
 
 InfoEngine::InfoEngine()
@@ -194,7 +215,7 @@ bool InfoEngine::IsEmptyRect(CRect& rect)
 void InfoEngine::CollectData(size_t index)
 {
 	auto& info = mInfoRects[index];
-
+	return;
 	//while (mIsRuning)
 	{
 		//{
@@ -249,7 +270,7 @@ void InfoEngine::CollectData(size_t index)
 	}
 }
 
-int InfoEngine::Convert2Int(CString& str, int from, int to)
+int InfoEngine::Convert2Int(const CString& str, int from, int to)
 {
 	int value = 0, sign = 1;
 	if('-' == str.GetAt(from))

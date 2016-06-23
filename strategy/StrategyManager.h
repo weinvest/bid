@@ -11,7 +11,10 @@ public:
 
 	const StrategiesT& GetStrategies() const { return mStrategies; }
 
+	bool Load(const CString& strategyConf);
 private:
+	IStrategy* Create(const std::string& type);
+
 	StrategyManager();
 	StrategyManager(const StrategyManager&);
 
