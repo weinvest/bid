@@ -95,11 +95,10 @@ void CScreenImage::Output()
    }
 }
 
-void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<CString>& outFeatures, int sepCount)
+void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount)
 {
-	static const CString EMPTY_STRING;
-	outFeatures.emplace_back(EMPTY_STRING);
-	Output();
+	outFeatures.emplace_back();
+	//Output();
 	bool ignoreZero = true;
 	int continueZero = 0;
 	for(int w = 0; w < GetWidth(); ++w)
@@ -126,36 +125,36 @@ void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<CString>& outFe
 			ignoreZero = false;
 		}
 
-		if(continueZero == sepCount && outFeatures.back().GetLength() >= sepCount)
+		if(continueZero == sepCount && outFeatures.back().verticalLength >= sepCount)
 		{
 			auto& currentFeature = outFeatures.back();
-			int newLen =  currentFeature.GetLength() - sepCount + 1;
+			int newLen =  currentFeature.verticalLength - sepCount + 1;
 
 			AppendHorizonFeature(allFeature, sepCount, newLen, currentFeature);
 
 
-			outFeatures.emplace_back(EMPTY_STRING);
+			outFeatures.emplace_back();
 		}
 		
 		if(0 != feature || continueZero < sepCount)
 		{
-		    outFeatures.back().AppendChar(feature + '0');
+		    outFeatures.back().Append2Vertical(feature + '0');
 			continueZero = 0 != feature ? 0 : continueZero;
 		}
 	}
 	
-	if(0 == outFeatures.back().GetLength())
+	if(0 == outFeatures.back().verticalLength)
 	{
 		outFeatures.pop_back();
 	}
 	else
 	{
 		auto& currentFeature = outFeatures.back();
-		AppendHorizonFeature(allFeature, continueZero, currentFeature.GetLength(), currentFeature);
+		AppendHorizonFeature(allFeature, continueZero, currentFeature.verticalLength, currentFeature);
 	}
 }
 
-void CScreenImage::HorizonScan(CString& horizon, int from, int to)
+void CScreenImage::HorizonScan(Feature& horizon, int from, int to)
 {
 	for(int h = 0; h < GetHeight(); ++h)
 	{
@@ -166,11 +165,10 @@ void CScreenImage::HorizonScan(CString& horizon, int from, int to)
 			feature = GetColorFeature(c, feature);
 		}
 
-
-		horizon.AppendChar('0' + feature);
+		horizon.Append2Horizon('0' + feature);
 	}
 	
-	horizon.Trim('0');
+	horizon.Trim('0', horizon.horizon, horizon.horizonLength);
 }
 
 BOOL CScreenImage::CaptureRect(const CRect& rect)
@@ -244,16 +242,11 @@ int CScreenImage::GetColorFeature( COLORREF c, int feature )
 	return feature;
 }
 
-void CScreenImage::AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, CString &currentFeature )
+void CScreenImage::AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, Feature &currentFeature )
 {
 	int horizonTo = allFeature.GetLength() - sepCount;
 	int horizonFrom = horizonTo - newLen;
 
-	CString horizonFeature;
-	HorizonScan(horizonFeature, horizonFrom, horizonTo);
-
-	currentFeature.GetBufferSetLength(newLen);
-	currentFeature.AppendChar('_');
-	currentFeature.Append(horizonFeature);
+	HorizonScan(currentFeature, horizonFrom, horizonTo);
 }
 

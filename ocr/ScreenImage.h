@@ -5,7 +5,7 @@
 
 #include <atlimage.h>
 #include <vector>
-
+#include "Common.h"
 class CScreenImage : public CImage
 {
 public:
@@ -17,15 +17,15 @@ public:
 
 	BOOL CaptureRectEx(const CRect& rect) throw();
 
-	void ScanAndSplit(CString& allFeature, std::vector<CString>& outFeatures, int sepCount);
+	void ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount);
 
-	void AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, CString &currentFeature );
+	void AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, Feature &currentFeature );
 
 	int GetColorFeature( COLORREF c, int feature );
 
 	void Output();
 private:
-	void HorizonScan(CString& horizon, int from, int to);
+	void HorizonScan(Feature& horizon, int from, int to);
 	HDC mScreenDC;
 	HDC mDestDC;
 
