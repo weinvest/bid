@@ -36,10 +36,13 @@ void CFontLoader::Load(KnowledgeT& outKnowledge, int& sepCount, const CString& p
 				pos--;
 			}
 
-			CString feature = line.substr(0, pos).c_str();
 			char c = line[pos + 1];
 
-			outKnowledge[feature] = c;
+			auto feature = line.substr(0, pos);
+			auto vertical = feature.substr(0, feature.find('+'));
+			auto horizon = feature.substr(vertical.length());
+
+			outKnowledge[Feature(vertical, horizon)] = c;
 		}
 	}
 }

@@ -17,7 +17,7 @@ void CFontTraining::Initialize(const std::set<char>& charSet)
 {
 	for(std::set<char>::iterator itChar = charSet.begin(); itChar != charSet.end(); ++itChar)
 	{
-		mFeatures[*itChar] = std::set<CString>();
+		mFeatures[*itChar] = std::set<Feature>();
 	}
 }
 
@@ -28,7 +28,7 @@ bool CFontTraining::Traning(CString& outFeature, CScreenImage* pImage, const CSt
 		return false;
 	}
 
-	std::vector<CString> features;
+	std::vector<Feature> features;
 	pImage->ScanAndSplit(outFeature, features, mSepCount);
 
 	if(!features.empty() && realValue.GetLength() == features.size())
@@ -80,7 +80,7 @@ void CFontTraining::Save(std::ostream& oStream)
 			itFeature != itChar->second.end();
 			++itFeature)
 		{
-			oStream << *itFeature << ":" <<  itChar->first << '\n';
+			oStream << itFeature->vertical << "+" << itFeature->horizon << ":" <<  itChar->first << '\n';
 		}
 	}
 }

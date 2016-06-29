@@ -17,6 +17,7 @@ bool ActInTime::DoLoad(const std::map<std::string, std::string>& configurePairs)
 	if (configurePairs.end() != itVerifyCodeTime)
 	{
 		mInputVerifyCodeTime.Parse(itVerifyCodeTime->second.c_str());
+		return true;
 	}
 	else
 	{

@@ -15,14 +15,21 @@ public:
 
 	bool RecognizeEx(CString& outValue, CString& outFeature, CScreenImage* pImage);
 
+	bool Recognize(CString& outValue, Feature& inFeature);
 private:
 	int GetLCSLength() const { return 128; }
 	int& GetLCSValue(int x, int y) const { return mLCSTable[x * GetLCSLength() + y]; };
-	int LCS(const CString& a, const CString& b) const;
+	int LCS(const char* a, int m, const char* b, int n) const;
 
-	char LCSRecognize(CString& feature) const;
-
-	KnowledgeT mKnowledge;
+	struct StringComparator
+	{
+		bool operator () (const char* lhs, const char* rhs)
+		{
+			return strcmp(lhs, rhs) < 0;
+		}
+	};
+	typedef std::multimap<const char*, std::pair<Feature,char>, StringComparator> RKnowledgeT;
+	RKnowledgeT mKnowledge;
 	int mSepCount;
 
 

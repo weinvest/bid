@@ -94,11 +94,13 @@ void CScreenImage::Output()
 	   TRACE("%d",i);
    }
 }
-
+#define OUTPUT_LOG
 void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount)
 {
 	outFeatures.emplace_back();
-	//Output();
+#ifdef OUTPUT_LOG
+	Output();
+#endif
 	bool ignoreZero = true;
 	int continueZero = 0;
 	for(int w = 0; w < GetWidth(); ++w)
@@ -152,6 +154,11 @@ void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFe
 		auto& currentFeature = outFeatures.back();
 		AppendHorizonFeature(allFeature, continueZero, currentFeature.verticalLength, currentFeature);
 	}
+
+#ifdef OUTPUT_LOG
+	LOG_INFO0(allFeature);
+	LOG_INFO0("\n");
+#endif
 }
 
 void CScreenImage::HorizonScan(Feature& horizon, int from, int to)

@@ -1,8 +1,13 @@
 #ifndef _BID_COMMON_H
 #define _BID_COMMON_H
+#ifdef min
+#undef min
+#endif
+
 #include <map>
 #include <set>
 #include <cstring>
+#include <algorithm>
 
 struct Feature
 {
@@ -11,10 +16,25 @@ struct Feature
 	char vertical[MAX_FEATURE_LENGTH];
 	int8_t horizonLength;
 	int8_t verticalLength;
-
-	void Trim(char c, const char* pChars, int8_t& len)
+	Feature()
+		:horizonLength(0)
+		, verticalLength(0)
 	{
-		while (len > 0 && pChars[len] == c)
+		memset(vertical, 0, MAX_FEATURE_LENGTH);
+		memset(horizon, 0, MAX_FEATURE_LENGTH);
+	}
+
+	Feature(const std::string& v, const std::string& h)
+		:horizonLength(std::min<int>(MAX_FEATURE_LENGTH, h.length()))
+		,verticalLength(std::min<int>(MAX_FEATURE_LENGTH, v.length()))
+	{
+		strncpy_s(horizon, h.c_str(), horizonLength + 1);
+		strncpy_s(vertical, v.c_str(), verticalLength + 1);
+	}
+
+	void Trim(char c, char* const pChars, int8_t& len)
+	{
+		while (len > 0 && pChars[len - 1] == c)
 		{
 			--len;
 		}
@@ -30,6 +50,7 @@ struct Feature
 			memmove((void*)pChars, pChars + startIdx, len - startIdx);
 			len -= startIdx;
 		}
+		pChars[len] = '\0';
 	}
 
 	void Append2Vertical(char c)
@@ -42,7 +63,7 @@ struct Feature
 		horizon[horizonLength++] = c;
 	}
 
-	bool MatchAndSplit(const Feature& pattern, Feature& out)
+	bool MatchAndSplit(const Feature& pattern, Feature& out) const
 	{
 		int idx = 0;
 		while (idx < MAX_FEATURE_LENGTH && ('\0' != vertical[idx]) && (vertical[idx] == pattern.vertical[idx]))
@@ -52,7 +73,7 @@ struct Feature
 
 		if ('\0' == vertical[idx])
 		{
-			strncpy(out.vertical, pattern.vertical + idx, MAX_FEATURE_LENGTH - idx);
+			strncpy_s(out.vertical, pattern.vertical + idx, MAX_FEATURE_LENGTH - idx);
 			idx = 0;
 			while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
 			{
@@ -65,7 +86,7 @@ struct Feature
 		return false;
 	}
 
-	int Compare(const Feature& o)
+	int Compare(const Feature& o) const
 	{
 		auto result = strncmp(vertical, o.vertical, MAX_FEATURE_LENGTH);
 		if (0 != result)
@@ -73,6 +94,11 @@ struct Feature
 			return result;
 		}
 
+		return strncmp(horizon, o.horizon, MAX_FEATURE_LENGTH);
+	}
+
+	int CompareHorizon(const Feature& o) const
+	{
 		return strncmp(horizon, o.horizon, MAX_FEATURE_LENGTH);
 	}
 
