@@ -40,7 +40,7 @@ void CFontLoader::Load(KnowledgeT& outKnowledge, int& sepCount, const CString& p
 
 			auto feature = line.substr(0, pos);
 			auto vertical = feature.substr(0, feature.find('+'));
-			auto horizon = feature.substr(vertical.length());
+			auto horizon = feature.substr(vertical.length() + 1);
 
 			outKnowledge[Feature(vertical, horizon)] = c;
 		}

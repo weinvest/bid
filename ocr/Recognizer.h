@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <array>
 #include "Common.h"
 
 class CScreenImage;
@@ -34,5 +35,7 @@ private:
 
 
 	mutable int *mLCSTable;
+	std::array<std::string, 64> mKeyPool;
+	int mNextAviableKey;
 };
 

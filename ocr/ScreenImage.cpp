@@ -156,8 +156,10 @@ void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFe
 	}
 
 #ifdef OUTPUT_LOG
-	LOG_INFO0(allFeature);
-	LOG_INFO0("\n");
+	for (auto& feature : outFeatures)
+	{
+		LOG_INFO("%s+%s\n", feature.vertical, feature.horizon);
+	}
 #endif
 }
 

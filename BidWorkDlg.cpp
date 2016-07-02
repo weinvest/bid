@@ -276,12 +276,12 @@ BOOL CBidWorkDlg::OnInitDialog()
 		auto pInfoEngine = InfoEngine::GetInstance();
 		pInfoEngine->Start();
 
-		while (true)
+		/*while (true)
 		{
 			pInfoEngine->Step();
 		}
 
-		pInfoEngine->Stop();
+		pInfoEngine->Stop();*/
 	});
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

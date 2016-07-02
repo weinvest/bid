@@ -5,6 +5,7 @@
 CRecognizer::CRecognizer(void)
 	:mSepCount(0)
 	,mLCSTable(nullptr)
+	, mNextAviableKey(0)
 {
 }
 
@@ -18,7 +19,9 @@ void CRecognizer::Initialize(KnowledgeT& knowledge, int sepCount)
 {
 	for (const auto& feature : knowledge)
 	{
-		mKnowledge.insert(std::make_pair(feature.first.vertical, feature));
+		auto& key = mKeyPool[mNextAviableKey++];
+		key = feature.first.vertical;
+		mKnowledge.insert(std::make_pair(key.c_str(), feature));
 	}
 
 	mSepCount = sepCount;
@@ -64,7 +67,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 		Feature curFeature;
 		for (auto it = mKnowledge.begin(); it != mKnowledge.end(); ++it)
 		{
-			if (inFeature.MatchAndSplit(it->second.first, curFeature))
+			if (it->second.first.MatchAndSplit(inFeature, curFeature))
 			{
 				CString tmpOutValue;
 				if (Recognize(tmpOutValue, curFeature))
@@ -95,14 +98,17 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 
 bool CRecognizer::Recognize(CString& outValue, CString& outFeature, CScreenImage* pImage)
 {
-	std::vector<Feature> imageFeatures(16);
+	std::vector<Feature> imageFeatures;
 	pImage->ScanAndSplit(outFeature, imageFeatures, mSepCount);
 
 	for(auto& itFeature = imageFeatures.begin();
 		itFeature != imageFeatures.end();
 		++itFeature)
 	{
-
+		if (!Recognize(outValue, *itFeature))
+		{
+			return false;
+		}
 	}
 
 	return true;

@@ -74,12 +74,16 @@ struct Feature
 		if ('\0' == vertical[idx])
 		{
 			strncpy_s(out.vertical, pattern.vertical + idx, MAX_FEATURE_LENGTH - idx);
+			out.verticalLength = pattern.verticalLength - idx;
+			out.vertical[out.verticalLength] = '\0';
 			idx = 0;
 			while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
 			{
-				out.horizon[idx] = pattern.horizon[idx] - horizon[idx];
+				out.horizon[idx] = (pattern.horizon[idx] - horizon[idx]) + 48;
 				++idx;
 			}
+			out.horizonLength = pattern.horizonLength;
+			out.horizon[out.horizonLength] = '\0';
 			return true;
 		}
 

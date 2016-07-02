@@ -28,7 +28,7 @@ void Log::Info(const char* fmt, ...)
 {
 	char szLog[4096] = { 0 };
 	va_list args;
-	va_start(fmt, args);
+	va_start(args, fmt);
 	vsprintf(szLog, fmt,  args);
 	va_end(args);
 
