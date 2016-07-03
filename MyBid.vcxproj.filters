@@ -99,9 +99,6 @@
     <ClInclude Include="strategy\SmartStrategy.h">
       <Filter>Strategy</Filter>
     </ClInclude>
-    <ClInclude Include="strategy\StrategyManager.h">
-      <Filter>Strategy</Filter>
-    </ClInclude>
     <ClInclude Include="strategy\IStrategy.h">
       <Filter>Strategy</Filter>
     </ClInclude>
@@ -110,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="utils\Log.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="strategy\StrategyManager.h">
+      <Filter>Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="strategy\StoreStrategy.h">
+      <Filter>Strategy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,9 +161,6 @@
     <ClCompile Include="strategy\SmartStrategy.cpp">
       <Filter>Strategy</Filter>
     </ClCompile>
-    <ClCompile Include="strategy\StrategyManager.cpp">
-      <Filter>Strategy</Filter>
-    </ClCompile>
     <ClCompile Include="strategy\IStrategy.cpp">
       <Filter>Strategy</Filter>
     </ClCompile>
@@ -169,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="utils\Log.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\StrategyManager.cpp">
+      <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="strategy\StoreStrategy.cpp">
+      <Filter>Strategy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

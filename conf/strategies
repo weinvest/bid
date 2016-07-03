@@ -4,3 +4,9 @@ Description: Test1
 FirstBidTime: 11:29:38
 SecondBidTime: 11:29:47
 
+[StoreStrategy]
+Name:Store
+Description:Store data
+FileName: sim.csv
+StoreInterval: 10
+

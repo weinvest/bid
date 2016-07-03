@@ -64,10 +64,12 @@ public:
 	std::shared_ptr<std::thread> mInfoThread;
 	CString mInfoConfPath;
 	CString mActionConfPath;
+	CString mStrategyConfPath;
 	afx_msg void OnDoubleClickBidResultButtonArea();
 	afx_msg void OnDoubleClickPostionReferenceArea();
 	afx_msg void OnDoubleClickVerifyCodeInputArea();
 	afx_msg void OnDoubleClickVerifyCodeConfirmArea();
 	afx_msg void OnDoubleClickVerifyCodePictureArea();
 	CComboBox mStrategyCombox;
+	afx_msg void OnBnClickedStartCollectData();
 };

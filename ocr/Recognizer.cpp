@@ -34,6 +34,14 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 	auto equalRange = mKnowledge.equal_range(inFeature.vertical);
 	if (equalRange.first != equalRange.second)
 	{
+		auto it = equalRange.first;
+		++it;
+		if (it == equalRange.second)
+		{
+			outValue.AppendChar(equalRange.first->second.second);
+			return true;
+		}
+
 		for (auto it = equalRange.first; it != equalRange.second; ++it)
 		{
 			if (0 == it->second.first.CompareHorizon(inFeature))

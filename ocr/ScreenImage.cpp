@@ -94,7 +94,7 @@ void CScreenImage::Output()
 	   TRACE("%d",i);
    }
 }
-#define OUTPUT_LOG
+//#define OUTPUT_LOG
 void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount)
 {
 	outFeatures.emplace_back();

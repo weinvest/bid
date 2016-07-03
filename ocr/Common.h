@@ -11,7 +11,7 @@
 
 struct Feature
 {
-	static const int MAX_FEATURE_LENGTH = 32;
+	static const int MAX_FEATURE_LENGTH = 128;
 	char horizon[MAX_FEATURE_LENGTH];
 	char vertical[MAX_FEATURE_LENGTH];
 	int8_t horizonLength;
@@ -65,18 +65,40 @@ struct Feature
 
 	bool MatchAndSplit(const Feature& pattern, Feature& out) const
 	{
-		int idx = 0;
-		while (idx < MAX_FEATURE_LENGTH && ('\0' != vertical[idx]) && (vertical[idx] == pattern.vertical[idx]))
+		int maxMatchLen = 0;
+		//int matchStartPos = -1;
+		//int matchEndPos = 0;
+
+		for (int i = 0; (i + maxMatchLen) < verticalLength && verticalLength > (2*i); ++i)
 		{
-			++idx;
+			int matchLen = 0;
+			int k = 0;
+			for (int j = i; j < verticalLength && k < pattern.verticalLength; ++j, ++k)
+			{
+				if (vertical[j] == pattern.vertical[k])
+				{
+					++matchLen;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (matchLen > maxMatchLen)
+			{
+				maxMatchLen = matchLen;
+				//matchStartPos = i;
+				//matchEndPos = j;
+			}
 		}
 
-		if ('\0' == vertical[idx])
+		if ((2 * maxMatchLen) > verticalLength)
 		{
-			strncpy_s(out.vertical, pattern.vertical + idx, MAX_FEATURE_LENGTH - idx);
-			out.verticalLength = pattern.verticalLength - idx;
+			strncpy_s(out.vertical, pattern.vertical + maxMatchLen, MAX_FEATURE_LENGTH - maxMatchLen);
+			out.verticalLength = pattern.verticalLength - maxMatchLen;
 			out.vertical[out.verticalLength] = '\0';
-			idx = 0;
+			int idx = 0;
 			while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
 			{
 				out.horizon[idx] = (pattern.horizon[idx] - horizon[idx]) + 48;

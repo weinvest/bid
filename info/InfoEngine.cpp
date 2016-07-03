@@ -138,8 +138,8 @@ void InfoEngine::SetReferencePoint(size_t x, size_t y)
 }
 
 InfoEngine::InfoEngine()
-	:mFininshCount(0)
-	, mReferencePoint(-1, -1)
+	:mReferencePoint(-1, -1)
+	,mIsRuning(true)
 {}
 
 void InfoEngine::Registe(IInfoListener* pListener)
@@ -152,51 +152,38 @@ void InfoEngine::UnRegiste(IInfoListener* pListener)
 	mListeners.erase(pListener);
 }
 
-void InfoEngine::Start( void )
+void InfoEngine::Pause( void )
 {
-	//mIsRuning = true;
-	//for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
-	//{
-	//	mThreads[iThread] = std::make_shared<std::thread>(std::bind(&InfoEngine::CollectData, this, iThread));
-	//}
+	mIsRuning = false;
 }
 
 void InfoEngine::Step(void)
 {
-	//mUpdateFields = 0;
-	//mFininshCount.store(0);
-	//mRunCondition.notify_all();
- //   
-	//{
-	//	std::unique_lock<std::mutex> lock(mFinishMutex);
-	//	mFinishCondition.wait_for(lock, std::chrono::seconds(10), [this]() { return mFininshCount.load() == COUNT_OF_INFOS; });
-	//}
+	if (!mIsRuning)
+	{
+		return;
+	}
 
+	mUpdateFields = 0;
 	for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
 	{
 		CollectData(iThread);
 	}
+
+	if (0 == mUpdateFields)
+	{
+		return;
+	}
+
 	for (auto pListener : mListeners)
 	{
-		pListener->OnUpdate(mUpdateFields.load());
+		pListener->OnUpdate(mUpdateFields);
 	}
 }
 
-void InfoEngine::Stop( void )
+void InfoEngine::Resume( void )
 {
-	//if (mIsRuning)
-	//{
-	//	mIsRuning = false;
-
-	//	for (size_t iThread = 0; iThread < COUNT_OF_INFOS; ++iThread)
-	//	{
-	//		auto pThread = mThreads[iThread];
-	//		if (nullptr != pThread && pThread->joinable())
-	//		{
-	//			pThread->join();
-	//		}
-	//	}
-	//}
+	mIsRuning = true;
 }
 
 void InfoEngine::SetRect(size_t idx, CRect& rect, DataType dtype)
@@ -215,16 +202,11 @@ bool InfoEngine::IsEmptyRect(CRect& rect)
 void InfoEngine::CollectData(size_t index)
 {
 	auto& info = mInfoRects[index];
-	return;
 	//while (mIsRuning)
 	{
-		//{
-		//	std::unique_lock<std::mutex> lock(mRunMutex);
-		//	mRunCondition.wait(lock);
-		//}
-
 		if (!IsEmptyRect(info.rect))
 		{
+			auto oldValue = info.price;
 			CString value, outFeature;
 			info.img.CaptureRect(info.rect);
 			if (mRecognizer->RecognizeEx(value, outFeature, &info.img) && value.GetLength() > 0)
@@ -258,15 +240,13 @@ void InfoEngine::CollectData(size_t index)
 				break;
 				}//switch
 
-				mUpdateFields.fetch_or(1 << index);
+				if (oldValue != info.price)
+				{
+					mUpdateFields |= 1 << index;
+				}
 			}//if (mRecognizer->RecognizeEx(value, outFeature, &info.img))
 		}//if (!IsEmptyRect(info.rect))
 
-		//mFininshCount.fetch_add(1);
-		//{
-		//	std::unique_lock<std::mutex> lock(mFinishMutex);
-		//	mFinishCondition.notify_one();
-		//}
 	}
 }
 

@@ -32,7 +32,7 @@ bool IStrategy::Load(std::istream& s)
 		else
 		{
 			emptyLineCount++;
-			if (2 == emptyLineCount)
+			if (1 == emptyLineCount)
 			{
 				break;
 			}
@@ -67,13 +67,13 @@ void IStrategy::Trim(std::string& s)
 	if (s.length() > 0)
 	{
 		auto startPos = 0U;
-		while(startPos < s.length() && !std::isspace(s[startPos]))
+		while(startPos < s.length() && std::isspace(s[startPos]))
 		{
 			++startPos;
 		}
 
 		auto endPos = s.length() - 1;
-		while (endPos > startPos && !std::isspace(s[endPos]))
+		while (endPos > startPos && std::isspace(s[endPos]))
 		{
 			--endPos;
 		}

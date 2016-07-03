@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "ActInTime.h"
+#include "Log.h"
 bool ActInTime::DoLoad(const std::map<std::string, std::string>& configurePairs)
 {
 	auto itBidTime = configurePairs.find("BidTime");
@@ -9,7 +10,7 @@ bool ActInTime::DoLoad(const std::map<std::string, std::string>& configurePairs)
 	}
 	else
 	{
-		TRACE("ActInTime need configure BidTime.");
+		LOG_INFO0("ActInTime need configure BidTime.");
 		return false;
 	}
 

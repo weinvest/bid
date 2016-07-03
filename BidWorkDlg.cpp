@@ -19,6 +19,7 @@ CBidWorkDlg::CBidWorkDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBidWorkDlg::IDD, pParent)
 	, mInfoConfPath("conf/info_rects")
 	, mActionConfPath("conf/act_rects")
+	, mStrategyConfPath("conf/strategies")
 	, mRectChanged(false)
 {
 
@@ -52,6 +53,7 @@ BEGIN_MESSAGE_MAP(CBidWorkDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFY_CODE_INPUT, &CBidWorkDlg::OnDoubleClickVerifyCodeInputArea)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_CONFIRM, &CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_PICTURE, &CBidWorkDlg::OnDoubleClickVerifyCodePictureArea)
+	ON_BN_CLICKED(IDC_START_COLLECT_DATA, &CBidWorkDlg::OnBnClickedStartCollectData)
 END_MESSAGE_MAP()
 
 
@@ -262,6 +264,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, "目前数据库接收的价格区间");
 
 	ActionEngine::GetInstance()->Load(mActionConfPath);
+	StrategyManager::GetInstance()->Load(mStrategyConfPath);
 	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
 	{
 		InfoEngine::GetInstance()->Registe(pStrategy);
@@ -271,18 +274,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 
 	InfoEngine::GetInstance()->Registe(this);
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
-	mInfoThread = std::make_shared<std::thread>([this]()
-	{
-		auto pInfoEngine = InfoEngine::GetInstance();
-		pInfoEngine->Start();
 
-		/*while (true)
-		{
-			pInfoEngine->Step();
-		}
-
-		pInfoEngine->Stop();*/
-	});
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -376,4 +368,30 @@ void CBidWorkDlg::OnDoubleClickVerifyCodePictureArea()
 	mVerifyCodePictureImg.CaptureRect(rect);
 	AfxGetMainWnd()->ShowWindow(SW_SHOW);
 	ActionEngine::GetInstance()->Save(mActionConfPath);
+}
+
+
+void CBidWorkDlg::OnBnClickedStartCollectData()
+{
+	static bool isCollecting = false;
+	if (isCollecting)
+	{
+		SetDlgItemText(IDC_START_COLLECT_DATA, "开始收集数据");
+		mInfoThread->detach();
+		isCollecting = false;
+	}
+	else
+	{
+		SetDlgItemText(IDC_START_COLLECT_DATA, "停止收集数据");
+		isCollecting = true;
+		mInfoThread = std::make_shared<std::thread>([this]()
+		{
+			auto pInfoEngine = InfoEngine::GetInstance();
+
+			while (isCollecting)
+			{
+				pInfoEngine->Step();
+			}
+		});
+	}
 }

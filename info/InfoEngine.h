@@ -82,9 +82,10 @@ public:
 
 	const Data& GetInfo(size_t idx) const { return mInfoRects[idx]; }
 
-	void Start( void );
 	void Step(void);
-	void Stop( void );
+
+	void Pause(void);
+	void Resume(void);
 
 	static bool IsEmptyRect(CRect& rect);
 	static int Convert2Int(const CString& str, int from, int to);
@@ -94,18 +95,11 @@ private:
 	void CollectData(size_t index);
 
 	std::array<Data, COUNT_OF_INFOS> mInfoRects;
-	std::array<std::shared_ptr<std::thread>, COUNT_OF_INFOS> mThreads;
 	
-	std::atomic<int> mFininshCount;
-	std::mutex mRunMutex;
-	std::condition_variable mRunCondition;
-	std::mutex mFinishMutex;
-	std::condition_variable mFinishCondition;
-
 	std::set<IInfoListener*> mListeners;
 	CRecognizer* mRecognizer;
 	bool mIsRuning;
-	std::atomic<int> mUpdateFields;
+	int mUpdateFields;
 
 	CPoint mReferencePoint;
 };
