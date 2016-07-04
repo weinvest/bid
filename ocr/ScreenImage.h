@@ -18,10 +18,11 @@ public:
 	BOOL CaptureRectEx(const CRect& rect) throw();
 
 	void ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount);
+	void ScanAndSplitEx(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount);
 
 	void AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, Feature &currentFeature );
 
-	int GetColorFeature( COLORREF c, int feature );
+	int GetColorFeature( COLORREF c );
 
 	void Output();
 private:

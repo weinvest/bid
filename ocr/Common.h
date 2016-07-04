@@ -95,17 +95,18 @@ struct Feature
 
 		if ((2 * maxMatchLen) > verticalLength)
 		{
-			strncpy_s(out.vertical, pattern.vertical + maxMatchLen, MAX_FEATURE_LENGTH - maxMatchLen);
-			out.verticalLength = pattern.verticalLength - maxMatchLen;
-			out.vertical[out.verticalLength] = '\0';
-			int idx = 0;
-			while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
-			{
-				out.horizon[idx] = (pattern.horizon[idx] - horizon[idx]) + 48;
-				++idx;
-			}
-			out.horizonLength = pattern.horizonLength;
-			out.horizon[out.horizonLength] = '\0';
+			out.Append2Horizon('1');
+			//strncpy_s(out.vertical, pattern.vertical + maxMatchLen, MAX_FEATURE_LENGTH - maxMatchLen);
+			//out.verticalLength = pattern.verticalLength - maxMatchLen;
+			//out.vertical[out.verticalLength] = '\0';
+			//int idx = 0;
+			//while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
+			//{
+			//	out.horizon[idx] = (pattern.horizon[idx] - horizon[idx]) + '0';
+			//	++idx;
+			//}
+			//out.horizonLength = pattern.horizonLength;
+			//out.horizon[out.horizonLength] = '\0';
 			return true;
 		}
 
