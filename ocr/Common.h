@@ -96,8 +96,8 @@ struct Feature
 		if ((2 * maxMatchLen) > verticalLength)
 		{
 			out.Append2Horizon('1');
-			//strncpy_s(out.vertical, pattern.vertical + maxMatchLen, MAX_FEATURE_LENGTH - maxMatchLen);
-			//out.verticalLength = pattern.verticalLength - maxMatchLen;
+			strncpy_s(out.vertical, pattern.vertical + maxMatchLen, MAX_FEATURE_LENGTH - maxMatchLen);
+			out.verticalLength = pattern.verticalLength - maxMatchLen;
 			//out.vertical[out.verticalLength] = '\0';
 			//int idx = 0;
 			//while (idx < MAX_FEATURE_LENGTH && ('\0' != horizon[idx]))
