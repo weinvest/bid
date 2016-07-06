@@ -22,8 +22,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	void OnNewRecognizer(const CString& name, CRecognizer* pRecognizer) override;
-	void OnDelRecognizer(const CString& name, CRecognizer* pRecognizer) override;
+	void OnNewRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
+	void OnDelRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
 
 	afx_msg void OnStnDblclickReImage();
 	afx_msg void OnCbnSelchangeReFontName();

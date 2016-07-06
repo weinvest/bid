@@ -2,6 +2,7 @@
 #include "SmartStrategy.h"
 #include "InfoEngine.h"
 #include "ActionEngine.h"
+#include "Log.h"
 SmartStrategy::SmartStrategy()
 	:mBidTimes(0)
 {}
@@ -39,7 +40,7 @@ bool SmartStrategy::DoLoad(const std::map<std::string, std::string>& configurePa
 
 	return mFirstBidTime < mSecondBidTime;
 }
-
+#include <sstream>
 void SmartStrategy::OnUpdate(size_t updateFields)
 {
 	auto pInfoEngine = InfoEngine::GetInstance();
@@ -48,12 +49,11 @@ void SmartStrategy::OnUpdate(size_t updateFields)
 
 	if (mFirstBidTime < timeInfo.time)
 	{	
-	/*	if (0 == mBidTimes)
+		if (0 == mBidTimes)
 		{
-			TRACE("%d", mBidTimes);
 			mBidTimes = 1;
 			ActionEngine::GetInstance()->InputPrice(curPrice.price + 700);
-		}*/
+		}
 	}
 
 	if (timeInfo.time.minute == 29 && timeInfo.time.second >= 57)

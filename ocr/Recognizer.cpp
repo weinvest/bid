@@ -28,7 +28,7 @@ void CRecognizer::Initialize(KnowledgeT& knowledge, int sepCount)
 	mLCSTable = new int[GetLCSLength() * GetLCSLength()];
 }
 
-bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
+bool CRecognizer::Recognize(std::string& outValue, Feature& inFeature)
 {
 	const char RECONGIZE_FAIL_CHAR = '\0';
 	auto equalRange = mKnowledge.equal_range(inFeature.vertical);
@@ -38,7 +38,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 		++it;
 		if (it == equalRange.second)
 		{
-			outValue.AppendChar(equalRange.first->second.second);
+			outValue.push_back(equalRange.first->second.second);
 			return true;
 		}
 
@@ -46,7 +46,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 		{
 			if (0 == it->second.first.CompareHorizon(inFeature))
 			{
-				outValue.AppendChar(it->second.second);
+				outValue.push_back(it->second.second);
 				return true;
 			}
 		}
@@ -65,7 +65,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 
 		if (itSelect != equalRange.second && (2 * nMaxMatchLen) > inFeature.horizonLength)
 		{
-			outValue.AppendChar(itSelect->second.second);
+			outValue.push_back(itSelect->second.second);
 			return true;
 		}
 	}
@@ -77,11 +77,11 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 		{
 			if (it->second.first.MatchAndSplit(inFeature, curFeature))
 			{
-				CString tmpOutValue;
+				std::string tmpOutValue;
 				if (Recognize(tmpOutValue, curFeature))
 				{
-					outValue.AppendChar(it->second.second);
-					outValue.Append(tmpOutValue);
+					outValue.push_back(it->second.second);
+					outValue.append(tmpOutValue);
 					return true;
 				}
 			}
@@ -94,7 +94,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 			{
 				if (2 * LCS(it->second.first.horizon, it->second.first.horizonLength, inFeature.horizon, inFeature.horizonLength) > it->second.first.horizonLength)
 				{
-					outValue.AppendChar(it->second.second);
+					outValue.push_back(it->second.second);
 					return true;
 				}
 			}
@@ -104,7 +104,7 @@ bool CRecognizer::Recognize(CString& outValue, Feature& inFeature)
 	return false;
 }
 
-bool CRecognizer::Recognize(CString& outValue, CString& outFeature, CScreenImage* pImage)
+bool CRecognizer::Recognize(std::string& outValue, std::string& outFeature, CScreenImage* pImage)
 {
 	std::vector<Feature> imageFeatures;
 	pImage->ScanAndSplit(outFeature, imageFeatures, mSepCount);
@@ -122,7 +122,7 @@ bool CRecognizer::Recognize(CString& outValue, CString& outFeature, CScreenImage
 	return true;
 }
 
-bool CRecognizer::RecognizeEx(CString& outValue, CString& outFeature, CScreenImage* pImage)
+bool CRecognizer::RecognizeEx(std::string& outValue, std::string& outFeature, CScreenImage* pImage)
 {
 	return Recognize(outValue, outFeature, pImage);
 }

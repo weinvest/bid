@@ -12,11 +12,11 @@ public:
 
 	void Initialize(KnowledgeT& knowledge, int sepCount);
 
-	bool Recognize(CString& outValue, CString& outFeature, CScreenImage* pImage);
+	bool Recognize(std::string& outValue, std::string& outFeature, CScreenImage* pImage);
 
-	bool RecognizeEx(CString& outValue, CString& outFeature, CScreenImage* pImage);
+	bool RecognizeEx(std::string& outValue, std::string& outFeature, CScreenImage* pImage);
 
-	bool Recognize(CString& outValue, Feature& inFeature);
+	bool Recognize(std::string& outValue, Feature& inFeature);
 private:
 	int GetLCSLength() const { return 128; }
 	int& GetLCSValue(int x, int y) const { return mLCSTable[x * GetLCSLength() + y]; };

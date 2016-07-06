@@ -12,9 +12,9 @@ CFontLoader::~CFontLoader(void)
 {
 }
 
-void CFontLoader::Load(KnowledgeT& outKnowledge, int& sepCount, const CString& path)
+void CFontLoader::Load(KnowledgeT& outKnowledge, int& sepCount, const std::string& path)
 {
-	CFile file(path, CFile::modeRead);
+	CFile file(CString(path.c_str()), CFile::modeRead);
 
 	std::string content;
 	content.resize((int)file.GetLength());

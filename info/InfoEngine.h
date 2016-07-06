@@ -19,7 +19,7 @@ struct BidTime
 	uint32_t milliseconds:14;
 
 	friend bool operator < (const BidTime& lhs, const BidTime& rhs);
-	void Parse(const CString& time);
+	void Parse(const std::string& time);
 };
 
 struct PriceRange
@@ -59,7 +59,7 @@ public:
 		};
 		CScreenImage img;
 
-		void ToString(CString& out, size_t idx) const;
+		void ToString(std::string& out, size_t idx) const;
 	};
 
 	static const size_t CURRENT_TIME_RECT_INDEX = 0;
@@ -88,7 +88,7 @@ public:
 	void Resume(void);
 
 	static bool IsEmptyRect(CRect& rect);
-	static int Convert2Int(const CString& str, int from, int to);
+	static int Convert2Int(const std::string& str, int from, int to);
 private:
 	InfoEngine();
 

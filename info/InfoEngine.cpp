@@ -32,16 +32,16 @@ bool operator < (const BidTime& lhs, const BidTime& rhs)
 	return false;
 }
 
-void BidTime::Parse(const CString& value)
+void BidTime::Parse(const std::string& value)
 {
-	if (value.GetLength() >= 8)
+	if (value.length() >= 8)
 	{
 		int startPos = 0;
 		hour = InfoEngine::Convert2Int(value, startPos, startPos + 2);
 		minute = InfoEngine::Convert2Int(value, startPos + 3, startPos + 5);
 		second = InfoEngine::Convert2Int(value, startPos + 6, startPos + 8);
 
-		if (value.GetLength() > 9)
+		if (value.length() > 9)
 		{
 			milliseconds = InfoEngine::Convert2Int(value, startPos + 9, startPos + 12);
 		}
@@ -54,7 +54,7 @@ InfoEngine* InfoEngine::GetInstance()
 	return &gInstance;
 }
 
-void InfoEngine::Data::ToString(CString& out, size_t idx) const
+void InfoEngine::Data::ToString(std::string& out, size_t idx) const
 {
 	switch (type)
 	{
@@ -62,22 +62,25 @@ void InfoEngine::Data::ToString(CString& out, size_t idx) const
 		{
 			if (0 == idx)
 			{
-				out.Format("%d", priceRange.GetLowest());
+				out = std::to_string(priceRange.GetLowest());
 			}
 			else
 			{
-				out.Format("%d", priceRange.GetHighest());
+				out = std::to_string(priceRange.GetHighest());
 			}
 		}
 		break;
 	case PRICE:
-		out.Format("%d", price);
+		out = std::to_string( price);
 		break;
 	case TIME:
-		out.Format("%02d:%02d:%02d.%03d", time.hour, time.minute, time.second, time.milliseconds);
+	    {
+		    out.resize(12);
+		    snprintf((char*)out.c_str(), out.length(), "%02d:%02d:%02d.%03d", time.hour, time.minute, time.second, time.milliseconds);
+	    }
 		break;
 	case QUANTITY:
-		out.Format("%d", quantity);
+		out = std::to_string(quantity);
 		break;
 	default:
 		break;
@@ -207,19 +210,19 @@ void InfoEngine::CollectData(size_t index)
 		if (!IsEmptyRect(info.rect))
 		{
 			auto oldValue = info.price;
-			CString value, outFeature;
+			std::string value, outFeature;
 			info.img.CaptureRect(info.rect);
-			if (mRecognizer->RecognizeEx(value, outFeature, &info.img) && value.GetLength() > 0)
+			if (mRecognizer->RecognizeEx(value, outFeature, &info.img) && value.length() > 0)
 			{
 				switch (info.type)
 				{
 				case PRICE:
-					info.price = _ttoi(value);
+					info.price = std::stoi(value);
 					break;
 				case TIME:
-				if(value.GetLength() >= 8)
+				if(value.length() >= 8)
 				{
-					int startPos = value.GetLength() - 8;
+					int startPos = value.length() - 8;
 					int hour = Convert2Int(value, startPos, startPos + 2);
 					int minute = Convert2Int(value, startPos + 3, startPos + 5);
 					int second = Convert2Int(value, startPos + 6, startPos + 8);
@@ -229,13 +232,13 @@ void InfoEngine::CollectData(size_t index)
 				}
 				break;
 				case QUANTITY:
-					info.quantity = _ttoi(value);
+					info.quantity = std::stoi(value);
 					break;
 				case PRICE_RANGE:
 				{
-					int sep = value.Find('|');
+					int sep = value.find('|');
 					info.priceRange.SetLowest(Convert2Int(value, 0, sep));
-					info.priceRange.SetHighest(Convert2Int(value, sep + 1, value.GetLength()));
+					info.priceRange.SetHighest(Convert2Int(value, sep + 1, value.length()));
 				}
 				break;
 				}//switch
@@ -250,23 +253,23 @@ void InfoEngine::CollectData(size_t index)
 	}
 }
 
-int InfoEngine::Convert2Int(const CString& str, int from, int to)
+int InfoEngine::Convert2Int(const std::string& str, int from, int to)
 {
 	int value = 0, sign = 1;
-	if('-' == str.GetAt(from))
+	if('-' == str.at(from))
 	{
 		sign = -1;
 		++from;
 	}
-	else if('+' == str.GetAt(from))
+	else if('+' == str.at(from))
 	{
 		++from;
 	}
 
-	for(; from < to && std::isdigit(str.GetAt(from)); ++from)
+	for(; from < to && std::isdigit(str.at(from)); ++from)
 	{
 		value *= 10;
-		value += (str.GetAt(from) - '0');
+		value += (str.at(from) - '0');
 	}
 	value *= sign;
 

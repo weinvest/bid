@@ -105,9 +105,9 @@ BOOL CMyBidDlg::OnInitDialog()
     m_pRecognizeDlg.Create(IDD_DIALOG_RECOGNIZE,GetDlgItem(IDC_MAIN_TAB)); 
     m_pBidWorkDlg.Create(IDD_DIALOG_BID,GetDlgItem(IDC_MAIN_TAB)); 
 
-	m_pTabCtrl.InsertItem(0, "Training");
-	m_pTabCtrl.InsertItem(1, "Recognize");
-	m_pTabCtrl.InsertItem(2, "Bid");
+	m_pTabCtrl.InsertItem(0, L"Training");
+	m_pTabCtrl.InsertItem(1, L"Recognize");
+	m_pTabCtrl.InsertItem(2, L"Bid");
 
     CRect rs; 
     m_pTabCtrl.GetClientRect(&rs); 

@@ -12,28 +12,28 @@ public:
 
 	static COCREngine* GetInstance();
 
-	void Load(const CString& fontRoot);
+	void Load(const std::string& fontRoot);
 
-	bool Add(const CString& name, CFontTraining* pFontTraining, bool overwrite = false);
-	bool Remove(const CString& name, bool removeFromDisk = false);
+	bool Add(const std::string& name, CFontTraining* pFontTraining, bool overwrite = false);
+	bool Remove(const std::string& name, bool removeFromDisk = false);
 
-	CRecognizer* GetRecognizer(const CString& name);
+	CRecognizer* GetRecognizer(const std::string& name);
 
-	const std::map<CString, CRecognizer*>& GetAllRecognizer() const { return mRecognizers; }
+	const std::map<std::string, CRecognizer*>& GetAllRecognizer() const { return mRecognizers; }
 
-	bool Has(const CString& name);
+	bool Has(const std::string& name);
 
 	void Registe(IOCRListener* pListener);
 	void UnRegiste(IOCRListener* pListener);
 private:
-	CString GetFontPath(const CString& name);
-	void Notify(bool isAdd, const CString& name, CRecognizer* pRecognizer);
+	std::string GetFontPath(const std::string& name);
+	void Notify(bool isAdd, const std::string& name, CRecognizer* pRecognizer);
 
 	COCREngine();
 	COCREngine(const COCREngine&);
 
-	CString mFontRootDir;
-	std::map<CString, CRecognizer*> mRecognizers;
+	std::string mFontRootDir;
+	std::map<std::string, CRecognizer*> mRecognizers;
 	std::set<IOCRListener*> mListeners;
 };
 

@@ -70,17 +70,17 @@ void CTrainingDlg::OnBnClickedTrbuttonNext()
 	UpdateData();
 	mCurrentTraining->SetSepCount(mSepCount);
 
-	CString outFeature;
-	if(!mCurrentTraining->Traning(outFeature, &mScreenImage, mRepValue))
+	std::string outFeature, repValue;
+	if(!mCurrentTraining->Traning(outFeature, &mScreenImage, repValue))
 	{
-		GetDlgItem(IDC_TR_STATUS)->SetWindowTextA("Traing Failed");
+		GetDlgItem(IDC_TR_STATUS)->SetWindowText(L"Traing Failed");
 	}
 	else
 	{
 		UpdateKnowledge();
 	}
-
-	GetDlgItem(IDC_TR_FEATURES)->SetWindowTextA(outFeature);
+	mRepValue.Format(L"%s", repValue.c_str());
+	GetDlgItem(IDC_TR_FEATURES)->SetWindowText(CString(outFeature.c_str()));
 }
 
 
@@ -90,30 +90,32 @@ void CTrainingDlg::UpdateKnowledge()
 	mCurrentTraining->Save(knownledge);
 	
 	CWnd* pKnowledgeCtl = GetDlgItem(IDC_TR_KNOWLEDGE);
-	pKnowledgeCtl->SetWindowTextA( knownledge.str().c_str());
+	pKnowledgeCtl->SetWindowText( CString(knownledge.str().c_str()));
 }
 
 void CTrainingDlg::OnBnClickedTrbuttonDone()
 {
 	UpdateData();
-	if(COCREngine::GetInstance()->Has(mName))
+	std::string name = CW2A(mName);
+	if(COCREngine::GetInstance()->Has(name))
 	{
 		GetDlgItem(IDC_TR_STATUS)->SetWindowText(mName + " may be overwrite another font, please using another name");
 	}
 	else
 	{
-		CString outFeature;
+		std::string outFeature, repValue;
 		mCurrentTraining->SetSepCount(mSepCount);
-		if(mCurrentTraining->Traning(outFeature, &mScreenImage, mRepValue))
+		if(mCurrentTraining->Traning(outFeature, &mScreenImage, repValue))
 		{
-		    COCREngine::GetInstance()->Add(mName, mCurrentTraining, false);
+		    COCREngine::GetInstance()->Add(name, mCurrentTraining, false);
 		    UpdateKnowledge();
 		}
 		else
 		{
-			GetDlgItem(IDC_TR_STATUS)->SetWindowText("Traing Failed");
+			GetDlgItem(IDC_TR_STATUS)->SetWindowText(L"Traing Failed");
 		}
-		GetDlgItem(IDC_TR_FEATURES)->SetWindowTextA(outFeature);
+		mRepValue.Format(L"%s", repValue.c_str());
+		GetDlgItem(IDC_TR_FEATURES)->SetWindowText(CString(outFeature.c_str()));
 	}
 }
 

@@ -49,5 +49,8 @@ private:
 
 	std::shared_ptr<CMouseSimulator> mMouseSimulator;
 	std::shared_ptr<CKeyboardSimulator> mKeyboardSimulator;
+
+	double mXFactor;
+	double mYFactor;
 };
 #endif // !_ACTION_ENGINE_H

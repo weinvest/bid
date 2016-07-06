@@ -19,19 +19,19 @@ COCREngine* COCREngine::GetInstance()
 }
 
 
-void COCREngine::Load(const CString& fontRoot)
+void COCREngine::Load(const std::string& fontRoot)
 {
 	mFontRootDir = fontRoot;
 	CFileFind ff;
-    if (mFontRootDir.Right(1) != "\\")
+    if (mFontRootDir.back() != '\\')
 	{
         mFontRootDir += "\\";
 	}
 
-	CString dir = mFontRootDir + "*.gfont";
+	std::string dir = mFontRootDir + "*.gfont";
     
 	CFontLoader loader;
-    BOOL ret = ff.FindFile(dir);
+    BOOL ret = ff.FindFile(CString(dir.c_str()));
     while (ret)
     {
         ret = ff.FindNextFile();
@@ -39,9 +39,11 @@ void COCREngine::Load(const CString& fontRoot)
         {
 			KnowledgeT knowledge;
 			int sepCount(0);
-			loader.Load(knowledge, sepCount, ff.GetFilePath());
 
-			auto name = ff.GetFileTitle();
+			std::string filePath = CW2A(ff.GetFilePath());
+			loader.Load(knowledge, sepCount, filePath);
+
+			std::string name = CW2A(ff.GetFileTitle());
 			auto newRecognizer = new CRecognizer();
 			newRecognizer->Initialize(knowledge, sepCount);
 			mRecognizers[name] = newRecognizer;
@@ -49,7 +51,7 @@ void COCREngine::Load(const CString& fontRoot)
     }
 }
 
-bool COCREngine::Add(const CString& name, CFontTraining* pFontTraining, bool overwrite)
+bool COCREngine::Add(const std::string& name, CFontTraining* pFontTraining, bool overwrite)
 {
 	auto itRecognize = mRecognizers.find(name);
 	if(itRecognize != mRecognizers.end() && !overwrite)
@@ -69,17 +71,17 @@ bool COCREngine::Add(const CString& name, CFontTraining* pFontTraining, bool ove
 	}
 }
 
-bool COCREngine::Has(const CString& name)
+bool COCREngine::Has(const std::string& name)
 {
 	return mRecognizers.find(name) != mRecognizers.end();
 }
 
-CString COCREngine::GetFontPath(const CString& name)
+std::string COCREngine::GetFontPath(const std::string& name)
 {
 	return mFontRootDir + '\\' + name + ".gfont";
 }
 
-bool COCREngine::Remove(const CString& name, bool removeFromDisk)
+bool COCREngine::Remove(const std::string& name, bool removeFromDisk)
 {
 	auto itRecognize = mRecognizers.find(name);
 	if(itRecognize == mRecognizers.end())
@@ -90,11 +92,11 @@ bool COCREngine::Remove(const CString& name, bool removeFromDisk)
 	auto pRecognizer = itRecognize->second;
 	mRecognizers.erase(itRecognize);
 	Notify(false, name, pRecognizer);
-	DeleteFile(GetFontPath(name));
+	DeleteFile(CString(GetFontPath(name).c_str()));
 	return true;
 }
 
-CRecognizer* COCREngine::GetRecognizer(const CString& name)
+CRecognizer* COCREngine::GetRecognizer(const std::string& name)
 {
 	auto itRecognize = mRecognizers.find(name);
 	if(itRecognize == mRecognizers.end())
@@ -121,7 +123,7 @@ void COCREngine::UnRegiste(IOCRListener* pListener)
 	}
 }
 
-void COCREngine::Notify(bool isAdd, const CString& name, CRecognizer* pRecognizer)
+void COCREngine::Notify(bool isAdd, const std::string& name, CRecognizer* pRecognizer)
 {
 	if(!isAdd)
 	{

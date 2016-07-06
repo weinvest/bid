@@ -10,11 +10,11 @@ public:
 	IStrategy(){}
 	virtual ~IStrategy(){}
 
-	const CString& GetName() const { return mName; }
-	void SetName(const CString& name) { mName = name; }
+	const std::string& GetName() const { return mName; }
+	void SetName(const std::string& name) { mName = name; }
 
-	const CString& GetDescription() const { return mDescription; }
-	void SetDescription(const CString& description) { mDescription = description; }
+	const std::string& GetDescription() const { return mDescription; }
+	void SetDescription(const std::string& description) { mDescription = description; }
 
 	bool Load(std::istream& s);
 	static void Trim(std::string& s);
@@ -22,7 +22,7 @@ public:
 protected:
 	virtual bool DoLoad(const std::map<std::string, std::string>& configurePairs);
 
-	CString mName;
-	CString mDescription;
+	std::string mName;
+	std::string mDescription;
 };
 #endif // !_ISTRATEGY_H

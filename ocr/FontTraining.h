@@ -11,7 +11,7 @@ public:
 	void Initialize(const std::set<char>& charSet);
 
 	void SetSepCount(int sepCount) { mSepCount = sepCount; }
-	bool Traning(CString& outFeature, CScreenImage* pImage, const CString& realValue);
+	bool Traning(std::string& outFeature, CScreenImage* pImage, const std::string& realValue);
 
 	KnowledgeT& BuildKnowledge();
 
@@ -19,7 +19,7 @@ public:
 	KnowledgeT& GetKnowledge()  { return mKnowledge; }
 
 	int GetSepCount() const { return mSepCount; }
-	void Save(const CString& filePath);
+	void Save(const std::string& filePath);
 	void Save(std::ostream& oStream);
 	~CFontTraining(void);
 

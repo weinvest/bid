@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <sstream>
 #include "MyBid.h"
 #include "RecognizeDlg.h"
 #include "afxdialogex.h"
@@ -46,7 +47,7 @@ void CRecognizeDlg::OnStnDblclickReImage()
 {
 	if(nullptr == mCurrentRecognizer)
 	{
-		MessageBox(" please select a font name");
+		MessageBox(L" please select a font name");
 	}
 	else
 	{
@@ -75,7 +76,7 @@ void CRecognizeDlg::ReBuildNameCombox()
 	{
 		for(auto itRecognize = allRecognizer.begin(); itRecognize != allRecognizer.end(); ++itRecognize)
 		{
-			mFontNameCtrl.AddString(itRecognize->first);
+			mFontNameCtrl.AddString(CString(itRecognize->first.c_str()));
 		}
 		COCREngine::GetInstance()->Registe(this);
 
@@ -94,12 +95,12 @@ BOOL CRecognizeDlg::OnInitDialog()
 	// 异常: OCX 属性页应返回 FALSE
 }
 
-void CRecognizeDlg::OnNewRecognizer(const CString& name, CRecognizer* pRecognizer)
+void CRecognizeDlg::OnNewRecognizer(const std::string& name, CRecognizer* pRecognizer)
 {
-	mFontNameCtrl.AddString(name);
+	mFontNameCtrl.AddString(CString(name.c_str()));
 }
 
-void CRecognizeDlg::OnDelRecognizer(const CString& name, CRecognizer* pRecognizer)
+void CRecognizeDlg::OnDelRecognizer(const std::string& name, CRecognizer* pRecognizer)
 {}
 
 void CRecognizeDlg::OnCbnSelchangeReFontName()
@@ -108,7 +109,8 @@ void CRecognizeDlg::OnCbnSelchangeReFontName()
 	CString name;
 	mFontNameCtrl.GetLBText(index, name);
 
-	mCurrentRecognizer = COCREngine::GetInstance()->GetRecognizer(name);
+	std::string szName = CW2A(name);
+	mCurrentRecognizer = COCREngine::GetInstance()->GetRecognizer(szName);
 }
 
 
@@ -134,27 +136,27 @@ void CRecognizeDlg::OnBnClickedRebtbRecognize()
 {
 	if(nullptr != mCurrentRecognizer)
 	{
-		CString outFeature;
-		CString value;
+		std::string outFeature;
+		std::string value;
 
 		CpuTime time;
 		bool success = mCurrentRecognizer->RecognizeEx(value, outFeature, &mScreenImage);
 		double elapse = time.GetElapse();
 
-		CString strTime;
-		strTime.Format("%lf seconds", elapse);
-		GetDlgItem(IDC_RE_TIME)->SetWindowTextA(strTime);
+		std::stringstream timeStream;
+		timeStream << elapse << " seconds";
+		GetDlgItem(IDC_RE_TIME)->SetWindowText(CString(timeStream.str().c_str()));
 
 		if(success)
 		{
-			GetDlgItem(IDC_STATIC_RECOGNIZE_RESULT)->SetWindowTextA(value);
-            GetDlgItem(IDC_RE_STATUS)->SetWindowTextA("OK");
+			GetDlgItem(IDC_STATIC_RECOGNIZE_RESULT)->SetWindowText(CString(value.c_str()));
+            GetDlgItem(IDC_RE_STATUS)->SetWindowText(L"OK");
 		}
 		else
 		{
-			GetDlgItem(IDC_STATIC_RECOGNIZE_RESULT)->SetWindowTextA("");
-			GetDlgItem(IDC_RE_STATUS)->SetWindowTextA("Failed");
+			GetDlgItem(IDC_STATIC_RECOGNIZE_RESULT)->SetWindowText(L"");
+			GetDlgItem(IDC_RE_STATUS)->SetWindowText(L"Failed");
 		}
-		GetDlgItem(IDC_RE_FEATURE)->SetWindowTextA(outFeature);
+		GetDlgItem(IDC_RE_FEATURE)->SetWindowText(CString(outFeature.c_str()));
 	}
 }

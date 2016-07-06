@@ -4,7 +4,7 @@
 #include "ActionEngine.h"
 #include "inputSim\MouseSimulator.h"
 #include "inputSim\KeyboardSimulator.h"
-
+#include "Log.h"
 #define AREA_COORDINATE_X_Y(idx) X(idx),Y(idx)
 ActionEngine* ActionEngine::GetInstance()
 {
@@ -17,24 +17,35 @@ ActionEngine::ActionEngine()
 	:mReferencePoint{ -1, -1 }
 	,mMouseSimulator(std::make_shared<CMouseSimulator>())
 	,mKeyboardSimulator(std::make_shared<CKeyboardSimulator>())
-{}
+	,mXFactor(1)
+	,mYFactor(1)
+{
+	mXFactor = (65535.0 / GetSystemMetrics(SM_CXSCREEN));
+	mYFactor = (65535.0 / GetSystemMetrics(SM_CYSCREEN));
+}
 
 void ActionEngine::SetRect(size_t idx, const CRect& rect)
 {
 	mAreas[idx].rect = rect;
 	mAreas[idx].center = rect.CenterPoint();
-}
 
+	mAreas[idx].center.x = mAreas[idx].center.x * mXFactor + 0.5;
+	mAreas[idx].center.y = mAreas[idx].center.y * mYFactor + 0.5;
+}
+#include <thread>
 bool ActionEngine::InputPrice(int price)
 {	
+	LOG_INFO("input price at (%d,%d):%d", AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA),price);
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	mMouseSimulator->LeftButtonClick();
-
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	CString strPrice;
-	strPrice.Format("%d", price);
-	mKeyboardSimulator->TextEntry(strPrice);
-
+	strPrice.Format(L"%d", price);
+	mKeyboardSimulator->TextEntry((LPCTSTR)strPrice);
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_SUBMIT_BUTTON_AREA));
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	mMouseSimulator->LeftButtonClick();
 	return true;
 }
@@ -82,9 +93,9 @@ void ActionEngine::Load(const CString& path)
 			size_t index = 0;
 			s >> index;
 
-			auto& info = mAreas[index];
-			s >> info.rect.top >> info.rect.left >> info.rect.bottom >> info.rect.right;
-			info.center = info.rect.CenterPoint();
+			CRect rect;
+			s >> rect.top >> rect.left >> rect.bottom >> rect.right;
+			SetRect(index, rect);
 		}
 	}
 }

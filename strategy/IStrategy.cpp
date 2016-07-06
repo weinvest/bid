@@ -42,7 +42,7 @@ bool IStrategy::Load(std::istream& s)
 	auto itName = configurePairs.find("Name");
 	if (itName != configurePairs.end())
 	{
-		SetName(itName->second.c_str());
+		SetName(itName->second);
 	}
 	else
 	{
@@ -52,7 +52,7 @@ bool IStrategy::Load(std::istream& s)
 	auto itDescription = configurePairs.find("Description");
 	if (itDescription != configurePairs.end())
 	{
-		SetDescription(itDescription->second.c_str());
+		SetDescription(itDescription->second);
 	}
 	else
 	{

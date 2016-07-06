@@ -18,8 +18,8 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_BID };
 
-	void OnNewRecognizer(const CString& name, CRecognizer* pRecognizer) override;
-	void OnDelRecognizer(const CString& name, CRecognizer* pRecognizer) override;
+	void OnNewRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
+	void OnDelRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
 	void OnUpdate(size_t updateFields) override;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -35,7 +35,7 @@ void StoreStrategy::OnUpdate(size_t updateFields)
 {
 	if (mOutFile)
 	{
-		CString currentTime, currentPriceTime;
+		std::string currentTime, currentPriceTime;
 		auto pInfoEngine = InfoEngine::GetInstance();
 		pInfoEngine->GetInfo(InfoEngine::CURRENT_TIME_RECT_INDEX).ToString(currentTime, InfoEngine::TIME);
 		auto& lowestPrice = pInfoEngine->GetInfo(InfoEngine::CURRENT_LOWEST_PRICE_INDEX);

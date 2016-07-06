@@ -24,9 +24,13 @@ CBidWorkDlg::CBidWorkDlg(CWnd* pParent /*=NULL*/)
 {
 
 }
+static bool isCollecting = false;
+
 
 CBidWorkDlg::~CBidWorkDlg()
 {
+	mInfoThread->detach();
+	isCollecting = false;
 }
 
 void CBidWorkDlg::DoDataExchange(CDataExchange* pDX)
@@ -158,19 +162,19 @@ void CBidWorkDlg::OnDoubleClickCaptureVerifybox()
 
 void CBidWorkDlg::OnUpdate(size_t updateFields)
 {
-	CString text("OK");
+	std::string text("OK");
 	for (size_t iInfo = 0; iInfo < InfoEngine::COUNT_OF_INFOS; ++iInfo)
 	{
 		if (updateFields & (1 << iInfo))
 		{
 			auto& info = InfoEngine::GetInstance()->GetInfo(iInfo);
 			info.ToString(text, 0);
-			mDataListCtrl.SetItemText(iInfo, 1, text);
+			mDataListCtrl.SetItemText(iInfo, 1, CString(text.c_str()));
 
 			if (InfoEngine::PRICE_RANGE == info.type)
 			{
 				info.ToString(text, 1);
-				mDataListCtrl.SetItemText(iInfo, 2, text);
+				mDataListCtrl.SetItemText(iInfo, 2, CString(text.c_str()));
 			}
 		}
 	}
@@ -227,7 +231,7 @@ void CBidWorkDlg::ReBuildNameCombox()
 	{
 		for(auto itRecognize = allRecognizer.begin(); itRecognize != allRecognizer.end(); ++itRecognize)
 		{
-			mFontNameCombox.AddString(itRecognize->first);
+			mFontNameCombox.AddString(CString(itRecognize->first.c_str()));
 		}
 		COCREngine::GetInstance()->Registe(this);
 
@@ -243,7 +247,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 	ReBuildNameCombox();
 
 	mDataListCtrl.DeleteAllItems();
-	char szColumnName[3][10] = { "Name", "Value1", "Value2" };
+	wchar_t szColumnName[3][10] = { L"Name", L"Value1", L"Value2" };
 	LV_COLUMN lvColumn;
 	CRect listRect;
 	mDataListCtrl.GetWindowRect(&listRect);
@@ -258,17 +262,17 @@ BOOL CBidWorkDlg::OnInitDialog()
 		mDataListCtrl.InsertColumn(iColumn, &lvColumn);
 		mDataListCtrl.SetColumnWidth(iColumn, listRect.Width() * 2/ 7);
 	}
-	mDataListCtrl.InsertItem(InfoEngine::CURRENT_TIME_RECT_INDEX, "系统目前时间");
-	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_INDEX, "目前最低可成交价");
-	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, "最低可成交价出价时间");
-	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, "目前数据库接收的价格区间");
+	mDataListCtrl.InsertItem(InfoEngine::CURRENT_TIME_RECT_INDEX, L"系统目前时间");
+	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_INDEX, L"目前最低可成交价");
+	mDataListCtrl.InsertItem(InfoEngine::CURRENT_LOWEST_PRICE_TIME_INDEX, L"最低可成交价出价时间");
+	mDataListCtrl.InsertItem(InfoEngine::CURRENT_ACCEPTABLE_PRICE_RANGE, L"目前数据库接收的价格区间");
 
 	ActionEngine::GetInstance()->Load(mActionConfPath);
 	StrategyManager::GetInstance()->Load(mStrategyConfPath);
 	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
 	{
 		InfoEngine::GetInstance()->Registe(pStrategy);
-		mStrategyCombox.AddString(pStrategy->GetName());
+		mStrategyCombox.AddString(CString(pStrategy->GetName().c_str()));
 	}
 	mStrategyCombox.SetCurSel(0);
 
@@ -286,16 +290,17 @@ void CBidWorkDlg::OnFontNameChanged()
 	CString name;
 	mFontNameCombox.GetLBText(index, name);
 
-	auto pRecognizer = COCREngine::GetInstance()->GetRecognizer(name);
+	std::string strName = CW2A(name);
+	auto pRecognizer = COCREngine::GetInstance()->GetRecognizer(strName);
 	InfoEngine::GetInstance()->SetRecognizer(pRecognizer);
 }
 
-void CBidWorkDlg::OnNewRecognizer(const CString& name, CRecognizer* pRecognizer)
+void CBidWorkDlg::OnNewRecognizer(const std::string& name, CRecognizer* pRecognizer)
 {
-	mFontNameCombox.AddString(name);
+	mFontNameCombox.AddString(CString(name.c_str()));
 }
 
-void CBidWorkDlg::OnDelRecognizer(const CString& name, CRecognizer* pRecognizer)
+void CBidWorkDlg::OnDelRecognizer(const std::string& name, CRecognizer* pRecognizer)
 {}
 
 
@@ -373,16 +378,15 @@ void CBidWorkDlg::OnDoubleClickVerifyCodePictureArea()
 
 void CBidWorkDlg::OnBnClickedStartCollectData()
 {
-	static bool isCollecting = false;
 	if (isCollecting)
 	{
-		SetDlgItemText(IDC_START_COLLECT_DATA, "开始收集数据");
+		SetDlgItemText(IDC_START_COLLECT_DATA, L"开始收集数据");
 		mInfoThread->detach();
 		isCollecting = false;
 	}
 	else
 	{
-		SetDlgItemText(IDC_START_COLLECT_DATA, "停止收集数据");
+		SetDlgItemText(IDC_START_COLLECT_DATA, L"停止收集数据");
 		isCollecting = true;
 		mInfoThread = std::make_shared<std::thread>([this]()
 		{

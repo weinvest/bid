@@ -95,7 +95,7 @@ void CScreenImage::Output()
    }
 }
 //#define OUTPUT_LOG
-void CScreenImage::ScanAndSplitEx(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount)
+void CScreenImage::ScanAndSplitEx(std::string& allFeature, std::vector<Feature>& outFeatures, int sepCount)
 {
 	outFeatures.emplace_back();
 #ifdef OUTPUT_LOG
@@ -123,7 +123,7 @@ void CScreenImage::ScanAndSplitEx(CString& allFeature, std::vector<Feature>& out
 			++o;
 		}
 
-		allFeature.AppendChar('0' + feature);
+		allFeature.push_back('0' + feature);
 		if (0 == feature)
 		{
 			++continueZero;
@@ -173,7 +173,7 @@ void CScreenImage::ScanAndSplitEx(CString& allFeature, std::vector<Feature>& out
 	}
 #endif
 }
-void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFeatures, int sepCount)
+void CScreenImage::ScanAndSplit(std::string& allFeature, std::vector<Feature>& outFeatures, int sepCount)
 {
 	return ScanAndSplitEx(allFeature, outFeatures, sepCount);
 	outFeatures.emplace_back();
@@ -191,7 +191,7 @@ void CScreenImage::ScanAndSplit(CString& allFeature, std::vector<Feature>& outFe
 			feature += GetColorFeature(c);
 		}
 
-		allFeature.AppendChar('0' + feature);
+		allFeature.push_back('0' + feature);
 		if(0 == feature)
 		{
 			++continueZero;
@@ -330,9 +330,9 @@ int CScreenImage::GetColorFeature( COLORREF c)
 	return 0;
 }
 
-void CScreenImage::AppendHorizonFeature( CString &allFeature, int sepCount, int newLen, Feature &currentFeature )
+void CScreenImage::AppendHorizonFeature( std::string &allFeature, int sepCount, int newLen, Feature &currentFeature )
 {
-	int horizonTo = allFeature.GetLength() - sepCount;
+	int horizonTo = allFeature.length() - sepCount;
 	int horizonFrom = horizonTo - newLen;
 
 	HorizonScan(currentFeature, horizonFrom, horizonTo);

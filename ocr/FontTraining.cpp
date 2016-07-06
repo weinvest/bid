@@ -21,7 +21,7 @@ void CFontTraining::Initialize(const std::set<char>& charSet)
 	}
 }
 
-bool CFontTraining::Traning(CString& outFeature, CScreenImage* pImage, const CString& realValue)
+bool CFontTraining::Traning(std::string& outFeature, CScreenImage* pImage, const std::string& realValue)
 {
 	if(nullptr == pImage)
 	{
@@ -31,11 +31,11 @@ bool CFontTraining::Traning(CString& outFeature, CScreenImage* pImage, const CSt
 	std::vector<Feature> features;
 	pImage->ScanAndSplit(outFeature, features, mSepCount);
 
-	if(!features.empty() && realValue.GetLength() == features.size())
+	if(!features.empty() && realValue.length() == features.size())
 	{
-		for(int iChar = 0; iChar < realValue.GetLength(); ++iChar)
+		for(int iChar = 0; iChar < realValue.length(); ++iChar)
 		{
-		    char c = realValue.GetAt(iChar);
+		    char c = realValue.at(iChar);
 			if(mFeatures.find(c) != mFeatures.end())
 			{
 				mFeatures[c].insert(features[iChar]);
@@ -63,9 +63,9 @@ KnowledgeT& CFontTraining::BuildKnowledge()
 	return mKnowledge;
 }
 
-void CFontTraining::Save(const CString& filePath)
+void CFontTraining::Save(const std::string& filePath)
 {
-	std::ofstream file((LPCTSTR)filePath, std::ios_base::binary | std::ios_base::out);
+	std::ofstream file(filePath, std::ios_base::binary | std::ios_base::out);
 	Save(file);
 }
 
