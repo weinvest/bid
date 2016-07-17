@@ -70,7 +70,7 @@ void CTrainingDlg::OnBnClickedTrbuttonNext()
 	UpdateData();
 	mCurrentTraining->SetSepCount(mSepCount);
 
-	std::string outFeature, repValue;
+	std::string outFeature, repValue = CT2A(mRepValue);
 	if(!mCurrentTraining->Traning(outFeature, &mScreenImage, repValue))
 	{
 		GetDlgItem(IDC_TR_STATUS)->SetWindowText(L"Traing Failed");
@@ -103,7 +103,7 @@ void CTrainingDlg::OnBnClickedTrbuttonDone()
 	}
 	else
 	{
-		std::string outFeature, repValue;
+		std::string outFeature, repValue = CT2A(mRepValue);
 		mCurrentTraining->SetSepCount(mSepCount);
 		if(mCurrentTraining->Traning(outFeature, &mScreenImage, repValue))
 		{

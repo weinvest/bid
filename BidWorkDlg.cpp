@@ -11,6 +11,8 @@
 #include "ActionEngine.h"
 #include "StrategyManager.h"
 #include "IStrategy.h"
+#include "Log.h"
+#include "PixelBitAnalyze.h"
 // CBidWorkDlg dialog
 
 IMPLEMENT_DYNAMIC(CBidWorkDlg, CDialogEx)
@@ -29,8 +31,11 @@ static bool isCollecting = false;
 
 CBidWorkDlg::~CBidWorkDlg()
 {
-	mInfoThread->detach();
-	isCollecting = false;
+	if (mInfoThread)
+	{
+		mInfoThread->detach();
+		isCollecting = false;
+	}
 }
 
 void CBidWorkDlg::DoDataExchange(CDataExchange* pDX)
@@ -58,6 +63,7 @@ BEGIN_MESSAGE_MAP(CBidWorkDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_CONFIRM, &CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_PICTURE, &CBidWorkDlg::OnDoubleClickVerifyCodePictureArea)
 	ON_BN_CLICKED(IDC_START_COLLECT_DATA, &CBidWorkDlg::OnBnClickedStartCollectData)
+	ON_WM_HOTKEY()
 END_MESSAGE_MAP()
 
 
@@ -269,6 +275,8 @@ BOOL CBidWorkDlg::OnInitDialog()
 
 	ActionEngine::GetInstance()->Load(mActionConfPath);
 	StrategyManager::GetInstance()->Load(mStrategyConfPath);
+	InfoEngine::GetInstance()->Registe(this);
+
 	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
 	{
 		InfoEngine::GetInstance()->Registe(pStrategy);
@@ -276,9 +284,20 @@ BOOL CBidWorkDlg::OnInitDialog()
 	}
 	mStrategyCombox.SetCurSel(0);
 
-	InfoEngine::GetInstance()->Registe(this);
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
 
+	if (0 == RegisterHotKey(GetSafeHwnd(), HOT_KEY_REFRESH_VERIFY_CODE, MOD_ALT, 'r'))
+	{
+		LOG_INFO("registe refresh verify code failed, %s", GetLastError());
+	}
+
+	if (0 == RegisterHotKey(GetSafeHwnd(), HOT_KEY_BID_AGAIN, MOD_ALT, 'b'))
+	{
+		LOG_INFO("registe bid again verify code failed, %s", GetLastError());
+	}
+
+
+	PixelAnyalizeAll("C:\\Users\\shgli\\Desktop\\verifycode");
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -398,4 +417,17 @@ void CBidWorkDlg::OnBnClickedStartCollectData()
 			}
 		});
 	}
+}
+
+void CBidWorkDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
+{
+	if (HOT_KEY_REFRESH_VERIFY_CODE == nHotKeyId)
+	{
+		LOG_INFO0("refresh verify code");
+	}
+	else if (HOT_KEY_BID_AGAIN == nHotKeyId)
+	{
+		LOG_INFO0("Bid again");
+	}
+	__super::OnHotKey(nHotKeyId, nKey1, nKey2);
 }

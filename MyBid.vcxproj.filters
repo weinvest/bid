@@ -114,6 +114,9 @@
     <ClInclude Include="strategy\StoreStrategy.h">
       <Filter>Strategy</Filter>
     </ClInclude>
+    <ClInclude Include="ocr\PixelBitAnalyze.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="strategy\StoreStrategy.cpp">
       <Filter>Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="ocr\PixelBitAnalyze.cpp">
+      <Filter>OCR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

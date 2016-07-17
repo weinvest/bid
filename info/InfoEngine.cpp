@@ -212,42 +212,49 @@ void InfoEngine::CollectData(size_t index)
 			auto oldValue = info.price;
 			std::string value, outFeature;
 			info.img.CaptureRect(info.rect);
-			if (mRecognizer->RecognizeEx(value, outFeature, &info.img) && value.length() > 0)
+			try
 			{
-				switch (info.type)
+				if (mRecognizer->RecognizeEx(value, outFeature, &info.img) && value.length() > 0)
 				{
-				case PRICE:
-					info.price = std::stoi(value);
+					switch (info.type)
+					{
+					case PRICE:
+						info.price = std::stoi(value);
+						break;
+					case TIME:
+						if (value.length() >= 8)
+						{
+							int startPos = value.length() - 8;
+							int hour = Convert2Int(value, startPos, startPos + 2);
+							int minute = Convert2Int(value, startPos + 3, startPos + 5);
+							int second = Convert2Int(value, startPos + 6, startPos + 8);
+							info.time.hour = hour;
+							info.time.minute = minute;
+							info.time.second = second;
+						}
+						break;
+					case QUANTITY:
+						info.quantity = std::stoi(value);
+						break;
+					case PRICE_RANGE:
+					{
+						int sep = value.find('|');
+						info.priceRange.SetLowest(Convert2Int(value, 0, sep));
+						info.priceRange.SetHighest(Convert2Int(value, sep + 1, value.length()));
+					}
 					break;
-				case TIME:
-				if(value.length() >= 8)
-				{
-					int startPos = value.length() - 8;
-					int hour = Convert2Int(value, startPos, startPos + 2);
-					int minute = Convert2Int(value, startPos + 3, startPos + 5);
-					int second = Convert2Int(value, startPos + 6, startPos + 8);
-					info.time.hour = hour;
-					info.time.minute = minute;
-					info.time.second = second;
-				}
-				break;
-				case QUANTITY:
-					info.quantity = std::stoi(value);
-					break;
-				case PRICE_RANGE:
-				{
-					int sep = value.find('|');
-					info.priceRange.SetLowest(Convert2Int(value, 0, sep));
-					info.priceRange.SetHighest(Convert2Int(value, sep + 1, value.length()));
-				}
-				break;
-				}//switch
+					}//switch
 
-				if (oldValue != info.price)
-				{
-					mUpdateFields |= 1 << index;
-				}
-			}//if (mRecognizer->RecognizeEx(value, outFeature, &info.img))
+					if (oldValue != info.price)
+					{
+						mUpdateFields |= 1 << index;
+					}
+				}//if (mRecognizer->RecognizeEx(value, outFeature, &info.img))
+			}
+			catch (std::exception& e)
+			{
+
+			}
 		}//if (!IsEmptyRect(info.rect))
 
 	}

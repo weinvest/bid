@@ -2,7 +2,9 @@
 Name: Test
 Description: Test1
 FirstBidTime: 11:29:38
+FirstMarkUp:500
 SecondBidTime: 11:29:47
+SecondMarkUp:700
 
 [StoreStrategy]
 Name:Store

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <fstream>
 #include <sstream>
+#include <thread>
 #include "ActionEngine.h"
 #include "inputSim\MouseSimulator.h"
 #include "inputSim\KeyboardSimulator.h"
@@ -32,20 +33,32 @@ void ActionEngine::SetRect(size_t idx, const CRect& rect)
 	mAreas[idx].center.x = mAreas[idx].center.x * mXFactor + 0.5;
 	mAreas[idx].center.y = mAreas[idx].center.y * mYFactor + 0.5;
 }
-#include <thread>
+
+void ActionEngine::CleanEditBox()
+{
+	mKeyboardSimulator->KeyDown(VirtualKeyCode::CONTROL);
+	mKeyboardSimulator->KeyDown(VirtualKeyCode::SHIFT);
+	mKeyboardSimulator->KeyPress(VirtualKeyCode::VK_A);
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	mKeyboardSimulator->KeyUp(VirtualKeyCode::SHIFT);
+	mKeyboardSimulator->KeyUp(VirtualKeyCode::CONTROL);
+	mKeyboardSimulator->KeyPress(VirtualKeyCode::BACK);
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+}
+
 bool ActionEngine::InputPrice(int price)
 {	
-	LOG_INFO("input price at (%d,%d):%d", AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA),price);
+	//LOG_INFO("input price at (%d,%d):%d", AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA),price);
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_INPUT_AREA));
-	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	mMouseSimulator->LeftButtonClick();
-	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	CleanEditBox();
+
 	CString strPrice;
 	strPrice.Format(L"%d", price);
 	mKeyboardSimulator->TextEntry((LPCTSTR)strPrice);
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(BID_PRICE_SUBMIT_BUTTON_AREA));
-	std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	mMouseSimulator->LeftButtonClick();
 	return true;
 }

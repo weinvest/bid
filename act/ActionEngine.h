@@ -22,6 +22,7 @@ public:
 		CPoint center;
 	};
 
+	void CleanEditBox();
 	void SetRect(size_t idx, const CRect& rect);
 	void SetReferencePoint(size_t x, size_t y);
 

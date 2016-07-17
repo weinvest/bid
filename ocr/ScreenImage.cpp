@@ -163,7 +163,8 @@ void CScreenImage::ScanAndSplitEx(std::string& allFeature, std::vector<Feature>&
 	else
 	{
 		auto& currentFeature = outFeatures.back();
-		AppendHorizonFeature(allFeature, continueZero, currentFeature.verticalLength, currentFeature);
+		currentFeature.Append2Horizon('1');
+		//AppendHorizonFeature(allFeature, continueZero, currentFeature.verticalLength, currentFeature);
 	}
 
 #ifdef OUTPUT_LOG

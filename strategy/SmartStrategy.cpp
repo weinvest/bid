@@ -1,10 +1,12 @@
 #include "StdAfx.h"
+#include <string>
 #include "SmartStrategy.h"
 #include "InfoEngine.h"
 #include "ActionEngine.h"
 #include "Log.h"
 SmartStrategy::SmartStrategy()
-	:mBidTimes(0)
+	:mCleanTime{ 11,29,20,0 }
+	,mBidTimes(0)
 {}
 
 void SmartStrategy::SetFirstBidTime(BidTime time)
@@ -26,6 +28,14 @@ bool SmartStrategy::DoLoad(const std::map<std::string, std::string>& configurePa
 		return false;
 	}
 
+	auto itFirstMarkUp = configurePairs.find("FirstMarkUp");
+	if (itFirstMarkUp == configurePairs.end())
+	{
+		return false;
+	}
+
+	mFirstMarkUp = std::stoi(itFirstMarkUp->second);
+
 	auto itSecondBidTime = configurePairs.find("SecondBidTime");
 	if (itSecondBidTime == configurePairs.end())
 	{
@@ -38,6 +48,13 @@ bool SmartStrategy::DoLoad(const std::map<std::string, std::string>& configurePa
 		return false;
 	}
 
+	auto itSecondMarkUp = configurePairs.find("SecondMarkUp");
+	if (itSecondMarkUp == configurePairs.end())
+	{
+		return false;
+	}
+
+	mSecondMarkUp = std::stoi(itSecondMarkUp->second);
 	return mFirstBidTime < mSecondBidTime;
 }
 #include <sstream>
@@ -47,18 +64,19 @@ void SmartStrategy::OnUpdate(size_t updateFields)
 	auto& timeInfo = pInfoEngine->GetInfo(InfoEngine::CURRENT_TIME_RECT_INDEX);
 	auto& curPrice = pInfoEngine->GetInfo(InfoEngine::CURRENT_LOWEST_PRICE_INDEX);
 
-	if (mFirstBidTime < timeInfo.time)
-	{	
-		if (0 == mBidTimes)
-		{
-			mBidTimes = 1;
-			ActionEngine::GetInstance()->InputPrice(curPrice.price + 700);
-		}
+	LOG_INFO("SmartStrategy: %d:%d:%d\n", timeInfo.time.hour, timeInfo.time.minute, timeInfo.time.second);
+	if (mSecondBidTime < timeInfo.time && 1 >= mBidTimes)
+	{
+		mBidTimes = 2;
+		ActionEngine::GetInstance()->InputPrice(curPrice.price + mSecondMarkUp);
 	}
-
-	if (timeInfo.time.minute == 29 && timeInfo.time.second >= 57)
+	else if (mFirstBidTime < timeInfo.time && 0 == mBidTimes)
+	{	
+		mBidTimes = 1;
+		ActionEngine::GetInstance()->InputPrice(curPrice.price + mFirstMarkUp);
+	}
+	else if (timeInfo.time < mCleanTime)
 	{
 		mBidTimes = 0;
 	}
-
 }

@@ -16,8 +16,11 @@ protected:
 	bool DoLoad(const std::map<std::string, std::string>& configurePairs) override;
 
 private:
+	BidTime mCleanTime;
 	BidTime mFirstBidTime;
+	int mFirstMarkUp;
 	BidTime mSecondBidTime;
+	int mSecondMarkUp;
 	int mBidTimes;
 	std::mutex mLock;
 };

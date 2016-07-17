@@ -121,6 +121,7 @@
     <ClInclude Include="ocr\Common.h" />
     <ClInclude Include="ocr\FontLoader.h" />
     <ClInclude Include="ocr\FontTraining.h" />
+    <ClInclude Include="ocr\PixelBitAnalyze.h" />
     <ClInclude Include="ocr\Recognizer.h" />
     <ClInclude Include="ocr\ScreenImage.h" />
     <ClInclude Include="RecognizeDlg.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="OCREngine.cpp" />
     <ClCompile Include="ocr\FontLoader.cpp" />
     <ClCompile Include="ocr\FontTraining.cpp" />
+    <ClCompile Include="ocr\PixelBitAnalyze.cpp" />
     <ClCompile Include="ocr\Recognizer.cpp" />
     <ClCompile Include="ocr\ScreenImage.cpp" />
     <ClCompile Include="RecognizeDlg.cpp" />
