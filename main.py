@@ -69,44 +69,44 @@ def ToHSVList(bmp, l, t, r, b):
 
 HMargin = 2
 WMargin = 2
-def SelectSameElementEx(origin, me, w, h, count):
+def SelectSameElementEx(origin, me, w, h):
     if w <= WMargin or w >= (origin.width - WMargin):
-        return
+        return 0
 
-    if h < HMargin or h >= (origin.GetHeight() - HMargin):
-        return
+    if h < HMargin or h >= (origin.height - HMargin):
+        return 0
 
-    tl = False, t = False, tr = False
-    l = False, r = False
-    bl = False, b = False, br = False
-
-    c = me.getpixel(w, h)
+    count = 1
+    c = me.getpixel((w, h))
     def spreadPixel(ww, hh):
-        cc = origin.getpixel(ww, hh)
+        cc = origin.getpixel((w + ww, h + hh))
         if IsSamePixel(c, cc):
-            origin.SetPixel(ww, hh, WHITE_COLOR)
-            me.SetPixel(ww, hh, cc)
+            origin.putpixel((w + ww, h + hh), WHITE_COLOR)
+            me.putpixel((w + ww, h + hh), cc)
+            nonlocal count
             count += 1
             return True
         return False
 
-    tl = spreadPixel(w - 1, h - 1)
-    t = spreadPixel(w, h - 1)
-    tr = spreadPixel(w + 1, h - 1)
-    l = spreadPixel(w - 1, h)
-    r = spreadPixel(w + 1, h)
-    bl = spreadPixel(w - 1, h + 1)
-    b = spreadPixel(w, h + 1)
-    br = spreadPixel(w + 1, h + 1)
+    tl = spreadPixel(-1, -1)
+    t = spreadPixel(0, -1)
+    tr = spreadPixel(1, 1)
+    l = spreadPixel(-1, 0)
+    r = spreadPixel(1, 0)
+    bl = spreadPixel(-1, 1)
+    b = spreadPixel(0, 1)
+    br = spreadPixel(1, 1)
 
-    if tl:SelectSameElementEx(origin, me, w - 1, h - 1, count)
-    if t: SelectSameElementEx(origin, me, w, h - 1, count)
-    if tr: SelectSameElementEx(origin, me, w + 1, h - 1, count)
-    if l: SelectSameElementEx(origin, me, w - 1, h, count)
-    if r: SelectSameElementEx(origin, me, w + 1, h, count)
-    if bl: SelectSameElementEx(origin, me, w - 1, h + 1, count)
-    if b:SelectSameElementEx(origin, me, w, h + 1, count)
-    if br: SelectSameElementEx(origin, me, w + 1, h + 1, count)
+    if tl: count += SelectSameElementEx(origin, me, w - 1, h - 1)
+    if t: count += SelectSameElementEx(origin, me, w, h - 1)
+    if tr: count += SelectSameElementEx(origin, me, w + 1, h - 1)
+    if l: count += SelectSameElementEx(origin, me, w - 1, h)
+    if r: count += SelectSameElementEx(origin, me, w + 1, h)
+    if bl: count += SelectSameElementEx(origin, me, w - 1, h + 1)
+    if b: count += SelectSameElementEx(origin, me, w, h + 1)
+    if br: count += SelectSameElementEx(origin, me, w + 1, h + 1)
+
+    return count;
 
 def SimlarAndRemoveLine(bmp, fileName):
     if not os.path.isdir(fileName):
@@ -114,20 +114,20 @@ def SimlarAndRemoveLine(bmp, fileName):
 
     bmp.save(fileName + "/origin.bmp", "BMP")
     childBmps = []
-    for h in range(HMargin, bmp.heigh - HMargin):
-        for w in range(WMargin, bmp.GetWidth() - WMargin):
+    create = True
+    for h in range(HMargin, bmp.height - HMargin):
+        for w in range(WMargin, bmp.width - WMargin):
             c = bmp.getpixel((w, h))
             if not IsBackground(c):
                 if create:
                     childBmps.append(None)
 
-                childBmps[-1] = Image.new('rgb', (bmp.width, bmp.heigh))
+                childBmps[-1] = Image.new('RGB', (bmp.width, bmp.height))
                 me = childBmps[-1]
 
-                me.setpixel((w, h), c)
-                bmp.SetPixel((w, h), WHITE_COLOR)
-                count = 1
-                SelectSameElementEx(bmp, me, w, h, count)
+                me.putpixel((w, h), c)
+                bmp.putpixel((w, h), WHITE_COLOR)
+                count = SelectSameElementEx(bmp, me, w, h)
                 create = count > 30
 
     bmp.save(fileName + "/out.bmp", "BMP")
@@ -136,15 +136,24 @@ def SimlarAndRemoveLine(bmp, fileName):
         child.save(fileName + "/" + str(seq) + ".bmp", "BMP")
         seq += 1
 
-bmpPath = sys.argv[1]
-bmp = Image.open(bmpPath)
-rng = [int(i) for i in sys.argv[2].split(',')]
-hsvs = ToHSVList(bmp, rng[0], rng[1], rng[2], rng[3])
+if __name__ == '__main__':
+    bmpRoot = sys.argv[1]
+    for fileName in os.listdir(bmpRoot):
+        [stem, ext] = os.path.splitext(fileName)
+        if '.bmp' == ext:
+            bmpPath = os.path.join(bmpRoot, fileName)
+            bmp = Image.open(bmpPath)
+            SimlarAndRemoveLine(bmp, fileName)
 
-import pandas as pd
-dHSV = pd.DataFrame(hsvs, columns = list('hsv'))
-dHSV = dHSV[dHSV.h != 0]
-dHSV['h'].hist(bins = 72)
-
-import matplotlib.pyplot as pl
-pl.show()
+# bmpPath = sys.argv[1]
+# bmp = Image.open(bmpPath)
+# rng = [int(i) for i in sys.argv[2].split(',')]
+# hsvs = ToHSVList(bmp, rng[0], rng[1], rng[2], rng[3])
+#
+# import pandas as pd
+# dHSV = pd.DataFrame(hsvs, columns = list('hsv'))
+# dHSV = dHSV[dHSV.h != 0]
+# dHSV['h'].hist(bins = 72)
+#
+# import matplotlib.pyplot as pl
+# pl.show()
