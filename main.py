@@ -1,6 +1,7 @@
 import Image
 import os
 import sys
+import shutil
 
 R = 0
 G = 1
@@ -36,15 +37,15 @@ BACKGROUND_MIN_THRESHOLD = 3
 BACKGROUND_MAX_THRESHOLD = 252
 def IsBackground(c):
     if c[R] < BACKGROUND_MIN_THRESHOLD and c[G] < BACKGROUND_MIN_THRESHOLD and c[B] < BACKGROUND_MIN_THRESHOLD:
-        return False
+        return True
 
     if c[R] > BACKGROUND_MAX_THRESHOLD and c[G] > BACKGROUND_MAX_THRESHOLD and c[B] > BACKGROUND_MAX_THRESHOLD:
-        return False
+        return True
 
-    return True
+    return False
 
-SAME_PIXEL_H_THRESOLD = 25
-SAME_PIXEL_SV_THRESOLD = 35000
+SAME_PIXEL_H_THRESOLD = 19
+SAME_PIXEL_SV_THRESOLD = 25000
 def IsSamePixel(c1, c2):
     if IsBackground(c1) or IsBackground(c2):
         return False
@@ -69,48 +70,49 @@ def ToHSVList(bmp, l, t, r, b):
 
 HMargin = 2
 WMargin = 2
-def SelectSameElementEx(origin, me, w, h):
+def SelectSameElementEx(origin, me, w, h, c):
     if w <= WMargin or w >= (origin.width - WMargin):
         return 0
 
     if h < HMargin or h >= (origin.height - HMargin):
         return 0
 
-    count = 1
-    c = me.getpixel((w, h))
+    count = [1]
     def spreadPixel(ww, hh):
         cc = origin.getpixel((w + ww, h + hh))
         if IsSamePixel(c, cc):
+            #print '(%d,%d) c=(%d,%d,%d) cc=(%d,%d,%d)' % (w,h, c[0], c[1], c[2], cc[0], cc[1], cc[2])
             origin.putpixel((w + ww, h + hh), WHITE_COLOR)
             me.putpixel((w + ww, h + hh), cc)
-            nonlocal count
-            count += 1
+            count[0] += 1
             return True
         return False
 
     tl = spreadPixel(-1, -1)
     t = spreadPixel(0, -1)
-    tr = spreadPixel(1, 1)
+    tr = spreadPixel(1, -1)
     l = spreadPixel(-1, 0)
     r = spreadPixel(1, 0)
     bl = spreadPixel(-1, 1)
     b = spreadPixel(0, 1)
     br = spreadPixel(1, 1)
 
-    if tl: count += SelectSameElementEx(origin, me, w - 1, h - 1)
-    if t: count += SelectSameElementEx(origin, me, w, h - 1)
-    if tr: count += SelectSameElementEx(origin, me, w + 1, h - 1)
-    if l: count += SelectSameElementEx(origin, me, w - 1, h)
-    if r: count += SelectSameElementEx(origin, me, w + 1, h)
-    if bl: count += SelectSameElementEx(origin, me, w - 1, h + 1)
-    if b: count += SelectSameElementEx(origin, me, w, h + 1)
-    if br: count += SelectSameElementEx(origin, me, w + 1, h + 1)
+    if tl: count[0] += SelectSameElementEx(origin, me, w - 1, h - 1, c)
+    if t: count[0] += SelectSameElementEx(origin, me, w, h - 1, c)
+    if tr: count[0] += SelectSameElementEx(origin, me, w + 1, h - 1, c)
+    if l: count[0] += SelectSameElementEx(origin, me, w - 1, h, c)
+    if r: count[0] += SelectSameElementEx(origin, me, w + 1, h, c)
+    if bl: count[0] += SelectSameElementEx(origin, me, w - 1, h + 1, c)
+    if b: count[0] += SelectSameElementEx(origin, me, w, h + 1, c)
+    if br: count[0] += SelectSameElementEx(origin, me, w + 1, h + 1, c)
 
-    return count;
+    return count[0];
 
 def SimlarAndRemoveLine(bmp, fileName):
-    if not os.path.isdir(fileName):
-        os.mkdir(fileName)
+    if os.path.isdir(fileName):
+        shutil.rmtree(fileName)
+
+    os.mkdir(fileName)
 
     bmp.save(fileName + "/origin.bmp", "BMP")
     childBmps = []
@@ -127,7 +129,7 @@ def SimlarAndRemoveLine(bmp, fileName):
 
                 me.putpixel((w, h), c)
                 bmp.putpixel((w, h), WHITE_COLOR)
-                count = SelectSameElementEx(bmp, me, w, h)
+                count = SelectSameElementEx(bmp, me, w, h, c)
                 create = count > 30
 
     bmp.save(fileName + "/out.bmp", "BMP")
