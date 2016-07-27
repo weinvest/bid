@@ -31,10 +31,11 @@ def Convert2HSV(c):
     if h < 0:
         h += 360
 
-    return (h, rng * 255.0 / maxC, maxC)
+    return (h, rng * 256.0 / maxC, maxC)
 
 BACKGROUND_MIN_THRESHOLD = 3
 BACKGROUND_MAX_THRESHOLD = 252
+BACKGROUND_H_V_THRESHOLD = 70 * 2.56
 def IsBackground(c):
     if c[R] < BACKGROUND_MIN_THRESHOLD and c[G] < BACKGROUND_MIN_THRESHOLD and c[B] < BACKGROUND_MIN_THRESHOLD:
         return True
@@ -42,7 +43,8 @@ def IsBackground(c):
     if c[R] > BACKGROUND_MAX_THRESHOLD and c[G] > BACKGROUND_MAX_THRESHOLD and c[B] > BACKGROUND_MAX_THRESHOLD:
         return True
 
-    return False
+    hsv = Convert2HSV(c)
+    return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
 SAME_PIXEL_H_THRESOLD = 19
 SAME_PIXEL_SV_THRESOLD = 25000
@@ -58,6 +60,11 @@ def IsSamePixel(c1, c2):
         vDiff = hsv1[V] - hsv2[V]
         if sDiff * sDiff + vDiff * vDiff < SAME_PIXEL_SV_THRESOLD:
             return True
+    #elif hDiff < 50 or hDiff > 310:
+    #    sDiff = hsv1[S] - hsv2[S]
+    #    vDiff = hsv1[V] - hsv2[V]
+    #    if sDiff * sDiff + vDiff * vDiff < 1500:
+    #        return True
 
     return False
 
@@ -138,6 +145,54 @@ def SimlarAndRemoveLine(bmp, fileName):
         child.save(fileName + "/" + str(seq) + ".bmp", "BMP")
         seq += 1
 
+def RemoveLine(bmp, fileName):
+    if os.path.isdir(fileName):
+        shutil.rmtree(fileName)
+
+    os.mkdir(fileName)
+
+    bmp.save(fileName + "/origin.bmp", "BMP")
+    out = Image.new('RGB', (bmp.width, bmp.height))
+    for h in range(HMargin, bmp.height - HMargin):
+        for w in range(WMargin, bmp.width - WMargin):
+            c = bmp.getpixel((w, h))
+            if not IsBackground(c):
+                firstCoor = None
+                secondCoor = None
+                count = 0
+                for ww in range(-1, 2):
+                    for hh in range(-1, 2):
+                        if (0 != ww or 0 != hh ) and IsSamePixel(c, bmp.getpixel((w + ww, h + hh))):
+                            count += 1
+                            if 1 == count:
+                                firstCoor = (ww, hh)
+                            elif 2 == count:
+                                secondCoor = (ww, hh)
+                            else:
+                                pass
+                isLine = False
+                if 2 == count:
+                    if (firstCoor[0] * secondCoor[0] + firstCoor[1] * secondCoor[1]) <= 0:
+                        isLine = True
+                elif 1 >= count:
+                    isLine = True
+                if not isLine:
+                    out.putpixel((w,h), c)
+
+    out.save(fileName + "/out.bmp", "BMP")
+
+def RemoveLine(bmp, fileName):
+    if os.path.isdir(fileName):
+        shutil.rmtree(fileName)
+
+    os.mkdir(fileName)
+
+    bmp.save(fileName + "/origin.bmp", "BMP")
+    out = Image.new('RGB', (bmp.width, bmp.height))
+    for h in range(HMargin, bmp.height - HMargin):
+        for w in range(WMargin, bmp.width - WMargin):
+            c = bmp.getpixel((w, h))
+            if IsBackground(c):
 if __name__ == '__main__':
     bmpRoot = sys.argv[1]
     for fileName in os.listdir(bmpRoot):
@@ -145,7 +200,8 @@ if __name__ == '__main__':
         if '.bmp' == ext:
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
-            SimlarAndRemoveLine(bmp, fileName)
+            #SimlarAndRemoveLine(bmp, fileName)
+            RemoveLine(bmp, fileName)
 
 # bmpPath = sys.argv[1]
 # bmp = Image.open(bmpPath)
