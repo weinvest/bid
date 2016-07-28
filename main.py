@@ -46,7 +46,7 @@ def IsBackground(c):
     hsv = Convert2HSV(c)
     return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
-SAME_PIXEL_H_THRESOLD = 10
+SAME_PIXEL_H_THRESOLD = 15
 SAME_PIXEL_SV_THRESOLD = 25000
 def IsSamePixel(c1, c2):
     if IsBackground(c1) or IsBackground(c2):
@@ -215,8 +215,10 @@ def TraverseLine(bmp, w, h, fromDirection, directions, continuesDo = None):
         return False
 
     if 0 == similarCount:
-        bmp.putpixel((w, h), WHITE_COLOR)
-        return callContinus()
+        if callContinus():
+            bmp.putpixel((w, h), WHITE_COLOR)
+            return True
+        return False
 
     sw, sh = similars[0]
     if 0 == len(directions):
@@ -238,7 +240,7 @@ def TraverseLine(bmp, w, h, fromDirection, directions, continuesDo = None):
 
     if TraverseLine(bmp, w + sw, h + sh, (-sw, -sh), directions):
         bmp.putpixel((w, h), WHITE_COLOR)
-        return callContinus()
+        return True
 
 from functools import partial
 def RemoveLine1(bmp, fileName):
@@ -264,7 +266,7 @@ def RemoveLine1(bmp, fileName):
 
                 if 1 == similarCount:
                     ww, hh = similars[0]
-                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), []):
+                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), similars):
                         bmp.putpixel((w, h), WHITE_COLOR)
                 elif 2 == similarCount:
                     if (1, 0) not in similars or (-1, 1) not in similars:
@@ -273,7 +275,7 @@ def RemoveLine1(bmp, fileName):
                     ww, hh = similars[0]
                     ww1, hh1 = similars[1]
                     continueDo = partial(TraverseLine, bmp, w + ww1, h + hh1, (-ww1, -hh1))
-                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), [], continueDo):
+                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), [similars[0], (-ww1, -hh1)], continueDo):
                         bmp.putpixel((w, h), WHITE_COLOR)
 
     bmp.save(fileName + "/out.bmp", "BMP")
