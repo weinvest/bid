@@ -46,7 +46,7 @@ def IsBackground(c):
     hsv = Convert2HSV(c)
     return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
-SAME_PIXEL_H_THRESOLD = 19
+SAME_PIXEL_H_THRESOLD = 10
 SAME_PIXEL_SV_THRESOLD = 25000
 def IsSamePixel(c1, c2):
     if IsBackground(c1) or IsBackground(c2):
@@ -181,7 +181,67 @@ def RemoveLine(bmp, fileName):
 
     out.save(fileName + "/out.bmp", "BMP")
 
-def RemoveLine(bmp, fileName):
+def GetSimilarPixels(bmp, c, origin, excludes):
+    similars = []
+    w, h = origin
+    for ww in range(-1, 2):
+        for hh in range(-1, 2):
+            if (ww, hh) not in excludes and IsSamePixel(c, bmp.getpixel((w + ww, h + hh))):
+                similars.append((ww, hh))
+
+    return similars
+
+def TraverseLine(bmp, w, h, fromDirection, directions, continuesDo = None):
+    def callContinus():
+        if continuesDo is None:
+            return True
+
+        newDirections = []
+        for direction in directions:
+            newDirections.append((-direction[0], -direction[1]))
+
+        return continuesDo(newDirections)
+
+    if w <= 1 or w >= bmp.width - 1:
+        return callContinus()
+
+    if h <= 1 or h >= bmp.height - 1:
+        return callContinus()
+
+    c = bmp.getpixel((w, h))
+    similars = GetSimilarPixels(bmp, c, (w, h), [(0,0), fromDirection])
+    similarCount = len(similars)
+    if similarCount > 1:
+        return False
+
+    if 0 == similarCount:
+        bmp.putpixel((w, h), WHITE_COLOR)
+        return callContinus()
+
+    sw, sh = similars[0]
+    if 0 == len(directions):
+        directions = similars
+    elif 1 == len(directions):
+        dw, dh = directions[0]
+        distW, distH = (sw - dw, sh - dh)
+        dist = distW * distW + distH * distH
+        if 0 == dist:
+            pass
+        elif 1 == dist:
+            directions.append((sw, sh))
+        else:
+            return False
+    elif (sw, sh) in directions:
+        pass
+    else:
+        return False
+
+    if TraverseLine(bmp, w + sw, h + sh, (-sw, -sh), directions):
+        bmp.putpixel((w, h), WHITE_COLOR)
+        return callContinus()
+
+from functools import partial
+def RemoveLine1(bmp, fileName):
     if os.path.isdir(fileName):
         shutil.rmtree(fileName)
 
@@ -189,10 +249,34 @@ def RemoveLine(bmp, fileName):
 
     bmp.save(fileName + "/origin.bmp", "BMP")
     out = Image.new('RGB', (bmp.width, bmp.height))
-    for h in range(HMargin, bmp.height - HMargin):
-        for w in range(WMargin, bmp.width - WMargin):
+    # for h in range(HMargin, bmp.height - HMargin):
+    #     for w in range(WMargin, bmp.width - WMargin):
+    for h in range(1, bmp.height - 1):
+        for w in range(1, bmp.width - 1):
             c = bmp.getpixel((w, h))
             if IsBackground(c):
+                bmp.putpixel((w, h), WHITE_COLOR)
+            else:
+                similars = GetSimilarPixels(bmp, c, (w, h), [(0,0)])
+                similarCount = len(similars)
+                if 0 == similarCount:
+                    bmp.putpixel((w, h), WHITE_COLOR)
+
+                if 1 == similarCount:
+                    ww, hh = similars[0]
+                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), []):
+                        bmp.putpixel((w, h), WHITE_COLOR)
+                elif 2 == similarCount:
+                    if (1, 0) not in similars or (-1, 1) not in similars:
+                        continue
+
+                    ww, hh = similars[0]
+                    ww1, hh1 = similars[1]
+                    continueDo = partial(TraverseLine, bmp, w + ww1, h + hh1, (-ww1, -hh1))
+                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), [], continueDo):
+                        bmp.putpixel((w, h), WHITE_COLOR)
+
+    bmp.save(fileName + "/out.bmp", "BMP")
 if __name__ == '__main__':
     bmpRoot = sys.argv[1]
     for fileName in os.listdir(bmpRoot):
@@ -201,7 +285,7 @@ if __name__ == '__main__':
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             #SimlarAndRemoveLine(bmp, fileName)
-            RemoveLine(bmp, fileName)
+            RemoveLine1(bmp, fileName)
 
 # bmpPath = sys.argv[1]
 # bmp = Image.open(bmpPath)
