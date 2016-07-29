@@ -249,7 +249,7 @@ def RemoveLine1(bmp, fileName):
 
     os.mkdir(fileName)
 
-    bmp.save(fileName + "/origin.bmp", "BMP")
+    bmp.save(fileName + ".origin.bmp", "BMP")
     out = Image.new('RGB', (bmp.width, bmp.height))
     # for h in range(HMargin, bmp.height - HMargin):
     #     for w in range(WMargin, bmp.width - WMargin):
@@ -281,7 +281,7 @@ def RemoveLine1(bmp, fileName):
                         pass
                         #print 'fail=(%d,%d)' % (w, h)
 
-    bmp.save(fileName + "/out.bmp", "BMP")
+    bmp.save(fileName + ".out.bmp", "BMP")
 if __name__ == '__main__':
     bmpRoot = sys.argv[1]
     for fileName in os.listdir(bmpRoot):
