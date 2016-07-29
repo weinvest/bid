@@ -93,7 +93,7 @@ def IsSamePixel(c1, c2):
 
 def IsSamePixel1(c1, c2):
     dist = Distance(c1, c2)
-    return dist > 0.8
+    return math.exp(dist) < 1.15
 
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
@@ -213,7 +213,7 @@ def GetSimilarPixels(bmp, c, origin, excludes):
     w, h = origin
     for ww in range(-1, 2):
         for hh in range(-1, 2):
-            if (ww, hh) not in excludes and IsSamePixel(c, bmp.getpixel((w + ww, h + hh))):
+            if (ww, hh) not in excludes and IsSamePixel1(c, bmp.getpixel((w + ww, h + hh))):
                 similars.append((ww, hh))
 
     return similars
