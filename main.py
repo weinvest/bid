@@ -33,6 +33,34 @@ def Convert2HSV(c):
 
     return (h, rng * 256.0 / maxC, maxC)
 
+import math
+def Convert2HSV1(c):
+    maxC = max(c)
+    minC = min(c)
+    if maxC == minC:
+        return (0, 0, maxC)
+
+    rng = float(maxC - minC)
+    h = 0
+    if c[R] == maxC:
+        h = (c[G] - c[B]) / rng
+    elif c[G] == maxC:
+        h = 2 + (c[B] - c[R]) / rng
+    else:
+        h = 4 + (c[R] - c[G]) / rng
+
+    h *= math.pi / 3.0
+    vs = rng / 256.0
+    return (vs * math.cos(h), vs * math.sin(h), maxC/256.0)
+
+def Distance(c1, c2):
+    h1, s1, v1 = Convert2HSV1(c1)
+    h2, s2, v2 = Convert2HSV1(c2)
+    hDiff = h1 - h2
+    sDiff = s1 - s2
+    vDiff = v1 - v2
+    return math.sqrt(hDiff * hDiff + sDiff * sDiff + vDiff * vDiff)
+
 BACKGROUND_MIN_THRESHOLD = 3
 BACKGROUND_MAX_THRESHOLD = 252
 BACKGROUND_H_V_THRESHOLD = 70 * 2.56
@@ -60,13 +88,12 @@ def IsSamePixel(c1, c2):
         vDiff = hsv1[V] - hsv2[V]
         if sDiff * sDiff + vDiff * vDiff < SAME_PIXEL_SV_THRESOLD:
             return True
-    #elif hDiff < 50 or hDiff > 310:
-    #    sDiff = hsv1[S] - hsv2[S]
-    #    vDiff = hsv1[V] - hsv2[V]
-    #    if sDiff * sDiff + vDiff * vDiff < 1500:
-    #        return True
 
     return False
+
+def IsSamePixel1(c1, c2):
+    dist = Distance(c1, c2)
+    return math.exp(dist) < 1.15
 
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
@@ -186,7 +213,7 @@ def GetSimilarPixels(bmp, c, origin, excludes):
     w, h = origin
     for ww in range(-1, 2):
         for hh in range(-1, 2):
-            if (ww, hh) not in excludes and IsSamePixel(c, bmp.getpixel((w + ww, h + hh))):
+            if (ww, hh) not in excludes and IsSamePixel1(c, bmp.getpixel((w + ww, h + hh))):
                 similars.append((ww, hh))
 
     return similars
