@@ -74,7 +74,7 @@ def IsBackground(c):
     hsv = Convert2HSV(c)
     return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
-SAME_PIXEL_H_THRESOLD = 15
+SAME_PIXEL_H_THRESOLD = 10
 SAME_PIXEL_SV_THRESOLD = 25000
 def IsSamePixel(c1, c2):
     if IsBackground(c1) or IsBackground(c2):
@@ -293,17 +293,20 @@ def RemoveLine1(bmp, fileName):
 
                 if 1 == similarCount:
                     ww, hh = similars[0]
-                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), similars):
+                    if TraverseLine(bmp, w + ww, h + hh, (-ww, -hh), similars):
                         bmp.putpixel((w, h), WHITE_COLOR)
                 elif 2 == similarCount:
                     if (1, 0) not in similars or (-1, 1) not in similars:
                         continue
-
                     ww, hh = similars[0]
                     ww1, hh1 = similars[1]
                     continueDo = partial(TraverseLine, bmp, w + ww1, h + hh1, (-ww1, -hh1))
-                    if TraverseLine(bmp, w + ww, h + ww, (-ww, -hh), [similars[0], (-ww1, -hh1)], continueDo):
+                    if TraverseLine(bmp, w + ww, h + hh, (-ww, -hh), [similars[0], (-ww1, -hh1)], continueDo):
                         bmp.putpixel((w, h), WHITE_COLOR)
+                        #print 'ok=(%d,%d)' % (w, h)
+                    else:
+                        pass
+                        #print 'fail=(%d,%d)' % (w, h)
 
     bmp.save(fileName + "/out.bmp", "BMP")
 if __name__ == '__main__':
