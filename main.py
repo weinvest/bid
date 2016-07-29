@@ -247,7 +247,7 @@ def RemoveLine1(bmp, fileName):
     if os.path.isdir(fileName):
         shutil.rmtree(fileName)
 
-    os.mkdir(fileName)
+    #os.mkdir(fileName)
 
     bmp.save(fileName + ".origin.bmp", "BMP")
     out = Image.new('RGB', (bmp.width, bmp.height))
