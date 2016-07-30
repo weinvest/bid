@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import Image
 import os
 import sys

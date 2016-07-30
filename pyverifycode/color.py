@@ -54,7 +54,7 @@ def dist(c1, c2):
     hDiff = h1 - h2
     sDiff = s1 - s2
     vDiff = v1 - v2
-    return math.sqrt(hDiff * hDiff + sDiff * sDiff + vDiff * vDiff)
+    return math.exp(-math.sqrt(hDiff * hDiff + sDiff * sDiff + vDiff * vDiff))
 
 BACKGROUND_MIN_THRESHOLD = 3
 BACKGROUND_MAX_THRESHOLD = 252
@@ -69,6 +69,6 @@ def isBackground(c):
     hsv = rgb2hsv(c)
     return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
-def isSamePixel(c1, c2, thresold = 1.17):
+def isSamePixel(c1, c2, thresold = 0.87):
     d = dist(c1, c2)
-    return math.exp(d) < thresold
+    return d > thresold
