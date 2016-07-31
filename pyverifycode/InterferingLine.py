@@ -1,14 +1,6 @@
 import color
 import Image
-def getSimilarNeighbors(img, c, origin, excludes):
-    similars = []
-    w, h = origin
-    for ww in range(-1, 2):
-        for hh in range(-1, 2):
-            if (ww, hh) not in excludes and color.isSamePixel(c, img.getpixel((w + ww, h + hh))):
-                similars.append((ww, hh))
-
-    return similars
+import ImageUtils
 
 def TraverseLine(img, w, h, fromDirection, linePointThresold, directions, count, continuesDo = None):
     def callContinus():
@@ -29,7 +21,7 @@ def TraverseLine(img, w, h, fromDirection, linePointThresold, directions, count,
 
     count += 1
     c = img.getpixel((w, h))
-    similars = getSimilarNeighbors(img, c, (w, h), [(0,0), fromDirection])
+    similars = ImageUtils.getSimilarNeighbors(img, c, (w, h), [(0,0), fromDirection])
     similarCount = len(similars)
     if similarCount > 1:
         if count >= linePointThresold:
@@ -76,7 +68,7 @@ def clean(img, linePointThresold = 5):
             if color.isBackground(c):
                 img.putpixel((w, h), color.BLACK_COLOR)
             else:
-                similars = getSimilarNeighbors(img, c, (w, h), [(0,0)])
+                similars = ImageUtils.getSimilarNeighbors(img, c, (w, h), [(0,0)])
                 similarCount = len(similars)
                 if 0 == similarCount:
                     img.putpixel((w, h), color.BLACK_COLOR)

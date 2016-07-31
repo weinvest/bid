@@ -69,6 +69,6 @@ def isBackground(c):
     hsv = rgb2hsv(c)
     return hsv[V] - hsv[S] > BACKGROUND_H_V_THRESHOLD
 
-def isSamePixel(c1, c2, thresold = 0.87):
+def isSamePixel(c1, c2, thresold):
     d = dist(c1, c2)
     return d > thresold

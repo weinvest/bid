@@ -5,6 +5,7 @@ import sys
 import shutil
 import color
 import InterferingLine
+import ImageUtils
 
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
@@ -12,60 +13,74 @@ def ToHSVList(bmp, l, t, r, b):
         for w in xrange(l, r):
             hsvs.append(rgb2hsv(bmp.getpixel((w, h))))
     return hsvs
-
+FILEANME = ''
 HMargin = 2
 WMargin = 2
-def SelectSameElementEx(origin, me, w, h, c):
+SAME_ELEMENT_THRESOLD_ALPHA = 0.75
+def SelectSameElementEx(origin, me, w, h, c, excludes, thresold = 0.5):
     if w <= WMargin or w >= (origin.width - WMargin):
         return 0
 
     if h < HMargin or h >= (origin.height - HMargin):
         return 0
 
-    count = [1]
-    def spreadPixel(ww, hh):
+    if not hasattr(me, 'left'):
+        me.left = w
+        me.right = w
+        me.top = h
+        me.bottom = h
+    else:
+        if w < me.left:
+            me.left = w
+        elif w > me.right:
+            me.right = w
+
+        if h < me.top:
+            me.top = h
+        elif h > me.bottom:
+            me.bottom = h
+
+    count = 1
+    similars = ImageUtils.getSimilarNeighborsEx(origin, c, (w, h), excludes, thresold)
+    s1 = []
+    distMean = 0
+    for (ww, hh, dist) in similars:
+        cc = origin.getpixel((w + ww,h ++ hh))
+        if color.isBackground(cc):
+            continue
+
+        distMean += dist
         cc = origin.getpixel((w + ww, h + hh))
-        if isSamePixel(c, cc):
-            #print '(%d,%d) c=(%d,%d,%d) cc=(%d,%d,%d)' % (w,h, c[0], c[1], c[2], cc[0], cc[1], cc[2])
-            origin.putpixel((w + ww, h + hh), color.WHITE_COLOR)
-            me.putpixel((w + ww, h + hh), cc)
-            count[0] += 1
-            return True
-        return False
+        s1.append((ww, hh, cc))
 
-    tl = spreadPixel(-1, -1)
-    t = spreadPixel(0, -1)
-    tr = spreadPixel(1, -1)
-    l = spreadPixel(-1, 0)
-    r = spreadPixel(1, 0)
-    bl = spreadPixel(-1, 1)
-    b = spreadPixel(0, 1)
-    br = spreadPixel(1, 1)
+        origin.putpixel((w + ww, h + hh), color.BLACK_COLOR)
+        me.putpixel((w + ww, h + hh), cc)
 
-    if tl: count[0] += SelectSameElementEx(origin, me, w - 1, h - 1, c)
-    if t: count[0] += SelectSameElementEx(origin, me, w, h - 1, c)
-    if tr: count[0] += SelectSameElementEx(origin, me, w + 1, h - 1, c)
-    if l: count[0] += SelectSameElementEx(origin, me, w - 1, h, c)
-    if r: count[0] += SelectSameElementEx(origin, me, w + 1, h, c)
-    if bl: count[0] += SelectSameElementEx(origin, me, w - 1, h + 1, c)
-    if b: count[0] += SelectSameElementEx(origin, me, w, h + 1, c)
-    if br: count[0] += SelectSameElementEx(origin, me, w + 1, h + 1, c)
+    if 0 == len(s1):
+        return count
+    distMean /= len(s1)
+    thresold = thresold * SAME_ELEMENT_THRESOLD_ALPHA + (1 - SAME_ELEMENT_THRESOLD_ALPHA) * distMean
+    print('%s thresold=%lf, distMean=%lf' % (FILEANME, thresold, distMean))
 
-    return count[0];
+    for (ww, hh, cc) in s1:
+        count += SelectSameElementEx(origin, me, w + ww, h + hh, cc, [(0, 0), (-ww, -hh)], thresold)
+
+    return count
 
 def SimlarAndRemoveLine(bmp, fileName):
     if os.path.isdir(fileName):
         shutil.rmtree(fileName)
 
     os.mkdir(fileName)
-
+    global FILEANME
+    FILEANME = fileName
     bmp.save(fileName + "/origin.bmp", "BMP")
     childBmps = []
     create = True
     for h in range(HMargin, bmp.height - HMargin):
         for w in range(WMargin, bmp.width - WMargin):
             c = bmp.getpixel((w, h))
-            if not isBackground(c):
+            if not color.isBackground(c):
                 if create:
                     childBmps.append(None)
 
@@ -73,13 +88,26 @@ def SimlarAndRemoveLine(bmp, fileName):
                 me = childBmps[-1]
 
                 me.putpixel((w, h), c)
-                bmp.putpixel((w, h), color.WHITE_COLOR)
-                count = SelectSameElementEx(bmp, me, w, h, c)
+                bmp.putpixel((w, h), color.BLACK_COLOR)
+                count = SelectSameElementEx(bmp, me, w, h, c, [(0,0)])
                 create = count > 30
+    yLimit = bmp.height / 3
+    print yLimit
+    def posComp(b1 ,b2):
+        if (b1.top < yLimit and b2.top > yLimit) or (b1.top > yLimit and b2.top < yLimit):
+            return b1.top - b2.top
+        return b1.left - b2.left
 
-    bmp.save(fileName + "/out.bmp", "BMP")
+    childBmps = sorted(childBmps, cmp =  posComp)
     seq = 1
+    import numpy as np
     for child in childBmps:
+        binaryBmp = np.zeros((child.bottom - child.top + 1, child.right - child.left + 1), dtype=np.int8)
+        for h in range(child.top, child.bottom + 1):
+            for w in range(child.left, child.right + 1):
+                if not color.isBackground(child.getpixel((w,h))):
+                    binaryBmp[h - child.top, w - child.left] = 1
+        np.savetxt(fileName + "/" + str(seq) + ".txt", binaryBmp, fmt='%d')
         child.save(fileName + "/" + str(seq) + ".bmp", "BMP")
         seq += 1
 
@@ -90,10 +118,10 @@ if __name__ == '__main__':
         if '.bmp' == ext:
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
-            bmp.save(fileName + '.org.bmp')
+            #bmp.save(fileName + '.org.bmp')
             InterferingLine.clean(bmp)
-            bmp.save(fileName + '.out.bmp')
-
+            #bmp.save(fileName + '.out.bmp')
+            SimlarAndRemoveLine(bmp, fileName)
             # bmpPath = fileName + '.out.bmp'
             # bmp = Image.open(bmpPath)
             # SimlarAndRemoveLine(bmp, fileName)
