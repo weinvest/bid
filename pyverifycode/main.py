@@ -60,7 +60,7 @@ def SelectSameElementEx(origin, me, w, h, c, excludes, thresold = 0.5):
         return count
     distMean /= len(s1)
     thresold = thresold * SAME_ELEMENT_THRESOLD_ALPHA + (1 - SAME_ELEMENT_THRESOLD_ALPHA) * distMean
-    print('%s thresold=%lf, distMean=%lf' % (FILEANME, thresold, distMean))
+    #print('%s thresold=%lf, distMean=%lf' % (FILEANME, thresold, distMean))
 
     for (ww, hh, cc) in s1:
         count += SelectSameElementEx(origin, me, w + ww, h + hh, cc, [(0, 0), (-ww, -hh)], thresold)

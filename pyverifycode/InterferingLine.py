@@ -71,7 +71,8 @@ def clean(img, linePointThresold = 5):
                 similars = ImageUtils.getSimilarNeighbors(img, c, (w, h), [(0,0)])
                 similarCount = len(similars)
                 if 0 == similarCount:
-                    img.putpixel((w, h), color.BLACK_COLOR)
+                    if len(ImageUtils.getBackgrondNeighbors(img, c, (w, h))) == 7:
+                        img.putpixel((w, h), color.BLACK_COLOR)
                     continue
 
                 count = 1
