@@ -14,8 +14,10 @@ def getSimilarNeighbors(img, c, wh, excludes, sameThreshold = 0.867):
     w, h = wh
     for ww in range(-1, 2):
         for hh in range(-1, 2):
-            if (ww, hh) not in excludes and color.isSamePixel(c, img.getpixel((w + ww, h + hh)), sameThreshold):
-                similars.append((ww, hh))
+            cc = img.getpixel((w + ww, h + hh))
+            if not color.isBackground(cc):
+                if (ww, hh) not in excludes and color.isSamePixel(c, cc, sameThreshold):
+                    similars.append((ww, hh))
 
     return similars
 
@@ -25,8 +27,10 @@ def getSimilarNeighborsEx(img, c, wh, excludes, sameThreshold = 0.867):
     for ww in range(-1, 2):
         for hh in range(-1, 2):
             if (ww, hh) not in excludes:
-                dist = color.dist(c, img.getpixel((w + ww, h + hh)))
-                if dist > sameThreshold:
-                    similars.append((ww, hh, dist))
+                cc = img.getpixel((w + ww, h + hh))
+                if not color.isBackground(cc):
+                    dist = color.dist(c, cc)
+                    if dist > sameThreshold:
+                        similars.append((ww, hh, dist))
 
     return similars

@@ -81,10 +81,25 @@ def clean(img, linePointThresold = 5):
                     if TraverseLine(img, w + ww, h + hh, (-ww, -hh), linePointThresold, similars, count):
                         img.putpixel((w, h), color.BLACK_COLOR)
                 elif 2 == similarCount:
-                    if (1, 0) not in similars or (-1, 1) not in similars:
-                        continue
                     ww, hh = similars[0]
                     ww1, hh1 = similars[1]
+
+                    if (ww * ww1 + hh * hh1) >= 0:
+                        img.putpixel((w, h), color.BLACK_COLOR)
+                        continue
+
+                    if (1, 0) not in similars or (-1, 1) not in similars:
+                        if hh1 > hh or (hh1 == hh and ww1 > ww):
+                            tmpW = ww; tmpH = hh
+                            ww = ww1; hh = hh1
+                            ww1 = tmpW; hh1 = tmpH
+
+                        if TraverseLine(img, w + ww, h + hh, (-ww, -hh), linePointThresold, similars, count):
+                            img.putpixel((w, h), color.BLACK_COLOR)
+                            img.putpixel((w + ww1, h + hh1), color.BLACK_COLOR)
+
+                        continue
+
 
                     from functools import partial
                     continueDo = partial(TraverseLine, img, w + ww1, h + hh1, (-ww1, -hh1), linePointThresold)
