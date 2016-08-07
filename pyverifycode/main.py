@@ -4,6 +4,7 @@ import os
 import Image
 import InterferingLine
 from recognize import Regonizer
+from fullRecognize import FullRecognizer
 from segment import SimlarAndRemoveLine
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
@@ -12,27 +13,49 @@ def ToHSVList(bmp, l, t, r, b):
             hsvs.append(rgb2hsv(bmp.getpixel((w, h))))
     return hsvs
 
+def getRealValue(f):
+    f = f.replace('green', '')
+    f = f.replace('men', '')
+    f = f.replace('red', '')
+    f = f.replace('ban', '')
+    f = f.replace('app', '')
+    f = f.replace('pt', '')
+    return (f, f[4:] + f[0:4])
 if __name__ == '__main__':
-    reg = Regonizer('./vcfonts')
+    reg = FullRecognizer('./vcfonts')
     # m = reg.computeSelfSimilarMatrix()
     # m.to_csv('similarMatrix.csv', float_format='%.2f')
 
     bmpRoot = sys.argv[1]
+    success = []
+    failed = []
     for fileName in os.listdir(bmpRoot):
         [stem, ext] = os.path.splitext(fileName)
         if '.bmp' == ext:
+            relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             InterferingLine.clean(bmp)
-            childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName)
-            values = []
-            globalSimilar = 1.0
-            for binaryBmp in binaryBmps:
-                value, similar = reg.regonizeSlow(binaryBmp.reshape((1, binaryBmp.size)))
-                if value is not None and similar > 0.75:
-                    values.append(value)
-                    globalSimilar *= similar
-            print('%s:%f:%s' % (fileName, globalSimilar, str(values)))
+            values = reg.regonize(bmp, (20, 2), (90, 45))
+            v = ''.join(values)
+            if v != relValue and v != relValue2:
+                failed.append((fileName, v))
+            else:
+                success.append(v)
+
+    print 'success:'
+    print success
+    print 'failed:'
+    print failed
+            # childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName)
+            # values = []
+            # globalSimilar = 1.0
+            # for binaryBmp in binaryBmps:
+            #     value, similar = reg.regonizeSlow(binaryBmp.reshape((1, binaryBmp.size)))
+            #     if value is not None and similar > 0.75:
+            #         values.append(value)
+            #         globalSimilar *= similar
+            # print('%s:%f:%s' % (fileName, globalSimilar, str(values)))
 
 # bmpPath = sys.argv[1]
 # bmp = Image.open(bmpPath)
