@@ -7,12 +7,9 @@ def getEditSimilar(pattern1, pattern2):
     dist = np.zeros((len1 + 1, len2 + 1), dtype = np.int)
     dist[0] = xrange(0, len2 + 1)
     dist[:,0] = xrange(0, len1 + 1)
-
     for r in xrange(1, len1 + 1):
         for c in xrange(1, len2 + 1):
             minDist = min(dist[r, c - 1], dist[r - 1, c]) + 1
-            # if minDist < 0:
-            #     print("1111: (%d, %d)min(%d,%d) = %d" % (r, c, dist[r, c-1], dist[r-1, c], minDist))
             if pattern1[0, r - 1] == pattern2[0, c - 1]:
                 minDist = min(minDist, dist[r - 1, c - 1])
             else:
@@ -79,7 +76,7 @@ class Regonizer(object):
         maxSimilar = 0.0
         value = None
         if self.recentlyFont is not None:
-            value, maxSimilar = regonizeInFont(binaryImg, self.recentlyFont)
+            value, maxSimilar = self.regonizeInFont(binaryImg, self.recentlyFont)
 
             if maxSimilar > thresold:
                 return (value, maxSimilar)
@@ -87,7 +84,7 @@ class Regonizer(object):
         matchFont = None
         for fontName, font in self.patternDict.items():
             if self.recentlyFont is not font:
-                thisValue, thisSimilar = regonizeInFont(binaryImg, font)
+                thisValue, thisSimilar = self.regonizeInFont(binaryImg, font)
                 if thisSimilar > maxSimilar:
                     maxSimilar = thisSimilar
                     value = thisValue
@@ -103,7 +100,7 @@ class Regonizer(object):
         maxSimilar = 0.0
         value = None
         for fontName, font in self.patternDict.items():
-            thisValue, thisSimilar = regonizeInFont(binaryImg, font)
+            thisValue, thisSimilar = self.regonizeInFont(binaryImg, font)
             if thisSimilar > maxSimilar:
                 maxSimilar = thisSimilar
                 value = thisValue
