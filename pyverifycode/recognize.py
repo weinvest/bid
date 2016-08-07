@@ -1,23 +1,24 @@
 import numpy as np
 import os
 def getEditSimilar(pattern1, pattern2):
-    len1 = len(pattern1)
-    len2 = len(pattern2)
+    len1 = pattern1.size
+    len2 = pattern2.size
 
-    dist = np.zeros((len1 + 1, len2 + 1), dtype = np.int8)
+    dist = np.zeros((len1 + 1, len2 + 1), dtype = np.int)
     dist[0] = xrange(0, len2 + 1)
     dist[:,0] = xrange(0, len1 + 1)
 
     for r in xrange(1, len1 + 1):
         for c in xrange(1, len2 + 1):
             minDist = min(dist[r, c - 1], dist[r - 1, c]) + 1
-            if pattern1[r - 1] == pattern1[c - 1]:
+            # if minDist < 0:
+            #     print("1111: (%d, %d)min(%d,%d) = %d" % (r, c, dist[r, c-1], dist[r-1, c], minDist))
+            if pattern1[0, r - 1] == pattern2[0, c - 1]:
                 minDist = min(minDist, dist[r - 1, c - 1])
             else:
                 minDist = min(minDist, dist[r - 1, c - 1] + 1)
             dist[r, c] = minDist
-
-    return float(dist[len1, len2]) / max(len1, len2)
+    return 1.0 - float(dist[len1, len2]) / max(len1, len2)
 
 class Regonizer(object):
 
@@ -41,6 +42,7 @@ class Regonizer(object):
 
                 fontValues = self.patternDict[fontName]
                 fontData = np.loadtxt(os.path.join(patternRoot, patternFileName), np.int8)
+                fontData = fontData.reshape((1, fontData.shape[0] * fontData.shape[1]))
                 fontValues[fontValue] = fontData
 
     def computeSelfSimilarMatrix(self):
@@ -49,6 +51,8 @@ class Regonizer(object):
             for fontName, fonts in self.patternDict.items():
                 for fontValue, fontData1 in fonts.items():
                     similars.append(getEditSimilar(fontData, fontData1))
+            return similars
+
         allSimilars = []
         index = []
         for fontName, fonts in self.patternDict.items():

@@ -6,7 +6,7 @@ import shutil
 import color
 import InterferingLine
 import ImageUtils
-import recognize
+from recognize import Regonizer
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
     for h in xrange(t, b):
@@ -112,6 +112,11 @@ def SimlarAndRemoveLine(bmp, fileName):
         seq += 1
 
 if __name__ == '__main__':
+    reg = Regonizer('./vcfonts')
+    m = reg.computeSelfSimilarMatrix()
+    m.to_csv('similarMatrix.csv', float_format='%.2f')
+    pass
+
     bmpRoot = sys.argv[1]
     for fileName in os.listdir(bmpRoot):
         [stem, ext] = os.path.splitext(fileName)
