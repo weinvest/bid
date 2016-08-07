@@ -6,7 +6,7 @@ import shutil
 import color
 import InterferingLine
 import ImageUtils
-
+import recognize
 def ToHSVList(bmp, l, t, r, b):
     hsvs = []
     for h in xrange(t, b):
