@@ -7,7 +7,7 @@ import ImageUtils
 FILEANME = ''
 HMargin = 2
 WMargin = 2
-SAME_ELEMENT_THRESOLD_ALPHA = 0.75
+SAME_ELEMENT_THRESOLD_ALPHA = 1
 def SelectSameElementEx(origin, me, w, h, c, excludes, thresold = 0.5):
     if w <= WMargin or w >= (origin.width - WMargin):
         return 0
@@ -58,7 +58,7 @@ def SelectSameElementEx(origin, me, w, h, c, excludes, thresold = 0.5):
 
     return count
 
-def SimlarAndRemoveLine(bmp, fileName):
+def SimlarAndRemoveLine(bmp, fileName, thresold = 0.5):
     childBmps = []
     create = True
     for h in range(HMargin, bmp.height - HMargin):
@@ -73,7 +73,7 @@ def SimlarAndRemoveLine(bmp, fileName):
 
                 me.putpixel((w, h), c)
                 bmp.putpixel((w, h), color.BLACK_COLOR)
-                count = SelectSameElementEx(bmp, me, w, h, c, [(0,0)])
+                count = SelectSameElementEx(bmp, me, w, h, c, [(0,0)], thresold)
                 create = count > 30
     yLimit = bmp.height / 3
     def posComp(b1 ,b2):

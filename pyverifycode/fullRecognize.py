@@ -86,7 +86,8 @@ class FullRecognizer(object):
     def cleanPattern(self, img, pattern, wh):
         w, h = wh
         for ww, hh in pattern.elements:
-            img.putpixel((w + ww, h + hh), color.BLACK_COLOR)
+            if hh < pattern.height * 0.66:
+                img.putpixel((w + ww, h + hh), color.BLACK_COLOR)
 
     def __valueCompare(self, v1, v2):
         hLimit = 16
