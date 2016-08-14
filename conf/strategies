@@ -1,10 +1,16 @@
-[SmartStrategy]
-Name: Test
-Description: Test1
-FirstBidTime: 11:29:38
-FirstMarkUp:500
-SecondBidTime: 11:29:47
-SecondMarkUp:700
+#[SmartStrategy]
+#Name: Test
+#Description: Test1
+#FirstBidTime: 11:29:38
+#FirstMarkUp:500
+#SecondBidTime: 11:29:47
+#SecondMarkUp:700
+
+[ActInTime]
+Name: ActInTimeStrategy
+Description:11:29:47+800
+BidTime: 11:29:47
+BidMarkUp: 800
 
 [StoreStrategy]
 Name:Store

@@ -11,17 +11,13 @@ bool operator < (const BidTime& lhs, const BidTime& rhs)
 {
     auto ltime = lhs.hour * 10000 + lhs.minute * 100 + lhs.second;
     auto rtime = rhs.hour * 10000 + rhs.minute * 100 + rhs.second;
-    if(ltime < rtime)
+	if (ltime != rtime)
+	{
+		return ltime < rtime;
+	}
+	else
     {
-	return true;
-    }
-    else if(ltime > rtime)
-    {
-	return false;
-    }
-    else
-    {
-	return lhs.milliseconds < rhs.milliseconds;
+	    return lhs.milliseconds < rhs.milliseconds;
     }
 }
 

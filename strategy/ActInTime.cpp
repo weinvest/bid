@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include <string>
 #include "ActInTime.h"
 #include "InfoEngine.h"
 #include "ActionEngine.h"
@@ -32,6 +33,7 @@ bool ActInTime::DoLoad(const std::map<std::string, std::string>& configurePairs)
 	    return false;
 	}
 
+	return true;
 	//auto itVerifyCodeTime = configurePairs.find("InputVerifyCodeTime");
 	//if (configurePairs.end() != itVerifyCodeTime)
 	//{
