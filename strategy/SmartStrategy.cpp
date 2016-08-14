@@ -65,12 +65,12 @@ void SmartStrategy::OnUpdate(size_t updateFields)
 	auto& curPrice = pInfoEngine->GetInfo(InfoEngine::CURRENT_LOWEST_PRICE_INDEX);
 
 	LOG_INFO("SmartStrategy: %d:%d:%d\n", timeInfo.time.hour, timeInfo.time.minute, timeInfo.time.second);
-	if (mSecondBidTime < timeInfo.time && 1 >= mBidTimes)
+	if ((mSecondBidTime < timeInfo.time) && (1 >= mBidTimes))
 	{
 		mBidTimes = 2;
 		ActionEngine::GetInstance()->InputPrice(curPrice.price + mSecondMarkUp);
 	}
-	else if (mFirstBidTime < timeInfo.time && 0 == mBidTimes)
+	else if ((mFirstBidTime < timeInfo.time) && (0 == mBidTimes))
 	{	
 		mBidTimes = 1;
 		ActionEngine::GetInstance()->InputPrice(curPrice.price + mFirstMarkUp);

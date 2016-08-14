@@ -7,5 +7,7 @@ protected:
 	void OnUpdate(size_t updateFields) override;
 private:
 	BidTime mBidTime;
+	int mBidMarkUp;
+	int mBidTimes;
 	BidTime mInputVerifyCodeTime;
 };

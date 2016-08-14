@@ -9,27 +9,20 @@
 
 bool operator < (const BidTime& lhs, const BidTime& rhs)
 {
-	if (lhs.hour < rhs.hour)
-	{
-		return true;
-	}
-
-	if (lhs.minute < rhs.minute)
-	{
-		return true;
-	}
-
-	if (lhs.second < rhs.second)
-	{
-		return true;
-	}
-
-	if (lhs.milliseconds < rhs.milliseconds)
-	{
-		return true;
-	}
-
+    auto ltime = lhs.hour * 10000 + lhs.minute * 100 + lhs.second;
+    auto rtime = rhs.hour * 10000 + rhs.minute * 100 + rhs.second;
+    if(ltime < rtime)
+    {
+	return true;
+    }
+    else if(ltime > rtime)
+    {
 	return false;
+    }
+    else
+    {
+	return lhs.milliseconds < rhs.milliseconds;
+    }
 }
 
 void BidTime::Parse(const std::string& value)

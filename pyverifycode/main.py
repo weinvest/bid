@@ -20,6 +20,12 @@ def getRealValue(f):
     f = f.replace('ban', '')
     f = f.replace('app', '')
     f = f.replace('pt', '')
+    f = f.replace('Y','')
+    f = f.replace('C', '')
+    f = f.replace('MEN', '')
+    f = f.replace('BAN', '')
+    f = f.replace('APP', '')
+    f = f.replace('PT', '')
     return (f, f[4:] + f[0:4])
 
 def SelectAndSaveElement(bmp, fileName, outRoot, ext):
@@ -29,7 +35,7 @@ def SelectAndSaveElement(bmp, fileName, outRoot, ext):
         shutil.rmtree(outDir)
     os.mkdir(outDir)
 
-    childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName, 0.0)
+    childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName, 0.6)
     count = len(childBmps) - 1
     while count >= 0:
         eleBmp = childBmps[count]
@@ -55,7 +61,8 @@ if __name__ == '__main__':
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
-            InterferingLine.clean(bmp)
+            #InterferingLine.clean(bmp)
+            print fileName
             values = reg.regonize(bmp, (20, 2), (90, 45))
             v = ''.join(values)
             if v != relValue and v != relValue2:
@@ -63,10 +70,12 @@ if __name__ == '__main__':
             else:
                 success.append(v)
 
-    print 'success:'
+    print 'success:%d' % len(success)
     print success
-    print 'failed:'
+    print 'failed:%d' % len(failed)
     print failed
+
+
             # childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName, 0.1)
             # values = []
             # globalSimilar = 1.0
