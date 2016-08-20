@@ -95,3 +95,46 @@ def SimlarAndRemoveLine(bmp, fileName, thresold = 0.5):
         seq += 1
 
     return (childBmps, binaryBmps)
+
+def HorizontalGradient(bmp):
+    gradient = Image.new('RGB', (bmp.width, bmp.height))
+    for h in range(0, bmp.height):
+        for w in range(1, bmp.width - 1):
+            if color.isBackground(bmp.getpixel((w - 1, h))):
+                leftC = (0, 0, 0)
+            else:
+                leftC = bmp.getpixel((w - 1, h))
+
+                if color.isBackground(bmp.getpixel((w + 1, h))):
+                    rightC = (0, 0, 0)
+                else:
+                    rightC = bmp.getpixel((w + 1, h))
+
+                gradient.putpixel((w, h), tuple(map(lambda l,r: (l + r)/2, leftC, rightC)))
+    import numpy as np
+    xx = np.array(gradient)
+    d = xx.sum(axis = 0)
+    for i in range(0, len(d)):
+        x,y,z = d[i]
+        print('%2d: %d' % (i, x*x+y*y+z*z))
+    return gradient
+
+def VerticalGradient(bmp):
+    gradient = Image.new('RGB', (bmp.width, bmp.height))
+    for h in range(1, bmp.height - 1):
+        for w in range(0, bmp.width):
+            if color.isBackground(bmp.getpixel((w, h - 1))):
+                topC = (0, 0, 0)
+            else:
+                topC = bmp.getpixel((w, h - 1))
+
+            if color.isBackground(bmp.getpixel((w, h + 1))):
+                bottomC = (0, 0, 0)
+            else:
+                bottomC = bmp.getpixel((w, h + 1))
+
+            gradient.putpixel((w, h), tuple(map(lambda l,r: (l + r)/2, topC, bottomC)))
+    import numpy as np
+    xx = np.array(gradient)
+    xx.sum(axis = 1)
+    return gradient

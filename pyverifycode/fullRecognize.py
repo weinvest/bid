@@ -1,6 +1,7 @@
 import color
 import os
 import numpy as np
+import exceptions
 class FontPattern(object):
     def __init__(self, pattern):
         elements = []
@@ -151,3 +152,7 @@ class FullRecognizer(object):
         values = sorted(values, cmp =  self.__valueCompare)
         values = [i[0] for i in values]
         return values
+
+    def regonizeEx(self, img):
+        import numpy as np
+        grids = np.zeros((2, 2, 4))

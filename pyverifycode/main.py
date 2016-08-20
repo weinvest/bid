@@ -60,6 +60,7 @@ if __name__ == '__main__':
             relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
+
             # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
             #InterferingLine.clean(bmp)
             print fileName
@@ -74,27 +75,3 @@ if __name__ == '__main__':
     print success
     print 'failed:%d' % len(failed)
     print failed
-
-
-            # childBmps, binaryBmps = SimlarAndRemoveLine(bmp, fileName, 0.1)
-            # values = []
-            # globalSimilar = 1.0
-            # for binaryBmp in binaryBmps:
-            #     value, similar = reg.regonizeSlow(binaryBmp.reshape((1, binaryBmp.size)))
-            #     if value is not None and similar > 0.75:
-            #         values.append(value)
-            #         globalSimilar *= similar
-            # print('%s:%f:%s' % (fileName, globalSimilar, str(values)))
-
-# bmpPath = sys.argv[1]
-# bmp = Image.open(bmpPath)
-# rng = [int(i) for i in sys.argv[2].split(',')]
-# hsvs = ToHSVList(bmp, rng[0], rng[1], rng[2], rng[3])
-#
-# import pandas as pd
-# dHSV = pd.DataFrame(hsvs, columns = list('hsv'))
-# dHSV = dHSV[dHSV.h != 0]
-# dHSV['h'].hist(bins = 72)
-#
-# import matplotlib.pyplot as pl
-# pl.show()
