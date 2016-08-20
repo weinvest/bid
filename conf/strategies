@@ -10,7 +10,7 @@
 Name: ActInTimeStrategy
 Description:11:29:47+800
 BidTime: 11:29:47
-BidMarkUp: 800
+BidMarkUp: 700
 
 [StoreStrategy]
 Name:Store
