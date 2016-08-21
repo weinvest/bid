@@ -22,6 +22,8 @@ class FullRecognizer(object):
     def __init__(self, patternRoot):
         self.patternDict = {}
         self.loadPatterns(patternRoot)
+        self.HORIZONTAL_SHIFT = 5
+        self.VERTICAL_SHIFT = 5
 
     def loadPatterns(self, patternRoot):
         if not os.path.exists(patternRoot):
@@ -55,25 +57,23 @@ class FullRecognizer(object):
 
         if value2 is None:
             return ret1
-
-        if (loseCount1 < loseCount2 or (loseCount1 == loseCount2 and maxCount1 > maxCount2)):
+        diff = float(loseCount1) / maxCount1 - float(loseCount2) / maxCount2
+        if abs(diff) < 1e-7:
+            return  ret1 if maxCount1 > maxCount2 else ret2;
+        elif diff > 0:
+            return ret2
+        else:
             return ret1
-
-        return ret2
 
     def doScanPatterns(self, img, wh):
         w, h = wh
-        minLoseCount = 10000
-        maxCount = 0
         ret = (None, None, None, None, None, None)
         candidates = []
-        candidateColors = {}
-        # c = img.getpixel(wh)
         for fontName, fontValues in self.patternDict.items():
             for value, fontPattern in fontValues.items():
                 count = 0
                 loseCount = 0
-                tolerateCount = int(len(fontPattern.elements) * 0.1)
+                tolerateCount = int(len(fontPattern.elements) * 0.2)
                 colors = []
                 for ww, hh in fontPattern.elements:
                     count += 1
@@ -88,18 +88,13 @@ class FullRecognizer(object):
 
                     if loseCount > tolerateCount:
                         break
-                    else:
+                    elif rw >= 0 and rw < img.width and rh >=0 and rh < img.height:
                         colors.append(color.rgb2hsv(img.getpixel((rw, rh))))
 
                 if loseCount <= tolerateCount:
-                    ret1 = (value, fontPattern, loseCount, maxCount, w, h)
+                    ret1 = (value, fontPattern, loseCount, count, w, h)
                     ret = self.compareScanResult(ret, ret1)
-                    # if (loseCount < minLoseCount or (loseCount == minLoseCount and count > maxCount)):
-                    #     maxCount = count
-                    #     minLoseCount = loseCount
-                    #     ret = (value, fontPattern, loseCount, maxCount)
                     candidates.append((loseCount, value, fontPattern))
-                    # candidateColors[value] = std
 
         # if len(candidates) >= 2:
         #     print('(%d,%d)=%s:---:%s' % (w, h, str(candidates), str(candidateColors)))
@@ -155,4 +150,28 @@ class FullRecognizer(object):
 
     def regonizeEx(self, img):
         import numpy as np
-        grids = np.zeros((2, 2, 4))
+        columns = (21, 37, 52, 69, 83)
+        rows = (5, 23, 45)
+
+        values = []
+        for idxH in range(0, len(rows) - 1):
+            for idxW in range(0, len(columns) - 1):
+                left = columns[idxW]
+                right = columns[idxW + 1]
+                top = rows[idxH]
+                bottom = rows[idxH + 1]
+
+                ret = (None, None, None, None, None, None)
+                for boxH in range(top - self.VERTICAL_SHIFT, top + self.VERTICAL_SHIFT):
+                    for boxW in range(left, right):
+                        retCur = self.doScanPatterns(img, (boxW, boxH))
+                        ret = self.compareScanResult(ret, retCur)
+
+                print('(%d,%d,%d,%d)=%s' % (left, right, top, bottom, str(ret)))
+                value, pattern, loseCount, count, ww, hh = ret
+                if value is not None:
+                    values.append((value, (ww, hh)))
+
+        values = sorted(values, cmp =  self.__valueCompare)
+        values = [i[0] for i in values]
+        return values

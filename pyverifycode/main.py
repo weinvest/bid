@@ -61,17 +61,18 @@ if __name__ == '__main__':
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
 
-            # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
-            #InterferingLine.clean(bmp)
-            print fileName
-            values = reg.regonize(bmp, (20, 2), (90, 45))
-            v = ''.join(values)
-            if v != relValue and v != relValue2:
-                failed.append((fileName, v))
-            else:
-                success.append(v)
-
-    print 'success:%d' % len(success)
-    print success
-    print 'failed:%d' % len(failed)
-    print failed
+            SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
+    #         #InterferingLine.clean(bmp)
+    #         print fileName
+    #         # values = reg.regonize(bmp, (20, 2), (90, 45))
+    #         values = reg.regonizeEx(bmp)
+    #         v = ''.join(values)
+    #         if v != relValue and v != relValue2:
+    #             failed.append((fileName, v))
+    #         else:
+    #             success.append(v)
+    #
+    # print 'success:%d' % len(success)
+    # print success
+    # print 'failed:%d' % len(failed)
+    # print failed
