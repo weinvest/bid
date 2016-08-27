@@ -60,7 +60,7 @@ if __name__ == '__main__':
             relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
-            # 
+            #
             # import segment
             # import numpy as np
             # index = 0

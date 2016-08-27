@@ -99,7 +99,8 @@ def SimlarAndRemoveLine(bmp, fileName, thresold = 0.5):
 def Segment(bmp):
     import numpy as np
     bmpArray = np.array(bmp)
-    temp = map(lambda x: 0 if x < 500 else 1, bmpArray.sum(axis = 0).sum(axis = 1))
+    print bmpArray.sum(axis = 0).sum(axis = 1)
+    temp = map(lambda x: 0 if x < 300 else 1, bmpArray.sum(axis = 0).sum(axis = 1))
     splitIndices = []
     for i in range(1, len(temp)):
         if (temp[i] - temp[i - 1]) != 0:

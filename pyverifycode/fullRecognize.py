@@ -150,7 +150,7 @@ class FullRecognizer(object):
 
     def regonizeEx(self, img):
         import numpy as np
-        columns = (21, 37, 52, 69, 83)
+        columns = (19, 37, 50, 65, 83)
         rows = (5, 23, 45)
 
         values = []
