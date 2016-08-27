@@ -60,19 +60,26 @@ if __name__ == '__main__':
             relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
+            # 
+            # import segment
+            # import numpy as np
+            # index = 0
+            # for binaryImg in segment.Segment(bmp):
+            #     np.savetxt(os.path.join('/tmp/', str(index) + '.txt'), binaryImg, fmt='%1.0f')
+            #     index += 1
 
-            SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
-    #         #InterferingLine.clean(bmp)
-    #         print fileName
-    #         # values = reg.regonize(bmp, (20, 2), (90, 45))
-    #         values = reg.regonizeEx(bmp)
-    #         v = ''.join(values)
-    #         if v != relValue and v != relValue2:
-    #             failed.append((fileName, v))
-    #         else:
-    #             success.append(v)
-    #
-    # print 'success:%d' % len(success)
-    # print success
-    # print 'failed:%d' % len(failed)
-    # print failed
+            # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
+            #InterferingLine.clean(bmp)
+            print fileName
+            # values = reg.regonize(bmp, (20, 2), (90, 45))
+            values = reg.regonizeEx(bmp)
+            v = ''.join(values)
+            if v != relValue and v != relValue2:
+                failed.append((fileName, v))
+            else:
+                success.append(v)
+
+    print 'success:%d' % len(success)
+    print success
+    print 'failed:%d' % len(failed)
+    print failed

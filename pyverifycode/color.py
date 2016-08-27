@@ -56,8 +56,8 @@ def dist(c1, c2):
     vDiff = v1 - v2
     return math.exp(-math.sqrt(hDiff * hDiff + sDiff * sDiff + vDiff * vDiff))
 
-BACKGROUND_MIN_THRESHOLD = 3
-BACKGROUND_MAX_THRESHOLD = 252
+BACKGROUND_MIN_THRESHOLD = 20
+BACKGROUND_MAX_THRESHOLD = 235
 BACKGROUND_H_V_THRESHOLD = 70 * 2.56
 def isBackground(c):
     # return dist(c, WHITE_COLOR) > 0.98 or dist(c, BLACK_COLOR) > 0.98

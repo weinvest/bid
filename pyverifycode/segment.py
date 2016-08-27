@@ -96,6 +96,39 @@ def SimlarAndRemoveLine(bmp, fileName, thresold = 0.5):
 
     return (childBmps, binaryBmps)
 
+def Segment(bmp):
+    import numpy as np
+    bmpArray = np.array(bmp)
+    temp = map(lambda x: 0 if x < 500 else 1, bmpArray.sum(axis = 0).sum(axis = 1))
+    splitIndices = []
+    for i in range(1, len(temp)):
+        if (temp[i] - temp[i - 1]) != 0:
+            splitIndices.append(i)
+    results = []
+    for i in range(0, len(splitIndices), 2):
+        start, end = splitIndices[i], splitIndices[i + 1]
+        left = end
+        right = -1
+        top = bmp.height
+        bottom = 0
+        binaryImg = np.zeros((bmp.height, bmp.width))
+        for h in range(0, bmp.height):
+            for w in range(start, end):
+                if not color.isBackground(bmp.getpixel((w, h))):
+                    binaryImg[h, w] = 1
+                    if w < left:
+                        left = w
+                    if w > right:
+                        right = w
+                    if h < top:
+                        top = h
+                    if h > bottom:
+                        bottom = h
+        print top, bottom, left, right
+        result = binaryImg[top:bottom + 1, left:right + 1]
+        results.append(result)
+    return results
+
 def HorizontalGradient(bmp):
     gradient = Image.new('RGB', (bmp.width, bmp.height))
     for h in range(0, bmp.height):
