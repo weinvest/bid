@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="785d64d2-68f7-460a-91e5-221ce8b7a3be" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/verifycode/201607/Y8838C8169.jpg" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/failed" afterPath="$PROJECT_DIR$/pyverifycode/failed" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/fullRecognize.py" afterPath="$PROJECT_DIR$/pyverifycode/fullRecognize.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/main.py" afterPath="$PROJECT_DIR$/pyverifycode/main.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/segment.py" afterPath="$PROJECT_DIR$/pyverifycode/segment.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/broom-9.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/broom-9.vc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-3.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-3.vc" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-5.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-5.vc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-8.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-8.vc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/three-7.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/three-7.vc" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-9.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/seal-9.vc" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyverifycode/vcfonts/three-0.vc" afterPath="$PROJECT_DIR$/pyverifycode/vcfonts/three-0.vc" />
     </list>
     <ignored path="bid.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,9 +81,9 @@
         <entry file="file://$PROJECT_DIR$/pyverifycode/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="145">
-              <caret line="63" column="2" selection-start-line="63" selection-start-column="2" selection-end-line="68" selection-end-column="28" />
+              <caret line="63" column="11" selection-start-line="63" selection-start-column="11" selection-end-line="68" selection-end-column="26" />
               <folding>
-                <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+                <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
               </folding>
             </state>
           </provider>
@@ -104,8 +102,8 @@
       <file leaf-file-name="fullRecognize.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyverifycode/fullRecognize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="635">
-              <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
+            <state relative-caret-position="311">
+              <caret line="68" column="17" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -143,8 +141,8 @@
         <option value="$PROJECT_DIR$/pyverifycode/ImageUtils.py" />
         <option value="$PROJECT_DIR$/pyverifycode/InterferingLine.py" />
         <option value="$PROJECT_DIR$/pyverifycode/color.py" />
-        <option value="$PROJECT_DIR$/pyverifycode/fullRecognize.py" />
         <option value="$PROJECT_DIR$/pyverifycode/segment.py" />
+        <option value="$PROJECT_DIR$/pyverifycode/fullRecognize.py" />
         <option value="$PROJECT_DIR$/pyverifycode/main.py" />
       </list>
     </option>
@@ -555,7 +553,7 @@
         <line-breakpoint enabled="true" type="python-line">
           <condition expression="left==52 and top == 23" language="Python" />
           <url>file://$PROJECT_DIR$/pyverifycode/fullRecognize.py</url>
-          <line>163</line>
+          <line>171</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -615,7 +613,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>
@@ -691,7 +689,7 @@
         <state relative-caret-position="1116">
           <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>
@@ -759,7 +757,7 @@
         <state relative-caret-position="1098">
           <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>
@@ -827,7 +825,7 @@
         <state relative-caret-position="1098">
           <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>
@@ -921,7 +919,7 @@
         <state relative-caret-position="2142">
           <caret line="125" column="39" selection-start-line="125" selection-start-column="39" selection-end-line="125" selection-end-column="39" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>
@@ -962,14 +960,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyverifycode/fullRecognize.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="635">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/dist-packages/PIL/Image.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -994,12 +984,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pyverifycode/fullRecognize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="68" column="17" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyverifycode/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="145">
-          <caret line="63" column="2" selection-start-line="63" selection-start-column="2" selection-end-line="68" selection-end-column="28" />
+          <caret line="63" column="11" selection-start-line="63" selection-start-column="11" selection-end-line="68" selection-end-column="26" />
           <folding>
-            <marker date="1472286614554" expanded="true" signature="2699:2712" ph="..." />
+            <marker date="1472303059226" expanded="true" signature="2687:2700" ph="..." />
           </folding>
         </state>
       </provider>

@@ -61,12 +61,12 @@ if __name__ == '__main__':
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             #
-            # import segment
-            # import numpy as np
-            # index = 0
-            # for binaryImg in segment.Segment(bmp):
-            #     np.savetxt(os.path.join('/tmp/', str(index) + '.txt'), binaryImg, fmt='%1.0f')
-            #     index += 1
+            import segment
+            import numpy as np
+            index = 0
+            for binaryImg in segment.Segment(bmp):
+                np.savetxt(os.path.join('/tmp/', str(index) + '.txt'), binaryImg, fmt='%1.0f')
+                index += 1
 
             # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
             #InterferingLine.clean(bmp)

@@ -58,7 +58,7 @@ class FullRecognizer(object):
         if value2 is None:
             return ret1
         diff = float(loseCount1) / maxCount1 - float(loseCount2) / maxCount2
-        if abs(diff) < 1e-7:
+        if abs(diff) < 0.02:
             return  ret1 if maxCount1 > maxCount2 else ret2;
         elif diff > 0:
             return ret2
@@ -150,8 +150,8 @@ class FullRecognizer(object):
 
     def regonizeEx(self, img):
         import numpy as np
-        columns = (19, 37, 50, 65, 83)
-        rows = (5, 23, 45)
+        columns = [19, 35, 50, 66, 83]
+        rows = [5, 23, 45]
 
         values = []
         for idxH in range(0, len(rows) - 1):
@@ -166,6 +166,14 @@ class FullRecognizer(object):
                     for boxW in range(left, right):
                         retCur = self.doScanPatterns(img, (boxW, boxH))
                         ret = self.compareScanResult(ret, retCur)
+
+                if ret[0] is None:
+                    for boxH in range(top - self.VERTICAL_SHIFT, top + self.VERTICAL_SHIFT):
+                        for boxW in range(right, right + 2):
+                            retCur = self.doScanPatterns(img, (boxW, boxH))
+                            ret = self.compareScanResult(ret, retCur)
+                    if ret[0] is not None:
+                        columns[idxW + 1] = ret[4] + 1
 
                 print('(%d,%d,%d,%d)=%s' % (left, right, top, bottom, str(ret)))
                 value, pattern, loseCount, count, ww, hh = ret
