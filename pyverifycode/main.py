@@ -54,17 +54,19 @@ if __name__ == '__main__':
     bmpRoot = sys.argv[1]
     success = []
     failed = []
+    print bmpRoot
     for fileName in os.listdir(bmpRoot):
         [stem, ext] = os.path.splitext(fileName)
+        # print stem,ext
         if '.bmp' == ext or '.png' == ext or '.jpg' == ext:
             relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             #
-            #import segment
-            #import numpy as np
-            #index = 0
-            #for binaryImg in segment.Segment(bmp):
+            # import segment
+            # import numpy as np
+            # index = 0
+            # for binaryImg in segment.Segment(bmp):
             #    np.savetxt(os.path.join('/tmp/', str(index) + '.txt'), binaryImg, fmt='%1.0f')
             #    index += 1
 

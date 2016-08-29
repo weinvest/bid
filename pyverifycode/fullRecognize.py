@@ -6,14 +6,31 @@ class FontPattern(object):
     def __init__(self, pattern):
         elements = []
         top, left = -1, -1
+        self.minH = pattern.shape[0]
+        self.maxH = -1
+        self.minW = pattern.shape[1]
+        self.maxW = -1
         for h in xrange(0, pattern.shape[0]):
             for w in xrange(0, pattern.shape[1]):
                 if 0 != pattern[h, w]:
                     if -1 == top:
+                        ww, hh = 0, 0
                         top, left = h, w
                         elements.append((0, 0))
                     else:
-                        elements.append((w - left, h - top))
+                        ww, hh = w - left, h - top
+                        elements.append((ww, hh))
+
+                    if ww < self.minW:
+                        self.minW = ww
+                    if ww > self.maxW:
+                        self.maxW = ww
+
+                    if hh < self.minH:
+                        self.minH = hh
+                    if hh > self.maxH:
+                        self.maxH = hh
+
 
         self.elements = elements
         self.height, self.width = pattern.shape
@@ -175,7 +192,12 @@ class FullRecognizer(object):
                     if ret[0] is not None:
                         columns[idxW + 1] = ret[4] + 1
 
-                print('(%d,%d,%d,%d)=%s' % (left, right, top, bottom, str(ret)))
+                cw, ch = -1, -1
+                if ret[0] is not None:
+                    value, fontPattern, loseCount, count, w, h = ret
+                    cw = (w + fontPattern.minW + w + fontPattern.maxW) / 2
+                    ch = (h + fontPattern.minH + h + fontPattern.maxH) / 2
+                print('(%d,%d,%d,%d)=%s: center=(%d,%d)' % (left, right, top, bottom, str(ret), cw, ch))
                 value, pattern, loseCount, count, ww, hh = ret
                 if value is not None:
                     values.append((value, (ww, hh)))
