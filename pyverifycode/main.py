@@ -69,7 +69,7 @@ if __name__ == '__main__':
             # for binaryImg in segment.Segment(bmp):
             #    np.savetxt(os.path.join('/tmp/', str(index) + '.txt'), binaryImg, fmt='%1.0f')
             #    index += 1
-
+            #
             # SelectAndSaveElement(bmp, fileName, '/tmp/', '.bmp')
             #InterferingLine.clean(bmp)
             print fileName

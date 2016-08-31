@@ -3,7 +3,8 @@ import os
 import numpy as np
 import exceptions
 class FontPattern(object):
-    def __init__(self, pattern):
+    def __init__(self, name, pattern):
+        self.name = name
         self.height, self.width = pattern.shape
         elements = []
         top, left = self.height / 2, self.width / 2
@@ -36,7 +37,7 @@ class FullRecognizer(object):
 
                 fontValues = self.patternDict[fontName]
                 fontData = np.loadtxt(os.path.join(patternRoot, patternFileName), np.int8)
-                fontData = FontPattern(fontData)
+                fontData = FontPattern(patternStem, fontData)
                 fontValues[fontValue] = fontData
 
                 minWidth = min(minWidth, fontData.width)
@@ -161,9 +162,11 @@ class FullRecognizer(object):
                     for boxW in range(left, right + 1):
                         retCur = self.doScanPatterns(img, (boxW, boxH))
                         ret = self.compareScanResult(ret, retCur)
-
-                print('(%d,%d,%d,%d)=%s' % (left, right, top, bottom, str(ret)))
                 value, pattern, loseCount, count, ww, hh = ret
+                if value is not None:
+                    print('(%d,%d,%d,%d)=%s, %s @(%d,%d)' % (left, right, top, bottom, value, pattern.name, ww, hh))
+                else:
+                    print('(%d,%d,%d,%d)=%s, %s @(%d,%d)' % (left, right, top, bottom, None, None, -1, -1))
                 if value is not None:
                     values.append((value, (ww, hh)))
 
