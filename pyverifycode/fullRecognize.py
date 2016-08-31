@@ -4,43 +4,21 @@ import numpy as np
 import exceptions
 class FontPattern(object):
     def __init__(self, pattern):
+        self.height, self.width = pattern.shape
         elements = []
-        top, left = -1, -1
-        self.minH = pattern.shape[0]
-        self.maxH = -1
-        self.minW = pattern.shape[1]
-        self.maxW = -1
+        top, left = self.height / 2, self.width / 2
         for h in xrange(0, pattern.shape[0]):
             for w in xrange(0, pattern.shape[1]):
                 if 0 != pattern[h, w]:
-                    if -1 == top:
-                        ww, hh = 0, 0
-                        top, left = h, w
-                        elements.append((0, 0))
-                    else:
-                        ww, hh = w - left, h - top
-                        elements.append((ww, hh))
-
-                    if ww < self.minW:
-                        self.minW = ww
-                    if ww > self.maxW:
-                        self.maxW = ww
-
-                    if hh < self.minH:
-                        self.minH = hh
-                    if hh > self.maxH:
-                        self.maxH = hh
-
+                    ww, hh = w - left, h - top
+                    elements.append((ww, hh))
 
         self.elements = elements
-        self.height, self.width = pattern.shape
 
 class FullRecognizer(object):
     def __init__(self, patternRoot):
         self.patternDict = {}
         self.loadPatterns(patternRoot)
-        self.HORIZONTAL_SHIFT = 5
-        self.VERTICAL_SHIFT = 5
 
     def loadPatterns(self, patternRoot):
         if not os.path.exists(patternRoot):
@@ -75,7 +53,7 @@ class FullRecognizer(object):
         if value2 is None:
             return ret1
         diff = float(loseCount1) / maxCount1 - float(loseCount2) / maxCount2
-        if abs(diff) < 0.02:
+        if abs(diff) < 0.04:
             return  ret1 if maxCount1 > maxCount2 else ret2;
         elif diff > 0:
             return ret2
@@ -167,41 +145,27 @@ class FullRecognizer(object):
 
     def regonizeEx(self, img):
         import numpy as np
-        columns = [19, 35, 50, 66, 83]
-        rows = [5, 23, 45]
+        columns = [25, 30, 41, 45, 57, 62, 73, 77]
+        rows = [10, 17, 30, 36]
 
         values = []
-        for idxH in range(0, len(rows) - 1):
-            for idxW in range(0, len(columns) - 1):
-                left = columns[idxW]
-                right = columns[idxW + 1]
-                top = rows[idxH]
-                bottom = rows[idxH + 1]
+        for idxH in range(0, len(rows) / 2):
+            for idxW in range(0, len(columns) / 2):
+                left = columns[2 * idxW]
+                right = columns[2 * idxW + 1]
+                top = rows[2 * idxH]
+                bottom = rows[2 * idxH + 1]
 
                 ret = (None, None, None, None, None, None)
-                for boxH in range(top - self.VERTICAL_SHIFT, top + self.VERTICAL_SHIFT):
-                    for boxW in range(left, right):
+                for boxH in range(top, bottom + 1):
+                    for boxW in range(left, right + 1):
                         retCur = self.doScanPatterns(img, (boxW, boxH))
                         ret = self.compareScanResult(ret, retCur)
 
-                if ret[0] is None:
-                    for boxH in range(top - self.VERTICAL_SHIFT, top + self.VERTICAL_SHIFT):
-                        for boxW in range(right, right + 2):
-                            retCur = self.doScanPatterns(img, (boxW, boxH))
-                            ret = self.compareScanResult(ret, retCur)
-                    if ret[0] is not None:
-                        columns[idxW + 1] = ret[4] + 1
-
-                cw, ch = -1, -1
-                if ret[0] is not None:
-                    value, fontPattern, loseCount, count, w, h = ret
-                    cw = (w + fontPattern.minW + w + fontPattern.maxW) / 2
-                    ch = (h + fontPattern.minH + h + fontPattern.maxH) / 2
-                print('(%d,%d,%d,%d)=%s: center=(%d,%d)' % (left, right, top, bottom, str(ret), cw, ch))
+                print('(%d,%d,%d,%d)=%s' % (left, right, top, bottom, str(ret)))
                 value, pattern, loseCount, count, ww, hh = ret
                 if value is not None:
                     values.append((value, (ww, hh)))
 
-        values = sorted(values, cmp =  self.__valueCompare)
         values = [i[0] for i in values]
         return values
