@@ -48,18 +48,30 @@ class FullRecognizer(object):
     def compareScanResult(self, ret1, ret2):
         value1, pattern1, loseCount1, maxCount1, w1, h1 = ret1
         value2, pattern2, loseCount2, maxCount2, w2, h2 = ret2
+
         if value1 is None:
             return ret2
 
         if value2 is None:
             return ret1
+
+        if maxCount1 == maxCount2:
+            return ret1 if loseCount1 < loseCount2 else ret2
+
+        if maxCount2 > maxCount1:
+            ret1, ret2 = ret2, ret1
+            value1, pattern1, loseCount1, maxCount1, w1, h1 = ret1
+            value2, pattern2, loseCount2, maxCount2, w2, h2 = ret2
+
         diff = float(loseCount1) / maxCount1 - float(loseCount2) / maxCount2
-        if abs(diff) < 0.04:
-            return  ret1 if maxCount1 > maxCount2 else ret2;
-        elif diff > 0:
-            return ret2
-        else:
+        if diff < -1e-7:
             return ret1
+
+        loseDiff = float(loseCount1 - loseCount2) / float(maxCount1 - maxCount2)
+        if loseDiff < 0.2:
+            return ret1
+
+        return ret2
 
     def doScanPatterns(self, img, wh):
         w, h = wh
