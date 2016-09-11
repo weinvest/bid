@@ -60,3 +60,11 @@ struct FontCenterScanIndexFeedbackResponse
     1: required i32 status;
     2: optional string message;
 }
+
+//---------------------interface----------------------------------
+service ReCaptcha
+{
+    FontCenterScanResponse doCenterScan(1: FontCenterScanRequest req);
+    FontCenterScanIndexResponse doCenterScanByIndex(1: FontCenterScanIndexRequest req);
+    FontCenterScanIndexFeedbackResponse giveCenterScanFeedback(1: FontCenterScanIndexFeedbackRequest req);
+}
