@@ -6,15 +6,19 @@
 
 struct FontSample
 {
+    FontSample();
+    FontSample(int32_t ww, int32_t hh);
+
     int32_t w,h;
 
     friend bool operator < (const FontSample& s1, const FontSample& s2);
-}
+};
 
 class FontPattern
 {
 public:
-    static std::shared_ptr<FontPattern> Load(const std::string& filePath);
+    typedef std::shared_ptr<FontPattern> Ptr;
+    static  Ptr Load(const std::string& filePath);
 
     FontPattern(const std::string& name);
 
@@ -27,10 +31,16 @@ public:
     int32_t GetWidth() const { return GetMaxW() - GetMinW() + 1; }
     int32_t GetHeight() const { return GetMaxH() - GetMinW() + 1; }
 
+    int32_t GetSampleCount() const { return mSamples.size(); }
+
+    const auto& GetSamples() const { return mSamples; }
+
+    const auto& GetValue() const { return mValue; }
 private:
-    void AddSample(FontSample& sample);
+    void SetValue(const std::string& v) { mValue = v; }
+    void AddSample(const FontSample& sample);
     void ComputeSize( void );
-    void SetCenter(FontSample& center);
+    void SetCenter(const FontSample& center);
     static void Split(const std::string& line, std::vector<int>& outValues);
 
     std::string mName;
@@ -41,5 +51,6 @@ private:
     int32_t mWidth;
     int32_t mHeight;
     std::set<FontSample> mSamples;
+    std::string mValue;
 };
 #endif

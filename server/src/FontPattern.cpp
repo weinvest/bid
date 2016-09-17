@@ -1,8 +1,20 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <iterator>
+#include <algorithm>
 #include <iostream>
 #include "FontPattern.h"
+FontSample::FontSample()
+    :FontSample(0, 0)
+{
+}
+
+FontSample::FontSample(int32_t ww, int32_t hh)
+    :w(ww)
+    ,h(hh)
+{
+}
 
 bool operator < (const FontSample& s1, const FontSample& s2)
 {
@@ -20,7 +32,7 @@ FontPattern::FontPattern(const std::string& name)
 {
 }
 
-void FontPattern::AddSample(FontSample& sample)
+void FontPattern::AddSample(const FontSample& sample)
 {
     if(!mSamples.insert(sample).second)
     {
@@ -56,15 +68,16 @@ void FontPattern::ComputeSize( void )
 
 std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
 {
-    if(filePath.length() < 4 || filePath.substr(filePath.length() - 3) != ".vc")
+    if(filePath.length() < 4
+        || (filePath.substr(filePath.length() - 3) != ".vc" && filePath.substr(filePath.length() - 4) != ".ivc"))
     {
         return nullptr;
     }
 
 
     std::string fileName = filePath.substr(filePath.find_last_of('/') + 1);
-    std::string stem = fileName.substr(0, fileName.length() - 3);
-
+    std::string stem = fileName.substr(0, fileName.find('.'));
+    std::string value = stem.substr(stem.find_last_of('-') + 1);
     std::ifstream fontFile(filePath, std::ios_base::binary | std::ios_base::in);
     if(!fontFile.is_open())
     {
@@ -73,6 +86,7 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
     }
 
     auto pFontPattern = std::make_shared<FontPattern>(fileName);
+    pFontPattern->SetValue(value);
     std::string line;
     std::vector<int> cols;
 
@@ -96,13 +110,13 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
         {
             if(0 != c)
             {
-                pFontPattern->AddSample({nW++, nH});
+                pFontPattern->AddSample(FontSample(nW++, nH));
             }
         }
         nH++;
     }
 
-    pFontPattern->SetCenter({nWidth / 2, nH / 2});
+    pFontPattern->SetCenter(FontSample(nWidth / 2, nH / 2));
 
     return pFontPattern;
 }
@@ -110,11 +124,16 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
 void FontPattern::Split(const std::string& line, std::vector<int>& outValues)
 {
     outValues.clear();
-    std::vector<std::string> tokens{std::istringstream(line), std::istringstream};
-    std::transform(tokens.begin(), tokens.end(), outValues.begin(), [](const std::string& v) { return std::stoi(v); });
+    for(auto c : line)
+    {
+        if(!std::isspace(c))
+        {
+            outValues.push_back(c - '0');
+        }
+    }
 }
 
-void FontPattern::SetCenter(FontSample& center)
+void FontPattern::SetCenter(const FontSample& center)
 {
     for(auto& cSample : mSamples)
     {
