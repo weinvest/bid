@@ -118,6 +118,6 @@ private:
     FindFiles(fromDir,pattern,files);
     for(auto& file : files)
     {
-        fs::copy_file(file,toDir);
+        //TODO:fs::copy_file(file,toDir);
     }
 }

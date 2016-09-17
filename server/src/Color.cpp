@@ -2,7 +2,7 @@
 #include "Color.h"
 const uint8_t Color::BACKGROUND_MIN_THRESHOLD = 20;
 const uint8_t Color::BACKGROUND_MAX_THRESHOLD = 235;
-const uint8_t BACKGROUND_H_V_THRESHOLD = 70 * 2.56;
+const uint8_t Color::BACKGROUND_H_V_THRESHOLD = 70 * 2.56;
 
 bool Color::IsBackground(uint8_t r, uint8_t g, uint8_t b)
 {
