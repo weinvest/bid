@@ -36,8 +36,10 @@ public:
     const auto& GetSamples() const { return mSamples; }
 
     const auto& GetValue() const { return mValue; }
-private:
+
     void SetValue(const std::string& v) { mValue = v; }
+    
+private:
     void AddSample(const FontSample& sample);
     void ComputeSize( void );
     void SetCenter(const FontSample& center);

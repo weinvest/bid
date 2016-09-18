@@ -6,6 +6,9 @@
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include "FontScanner.h"
+#include "IndexScanner.h"
+#include "FontScanContext.h"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -16,37 +19,61 @@ using boost::shared_ptr;
 
 class ReCaptchaHandler : virtual public ReCaptchaIf {
  public:
-  ReCaptchaHandler() {
-    // Your initialization goes here
+  ReCaptchaHandler(const std::string& fontRoot)
+  :mContext(fontRoot)
+  ,mIndexScanner(mContext)
+  {
   }
 
   void doCenterScan(FontCenterScanResponse& _return, const FontCenterScanRequest& req) {
-    // Your implementation goes here
-    printf("doCenterScan\n");
+      CImage<uint8_t> image;
+      image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
+      mScanner.Scan(_return
+          , req.centerWindows.begin()
+          , req.centerWindows.end()
+          , image
+          , mContext);
   }
 
   void doCenterScanByIndex(FontCenterScanIndexResponse& _return, const FontCenterScanIndexRequest& req) {
-    // Your implementation goes here
-    printf("doCenterScanByIndex\n");
+     auto& areas = mIndexScanner.Scan(req, _return.guessId);
+
+     CImage<uint8_t> image;
+     image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
+     mScanner.Scan(_return
+         , req.centerWindows.begin()
+         , req.centerWindows.end()
+         , image
+         , mContext);
   }
 
   void giveCenterScanFeedback(FontCenterScanIndexFeedbackResponse& _return, const FontCenterScanIndexFeedbackRequest& req) {
     // Your implementation goes here
-    printf("giveCenterScanFeedback\n");
+    mIndexScanner.AcceptFeedback(req);
+    _return.status = 0;
   }
 
+private:
+    FontScanContext mContext;
+    FontScanner mScanner;
+    IndexScanner mIndexScanner;
 };
 
 int main(int argc, char **argv) {
-  int port = 9090;
-  shared_ptr<ReCaptchaHandler> handler(new ReCaptchaHandler());
-  shared_ptr<TProcessor> processor(new ReCaptchaProcessor(handler));
-  shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-  shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-  shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+    if(2 != argc)
+    {
+        printf("usage: ReCaptcha [font root directory]\n");
+        return -1;
+    }
 
-  TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-  server.serve();
-  return 0;
+    int port = 9090;
+    shared_ptr<ReCaptchaHandler> handler(new ReCaptchaHandler(argv[1]));
+    shared_ptr<TProcessor> processor(new ReCaptchaProcessor(handler));
+    shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+    shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
+    shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+
+    TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+    server.serve();
+    return 0;
 }
-

@@ -27,6 +27,7 @@ struct FontCenterScanResponse
     1: required i32 status;
     2: optional string message;
     3: required list<string> results;
+    4: required i32 guessId;
 }
 
 //-----------------------Font Center Scan Index-------------------------
@@ -34,18 +35,12 @@ const i32 RECAPTICHA_MESSAGE_FONT_CENTER_SCAN_INDEX = 100001
 struct FontCenterScanIndexRequest
 {
     1: required binary image;
-    2: required list<WindowArea> centerWindows;
-    3: required list<WindowArea> indexAreas;
+    2: required list<WindowArea> centerWindows1; //first WindowAreas is index1
+    3: required list<WindowArea> centerWindows2; //first WindowAreas is index2
     4: required string desiredIndexValue;
 }
 
-struct FontCenterScanIndexResponse
-{
-    1: required i32 status;
-    2: optional string message;
-    3: required list<string> results;
-    4: required i32 guessId;
-}
+typedef FontCenterScanResponse FontCenterScanIndexResponse;
 
 //----------------------Font Center Scan Index Feedback----------------
 const i32 RECAPTICHA_MESSAGE_FONT_CENTER_SCAN_INDEX_FEEDBACK = 100002

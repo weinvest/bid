@@ -131,11 +131,15 @@ FontScanner::FontScanner(int32_t nThreads)
     tbb::task_scheduler_init init(nThreads);
 }
 
-void FontScanner::Scan(FontCenterScanResponse& resp, WindowAreas& areas, CImg<uint8_t>& image, FontScanContext& context)
+void FontScanner::Scan(FontCenterScanResponse& resp
+    , WindowAreas::iterator areaBegin
+    , WindowAreas::iterator areaEnd
+    , CImg<uint8_t>& image
+    , FontScanContext& context)
 {
-    for(auto& area : areas)
+    for(auto itArea = areaBegin; itArea != areaEnd; ++itArea)
     {
-        FontScanJoiner joiner(area, image, context);
+        FontScanJoiner joiner(*itArea, image, context);
         auto& fontPatterns = context.GetFontPatterns();
         tbb::parallel_reduce( tbb::blocked_range<FontPatterns::const_iterator>(fontPatterns.begin(), fontPatterns.end()), joiner );
         resp.results.push_back(joiner.GetValue());

@@ -45,7 +45,8 @@ public:
     FontScanner(int32_t nThreads);
 
     void Scan(FontCenterScanResponse& resp
-        , WindowAreas& areas
+        , WindowAreas::iterator areaBegin
+        , WindowAreas::iterator areaEnd
         , CImg<uint8_t>& image
         , FontScanContext& context);
 
