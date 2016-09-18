@@ -68,7 +68,7 @@ class FullRecognizer(object):
             return ret1
 
         loseDiff = float(loseCount1 - loseCount2) / float(maxCount1 - maxCount2)
-        if loseDiff < 0.2:
+        if loseDiff < 0.12:
             return ret1
 
         return ret2
@@ -82,7 +82,7 @@ class FullRecognizer(object):
                 count = 0
                 loseCount = 0
                 tolerateCount = int(len(fontPattern.elements) * 0.2)
-                colors = []
+                #colors = []
                 for ww, hh in fontPattern.elements:
                     count += 1
                     rw, rh = w + ww, h + hh
@@ -96,11 +96,13 @@ class FullRecognizer(object):
 
                     if loseCount > tolerateCount:
                         break
-                    elif rw >= 0 and rw < img.width and rh >=0 and rh < img.height:
-                        colors.append(color.rgb2hsv(img.getpixel((rw, rh))))
+                    # elif rw >= 0 and rw < img.width and rh >=0 and rh < img.height:
+                    #     colors.append(color.rgb2hsv(img.getpixel((rw, rh))))
+                # if fontName == 'seal' and value == '5':
+                #     print loseCount,len(fontPattern.elements)
 
                 if loseCount <= tolerateCount:
-                    ret1 = (value, fontPattern, loseCount, count, w, h)
+                    ret1 = (value, fontPattern, loseCount, len(fontPattern.elements), w, h)
                     ret = self.compareScanResult(ret, ret1)
                     candidates.append((loseCount, value, fontPattern))
 
