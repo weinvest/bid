@@ -327,6 +327,10 @@ void FontCenterScanResponse::__set_results(const std::vector<std::string> & val)
   this->results = val;
 }
 
+void FontCenterScanResponse::__set_guessId(const int32_t val) {
+  this->guessId = val;
+}
+
 uint32_t FontCenterScanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -341,6 +345,7 @@ uint32_t FontCenterScanResponse::read(::apache::thrift::protocol::TProtocol* ipr
 
   bool isset_status = false;
   bool isset_results = false;
+  bool isset_guessId = false;
 
   while (true)
   {
@@ -386,6 +391,14 @@ uint32_t FontCenterScanResponse::read(::apache::thrift::protocol::TProtocol* ipr
           xfer += iprot->skip(ftype);
         }
         break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->guessId);
+          isset_guessId = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -398,6 +411,8 @@ uint32_t FontCenterScanResponse::read(::apache::thrift::protocol::TProtocol* ipr
   if (!isset_status)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   if (!isset_results)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
+  if (!isset_guessId)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
@@ -428,6 +443,10 @@ uint32_t FontCenterScanResponse::write(::apache::thrift::protocol::TProtocol* op
   }
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("guessId", ::apache::thrift::protocol::T_I32, 4);
+  xfer += oprot->writeI32(this->guessId);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -438,6 +457,7 @@ void swap(FontCenterScanResponse &a, FontCenterScanResponse &b) {
   swap(a.status, b.status);
   swap(a.message, b.message);
   swap(a.results, b.results);
+  swap(a.guessId, b.guessId);
   swap(a.__isset, b.__isset);
 }
 
@@ -445,12 +465,14 @@ FontCenterScanResponse::FontCenterScanResponse(const FontCenterScanResponse& oth
   status = other16.status;
   message = other16.message;
   results = other16.results;
+  guessId = other16.guessId;
   __isset = other16.__isset;
 }
 FontCenterScanResponse& FontCenterScanResponse::operator=(const FontCenterScanResponse& other17) {
   status = other17.status;
   message = other17.message;
   results = other17.results;
+  guessId = other17.guessId;
   __isset = other17.__isset;
   return *this;
 }
@@ -460,6 +482,7 @@ void FontCenterScanResponse::printTo(std::ostream& out) const {
   out << "status=" << to_string(status);
   out << ", " << "message="; (__isset.message ? (out << to_string(message)) : (out << "<null>"));
   out << ", " << "results=" << to_string(results);
+  out << ", " << "guessId=" << to_string(guessId);
   out << ")";
 }
 
@@ -472,12 +495,12 @@ void FontCenterScanIndexRequest::__set_image(const std::string& val) {
   this->image = val;
 }
 
-void FontCenterScanIndexRequest::__set_centerWindows(const std::vector<WindowArea> & val) {
-  this->centerWindows = val;
+void FontCenterScanIndexRequest::__set_centerWindows1(const std::vector<WindowArea> & val) {
+  this->centerWindows1 = val;
 }
 
-void FontCenterScanIndexRequest::__set_indexAreas(const std::vector<WindowArea> & val) {
-  this->indexAreas = val;
+void FontCenterScanIndexRequest::__set_centerWindows2(const std::vector<WindowArea> & val) {
+  this->centerWindows2 = val;
 }
 
 void FontCenterScanIndexRequest::__set_desiredIndexValue(const std::string& val) {
@@ -497,8 +520,8 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
   using ::apache::thrift::protocol::TProtocolException;
 
   bool isset_image = false;
-  bool isset_centerWindows = false;
-  bool isset_indexAreas = false;
+  bool isset_centerWindows1 = false;
+  bool isset_centerWindows2 = false;
   bool isset_desiredIndexValue = false;
 
   while (true)
@@ -520,19 +543,19 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
       case 2:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
-            this->centerWindows.clear();
+            this->centerWindows1.clear();
             uint32_t _size18;
             ::apache::thrift::protocol::TType _etype21;
             xfer += iprot->readListBegin(_etype21, _size18);
-            this->centerWindows.resize(_size18);
+            this->centerWindows1.resize(_size18);
             uint32_t _i22;
             for (_i22 = 0; _i22 < _size18; ++_i22)
             {
-              xfer += this->centerWindows[_i22].read(iprot);
+              xfer += this->centerWindows1[_i22].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
-          isset_centerWindows = true;
+          isset_centerWindows1 = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -540,19 +563,19 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
       case 3:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
-            this->indexAreas.clear();
+            this->centerWindows2.clear();
             uint32_t _size23;
             ::apache::thrift::protocol::TType _etype26;
             xfer += iprot->readListBegin(_etype26, _size23);
-            this->indexAreas.resize(_size23);
+            this->centerWindows2.resize(_size23);
             uint32_t _i27;
             for (_i27 = 0; _i27 < _size23; ++_i27)
             {
-              xfer += this->indexAreas[_i27].read(iprot);
+              xfer += this->centerWindows2[_i27].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
-          isset_indexAreas = true;
+          isset_centerWindows2 = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -576,9 +599,9 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
 
   if (!isset_image)
     throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_centerWindows)
+  if (!isset_centerWindows1)
     throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_indexAreas)
+  if (!isset_centerWindows2)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   if (!isset_desiredIndexValue)
     throw TProtocolException(TProtocolException::INVALID_DATA);
@@ -594,11 +617,11 @@ uint32_t FontCenterScanIndexRequest::write(::apache::thrift::protocol::TProtocol
   xfer += oprot->writeBinary(this->image);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("centerWindows", ::apache::thrift::protocol::T_LIST, 2);
+  xfer += oprot->writeFieldBegin("centerWindows1", ::apache::thrift::protocol::T_LIST, 2);
   {
-    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->centerWindows.size()));
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->centerWindows1.size()));
     std::vector<WindowArea> ::const_iterator _iter28;
-    for (_iter28 = this->centerWindows.begin(); _iter28 != this->centerWindows.end(); ++_iter28)
+    for (_iter28 = this->centerWindows1.begin(); _iter28 != this->centerWindows1.end(); ++_iter28)
     {
       xfer += (*_iter28).write(oprot);
     }
@@ -606,11 +629,11 @@ uint32_t FontCenterScanIndexRequest::write(::apache::thrift::protocol::TProtocol
   }
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("indexAreas", ::apache::thrift::protocol::T_LIST, 3);
+  xfer += oprot->writeFieldBegin("centerWindows2", ::apache::thrift::protocol::T_LIST, 3);
   {
-    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->indexAreas.size()));
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->centerWindows2.size()));
     std::vector<WindowArea> ::const_iterator _iter29;
-    for (_iter29 = this->indexAreas.begin(); _iter29 != this->indexAreas.end(); ++_iter29)
+    for (_iter29 = this->centerWindows2.begin(); _iter29 != this->centerWindows2.end(); ++_iter29)
     {
       xfer += (*_iter29).write(oprot);
     }
@@ -630,21 +653,21 @@ uint32_t FontCenterScanIndexRequest::write(::apache::thrift::protocol::TProtocol
 void swap(FontCenterScanIndexRequest &a, FontCenterScanIndexRequest &b) {
   using ::std::swap;
   swap(a.image, b.image);
-  swap(a.centerWindows, b.centerWindows);
-  swap(a.indexAreas, b.indexAreas);
+  swap(a.centerWindows1, b.centerWindows1);
+  swap(a.centerWindows2, b.centerWindows2);
   swap(a.desiredIndexValue, b.desiredIndexValue);
 }
 
 FontCenterScanIndexRequest::FontCenterScanIndexRequest(const FontCenterScanIndexRequest& other30) {
   image = other30.image;
-  centerWindows = other30.centerWindows;
-  indexAreas = other30.indexAreas;
+  centerWindows1 = other30.centerWindows1;
+  centerWindows2 = other30.centerWindows2;
   desiredIndexValue = other30.desiredIndexValue;
 }
 FontCenterScanIndexRequest& FontCenterScanIndexRequest::operator=(const FontCenterScanIndexRequest& other31) {
   image = other31.image;
-  centerWindows = other31.centerWindows;
-  indexAreas = other31.indexAreas;
+  centerWindows1 = other31.centerWindows1;
+  centerWindows2 = other31.centerWindows2;
   desiredIndexValue = other31.desiredIndexValue;
   return *this;
 }
@@ -652,186 +675,9 @@ void FontCenterScanIndexRequest::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "FontCenterScanIndexRequest(";
   out << "image=" << to_string(image);
-  out << ", " << "centerWindows=" << to_string(centerWindows);
-  out << ", " << "indexAreas=" << to_string(indexAreas);
+  out << ", " << "centerWindows1=" << to_string(centerWindows1);
+  out << ", " << "centerWindows2=" << to_string(centerWindows2);
   out << ", " << "desiredIndexValue=" << to_string(desiredIndexValue);
-  out << ")";
-}
-
-
-FontCenterScanIndexResponse::~FontCenterScanIndexResponse() throw() {
-}
-
-
-void FontCenterScanIndexResponse::__set_status(const int32_t val) {
-  this->status = val;
-}
-
-void FontCenterScanIndexResponse::__set_message(const std::string& val) {
-  this->message = val;
-__isset.message = true;
-}
-
-void FontCenterScanIndexResponse::__set_results(const std::vector<std::string> & val) {
-  this->results = val;
-}
-
-void FontCenterScanIndexResponse::__set_guessId(const int32_t val) {
-  this->guessId = val;
-}
-
-uint32_t FontCenterScanIndexResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-  bool isset_status = false;
-  bool isset_results = false;
-  bool isset_guessId = false;
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-        if (ftype == ::apache::thrift::protocol::T_I32) {
-          xfer += iprot->readI32(this->status);
-          isset_status = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 2:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->message);
-          this->__isset.message = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 3:
-        if (ftype == ::apache::thrift::protocol::T_LIST) {
-          {
-            this->results.clear();
-            uint32_t _size32;
-            ::apache::thrift::protocol::TType _etype35;
-            xfer += iprot->readListBegin(_etype35, _size32);
-            this->results.resize(_size32);
-            uint32_t _i36;
-            for (_i36 = 0; _i36 < _size32; ++_i36)
-            {
-              xfer += iprot->readString(this->results[_i36]);
-            }
-            xfer += iprot->readListEnd();
-          }
-          isset_results = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      case 4:
-        if (ftype == ::apache::thrift::protocol::T_I32) {
-          xfer += iprot->readI32(this->guessId);
-          isset_guessId = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  if (!isset_status)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_results)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_guessId)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  return xfer;
-}
-
-uint32_t FontCenterScanIndexResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
-  uint32_t xfer = 0;
-  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
-  xfer += oprot->writeStructBegin("FontCenterScanIndexResponse");
-
-  xfer += oprot->writeFieldBegin("status", ::apache::thrift::protocol::T_I32, 1);
-  xfer += oprot->writeI32(this->status);
-  xfer += oprot->writeFieldEnd();
-
-  if (this->__isset.message) {
-    xfer += oprot->writeFieldBegin("message", ::apache::thrift::protocol::T_STRING, 2);
-    xfer += oprot->writeString(this->message);
-    xfer += oprot->writeFieldEnd();
-  }
-  xfer += oprot->writeFieldBegin("results", ::apache::thrift::protocol::T_LIST, 3);
-  {
-    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->results.size()));
-    std::vector<std::string> ::const_iterator _iter37;
-    for (_iter37 = this->results.begin(); _iter37 != this->results.end(); ++_iter37)
-    {
-      xfer += oprot->writeString((*_iter37));
-    }
-    xfer += oprot->writeListEnd();
-  }
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldBegin("guessId", ::apache::thrift::protocol::T_I32, 4);
-  xfer += oprot->writeI32(this->guessId);
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldStop();
-  xfer += oprot->writeStructEnd();
-  return xfer;
-}
-
-void swap(FontCenterScanIndexResponse &a, FontCenterScanIndexResponse &b) {
-  using ::std::swap;
-  swap(a.status, b.status);
-  swap(a.message, b.message);
-  swap(a.results, b.results);
-  swap(a.guessId, b.guessId);
-  swap(a.__isset, b.__isset);
-}
-
-FontCenterScanIndexResponse::FontCenterScanIndexResponse(const FontCenterScanIndexResponse& other38) {
-  status = other38.status;
-  message = other38.message;
-  results = other38.results;
-  guessId = other38.guessId;
-  __isset = other38.__isset;
-}
-FontCenterScanIndexResponse& FontCenterScanIndexResponse::operator=(const FontCenterScanIndexResponse& other39) {
-  status = other39.status;
-  message = other39.message;
-  results = other39.results;
-  guessId = other39.guessId;
-  __isset = other39.__isset;
-  return *this;
-}
-void FontCenterScanIndexResponse::printTo(std::ostream& out) const {
-  using ::apache::thrift::to_string;
-  out << "FontCenterScanIndexResponse(";
-  out << "status=" << to_string(status);
-  out << ", " << "message="; (__isset.message ? (out << to_string(message)) : (out << "<null>"));
-  out << ", " << "results=" << to_string(results);
-  out << ", " << "guessId=" << to_string(guessId);
   out << ")";
 }
 
@@ -927,13 +773,13 @@ void swap(FontCenterScanIndexFeedbackRequest &a, FontCenterScanIndexFeedbackRequ
   swap(a.success, b.success);
 }
 
-FontCenterScanIndexFeedbackRequest::FontCenterScanIndexFeedbackRequest(const FontCenterScanIndexFeedbackRequest& other40) {
-  guessId = other40.guessId;
-  success = other40.success;
+FontCenterScanIndexFeedbackRequest::FontCenterScanIndexFeedbackRequest(const FontCenterScanIndexFeedbackRequest& other32) {
+  guessId = other32.guessId;
+  success = other32.success;
 }
-FontCenterScanIndexFeedbackRequest& FontCenterScanIndexFeedbackRequest::operator=(const FontCenterScanIndexFeedbackRequest& other41) {
-  guessId = other41.guessId;
-  success = other41.success;
+FontCenterScanIndexFeedbackRequest& FontCenterScanIndexFeedbackRequest::operator=(const FontCenterScanIndexFeedbackRequest& other33) {
+  guessId = other33.guessId;
+  success = other33.success;
   return *this;
 }
 void FontCenterScanIndexFeedbackRequest::printTo(std::ostream& out) const {
@@ -1036,15 +882,15 @@ void swap(FontCenterScanIndexFeedbackResponse &a, FontCenterScanIndexFeedbackRes
   swap(a.__isset, b.__isset);
 }
 
-FontCenterScanIndexFeedbackResponse::FontCenterScanIndexFeedbackResponse(const FontCenterScanIndexFeedbackResponse& other42) {
-  status = other42.status;
-  message = other42.message;
-  __isset = other42.__isset;
+FontCenterScanIndexFeedbackResponse::FontCenterScanIndexFeedbackResponse(const FontCenterScanIndexFeedbackResponse& other34) {
+  status = other34.status;
+  message = other34.message;
+  __isset = other34.__isset;
 }
-FontCenterScanIndexFeedbackResponse& FontCenterScanIndexFeedbackResponse::operator=(const FontCenterScanIndexFeedbackResponse& other43) {
-  status = other43.status;
-  message = other43.message;
-  __isset = other43.__isset;
+FontCenterScanIndexFeedbackResponse& FontCenterScanIndexFeedbackResponse::operator=(const FontCenterScanIndexFeedbackResponse& other35) {
+  status = other35.status;
+  message = other35.message;
+  __isset = other35.__isset;
   return *this;
 }
 void FontCenterScanIndexFeedbackResponse::printTo(std::ostream& out) const {

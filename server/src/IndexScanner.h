@@ -13,29 +13,29 @@ class IndexScanner
 public:
     IndexScanner(FontScanContext& context);
 
-    WindowAreas& Scan(FontCenterScanIndexRequest& request, int32_t& guessId);
+    const WindowAreas& Scan(const FontCenterScanIndexRequest& request, CImg<uint8_t>& image, int32_t& guessId);
 
-    void AcceptFeedback(FontCenterScanIndexFeedbackRequest& feedback);
+    void AcceptFeedback(const FontCenterScanIndexFeedbackRequest& feedback);
 private:
     double ScanIndex(FontPatterns::const_iterator begin
         , FontPatterns::const_iterator end
-        , WindowArea& area
+        , const WindowArea& area
         , CImg<uint8_t>& image);
 
     double ScanIndex(FontPattern::Ptr pPattern
-        , WindowArea& area
+        , const WindowArea& area
         , CImg<uint8_t>& image);
 
     struct GuessInfo
     {
         typedef GuessInfo* Ptr;
-        Pattern::Ptr pattern;
+        FontPattern::Ptr pattern;
         int32_t guessCount;
         std::string guessValue;
     };
 
     FontScanContext& mContext;
-    std::map<std::string, FontPatterns> > mIndexPatterns;
+    std::map<std::string, FontPatterns> mIndexPatterns;
     std::map<int32_t, GuessInfo::Ptr> mGuessInfos;
     std::map<std::string, std::vector<GuessInfo::Ptr> > mGuessValueInfos;
 };

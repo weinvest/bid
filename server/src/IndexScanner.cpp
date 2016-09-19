@@ -1,4 +1,6 @@
 #include "IndexScanner.h"
+#include "FontScanContext.h"
+#include "Color.h"
 
 IndexScanner::IndexScanner(FontScanContext& context)
     :mContext(context)
@@ -10,13 +12,13 @@ IndexScanner::IndexScanner(FontScanContext& context)
 }
 
 double IndexScanner::ScanIndex(FontPattern::Ptr pPattern
-    , WindowArea& area
+    , const WindowArea& area
     , CImg<uint8_t>& image)
 {
     double similar = 0.0;
-    for(auto nCH = mArea.top; nCH < mArea.bottom; ++nCH)
+    for(auto nCH = area.top; nCH < area.bottom; ++nCH)
     {
-        for(auto nCW = mArea.left; nCW < mArea.right; ++nCW)
+        for(auto nCW = area.left; nCW < area.right; ++nCW)
         {
             double loseCount = 0.0;
             double matchCount = 0.0;
@@ -25,11 +27,11 @@ double IndexScanner::ScanIndex(FontPattern::Ptr pPattern
                 int32_t w = nCW + sample.w;
                 int32_t h = nCH + sample.h;
 
-                if(w >= mImage.width() || w < 0 || h >= mImage.height() || h < 0)
+                if(w >= image.width() || w < 0 || h >= image.height() || h < 0)
                 {
                     loseCount += 1.0;
                 }
-                else if(Color::IsBackground(mImage(w, h, 0), mImage(w, h, 1), mImage(w, h, 2)))
+                else if(Color::IsBackground(image(w, h, 0), image(w, h, 1), image(w, h, 2)))
                 {
                     loseCount += 1.0;
                 }
@@ -52,7 +54,7 @@ double IndexScanner::ScanIndex(FontPattern::Ptr pPattern
 
 double IndexScanner::ScanIndex(FontPatterns::const_iterator begin
     , FontPatterns::const_iterator end
-    , WindowArea& area
+    , const WindowArea& area
     , CImg<uint8_t>& image)
 {
     double similar = 0;
@@ -68,27 +70,27 @@ double IndexScanner::ScanIndex(FontPatterns::const_iterator begin
     return similar;
 }
 
-WindowAreas& IndexScanner::Scan(FontCenterScanIndexRequest& request, int32_t& guessId)
+const WindowAreas& IndexScanner::Scan(const FontCenterScanIndexRequest& request, CImg<uint8_t>& image, int32_t& guessId)
 {
     auto itPattern = mIndexPatterns.find(request.desiredIndexValue);
     if(mIndexPatterns.end() != itPattern)
     {
-        auto similar1 = ScanIndex(itPattern->second.begin()
-            , itPattern->second.end()
+        auto similar1 = ScanIndex(itPattern->second.cbegin()
+            , itPattern->second.cend()
             , request.centerWindows1[0]
-            , request.image);
+            , image);
 
-        auto similar2 = ScanIndex(itPattern->second.begin()
-            , itPattern->second.end()
+        auto similar2 = ScanIndex(itPattern->second.cbegin()
+            , itPattern->second.cend()
             , request.centerWindows2[0]
-            , request.image);
+            , image);
 
         if(similar1 > similar2)
         {
             return request.centerWindows1;
         }
 
-        return return request.centerWindows2;
+        return request.centerWindows2;
     }
     else
     {
@@ -96,7 +98,7 @@ WindowAreas& IndexScanner::Scan(FontCenterScanIndexRequest& request, int32_t& gu
     }
 }
 
-void IndexScanner::AcceptFeedback(FontCenterScanIndexFeedbackRequest& feedback)
+void IndexScanner::AcceptFeedback(const FontCenterScanIndexFeedbackRequest& feedback)
 {
     if(feedback.success)
     {

@@ -29,6 +29,8 @@ struct RecognizeResultConfidence {
 
 extern const std::map<int, const char*> _RecognizeResultConfidence_VALUES_TO_NAMES;
 
+typedef class FontCenterScanResponse FontCenterScanIndexResponse;
+
 class WindowArea;
 
 class FontCenterScanRequest;
@@ -36,8 +38,6 @@ class FontCenterScanRequest;
 class FontCenterScanResponse;
 
 class FontCenterScanIndexRequest;
-
-class FontCenterScanIndexResponse;
 
 class FontCenterScanIndexFeedbackRequest;
 
@@ -153,13 +153,14 @@ class FontCenterScanResponse {
 
   FontCenterScanResponse(const FontCenterScanResponse&);
   FontCenterScanResponse& operator=(const FontCenterScanResponse&);
-  FontCenterScanResponse() : status(0), message() {
+  FontCenterScanResponse() : status(0), message(), guessId(0) {
   }
 
   virtual ~FontCenterScanResponse() throw();
   int32_t status;
   std::string message;
   std::vector<std::string>  results;
+  int32_t guessId;
 
   _FontCenterScanResponse__isset __isset;
 
@@ -168,6 +169,8 @@ class FontCenterScanResponse {
   void __set_message(const std::string& val);
 
   void __set_results(const std::vector<std::string> & val);
+
+  void __set_guessId(const int32_t val);
 
   bool operator == (const FontCenterScanResponse & rhs) const
   {
@@ -178,6 +181,8 @@ class FontCenterScanResponse {
     else if (__isset.message && !(message == rhs.message))
       return false;
     if (!(results == rhs.results))
+      return false;
+    if (!(guessId == rhs.guessId))
       return false;
     return true;
   }
@@ -212,15 +217,15 @@ class FontCenterScanIndexRequest {
 
   virtual ~FontCenterScanIndexRequest() throw();
   std::string image;
-  std::vector<WindowArea>  centerWindows;
-  std::vector<WindowArea>  indexAreas;
+  std::vector<WindowArea>  centerWindows1;
+  std::vector<WindowArea>  centerWindows2;
   std::string desiredIndexValue;
 
   void __set_image(const std::string& val);
 
-  void __set_centerWindows(const std::vector<WindowArea> & val);
+  void __set_centerWindows1(const std::vector<WindowArea> & val);
 
-  void __set_indexAreas(const std::vector<WindowArea> & val);
+  void __set_centerWindows2(const std::vector<WindowArea> & val);
 
   void __set_desiredIndexValue(const std::string& val);
 
@@ -228,9 +233,9 @@ class FontCenterScanIndexRequest {
   {
     if (!(image == rhs.image))
       return false;
-    if (!(centerWindows == rhs.centerWindows))
+    if (!(centerWindows1 == rhs.centerWindows1))
       return false;
-    if (!(indexAreas == rhs.indexAreas))
+    if (!(centerWindows2 == rhs.centerWindows2))
       return false;
     if (!(desiredIndexValue == rhs.desiredIndexValue))
       return false;
@@ -251,69 +256,6 @@ class FontCenterScanIndexRequest {
 void swap(FontCenterScanIndexRequest &a, FontCenterScanIndexRequest &b);
 
 inline std::ostream& operator<<(std::ostream& out, const FontCenterScanIndexRequest& obj)
-{
-  obj.printTo(out);
-  return out;
-}
-
-typedef struct _FontCenterScanIndexResponse__isset {
-  _FontCenterScanIndexResponse__isset() : message(false) {}
-  bool message :1;
-} _FontCenterScanIndexResponse__isset;
-
-class FontCenterScanIndexResponse {
- public:
-
-  FontCenterScanIndexResponse(const FontCenterScanIndexResponse&);
-  FontCenterScanIndexResponse& operator=(const FontCenterScanIndexResponse&);
-  FontCenterScanIndexResponse() : status(0), message(), guessId(0) {
-  }
-
-  virtual ~FontCenterScanIndexResponse() throw();
-  int32_t status;
-  std::string message;
-  std::vector<std::string>  results;
-  int32_t guessId;
-
-  _FontCenterScanIndexResponse__isset __isset;
-
-  void __set_status(const int32_t val);
-
-  void __set_message(const std::string& val);
-
-  void __set_results(const std::vector<std::string> & val);
-
-  void __set_guessId(const int32_t val);
-
-  bool operator == (const FontCenterScanIndexResponse & rhs) const
-  {
-    if (!(status == rhs.status))
-      return false;
-    if (__isset.message != rhs.__isset.message)
-      return false;
-    else if (__isset.message && !(message == rhs.message))
-      return false;
-    if (!(results == rhs.results))
-      return false;
-    if (!(guessId == rhs.guessId))
-      return false;
-    return true;
-  }
-  bool operator != (const FontCenterScanIndexResponse &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const FontCenterScanIndexResponse & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-  virtual void printTo(std::ostream& out) const;
-};
-
-void swap(FontCenterScanIndexResponse &a, FontCenterScanIndexResponse &b);
-
-inline std::ostream& operator<<(std::ostream& out, const FontCenterScanIndexResponse& obj)
 {
   obj.printTo(out);
   return out;

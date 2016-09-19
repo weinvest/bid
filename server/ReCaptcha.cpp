@@ -26,7 +26,7 @@ class ReCaptchaHandler : virtual public ReCaptchaIf {
   }
 
   void doCenterScan(FontCenterScanResponse& _return, const FontCenterScanRequest& req) {
-      CImage<uint8_t> image;
+      CImg<uint8_t> image;
       image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
       mScanner.Scan(_return
           , req.centerWindows.begin()
@@ -36,11 +36,13 @@ class ReCaptchaHandler : virtual public ReCaptchaIf {
   }
 
   void doCenterScanByIndex(FontCenterScanIndexResponse& _return, const FontCenterScanIndexRequest& req) {
-     auto& areas = mIndexScanner.Scan(req, _return.guessId);
+      CImg<uint8_t> image;
+      image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
 
-     CImage<uint8_t> image;
-     image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
-     mScanner.Scan(_return
+      auto& areas = mIndexScanner.Scan(req, image, _return.guessId);
+
+
+      mScanner.Scan(_return
          , req.centerWindows.begin()
          , req.centerWindows.end()
          , image
