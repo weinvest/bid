@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include "FontPattern.h"
+#include "Color.h"
 FontSample::FontSample()
     :FontSample(0, 0)
 {
@@ -117,6 +118,29 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
     }
 
     pFontPattern->SetCenter(FontSample(nWidth / 2, nH / 2));
+
+    return pFontPattern;
+}
+
+FontPattern::Ptr FontPattern::ClipFromArea(CImg<uint8_t>& img, WindowArea& area, const std::string& name)
+{
+    auto pFontPattern = std::make_shared<FontPattern>(name);
+    for(int32_t nH = area.top; nH < area.bottom; ++nH)
+    {
+        for(int32_t nW = area.left; nW < area.right; ++nW)
+        {
+            uint8_t r = img(nW, nH, 0, 0);
+            uint8_t g = img(nW, nH, 0, 1);
+            uint8_t b = img(nW, nH, 0, 2);
+            if(!Color::IsBackground(r, g, b))
+            {
+                pFontPattern->AddSample(FontSample(nW++, nH++));
+            }
+        }
+    }
+
+    pFontPattern->ComputeSize();
+    pFontPattern->SetCenter(FontSample(pFontPattern->GetWidth() / 2, pFontPattern->GetHeight() / 2));
 
     return pFontPattern;
 }

@@ -4,11 +4,13 @@
 #include <stdint.h>
 #include <atomic>
 #include <string>
+#include "FontPattern.h"
 #include "tbb/parallel_reduce.h"
 #include "tbb/blocked_range.h"
 #include "FontScanDataTypes.h"
 
 class FontScanContext;
+struct FontScanResult;
 class FontScanJoiner
 {
 public:
@@ -24,7 +26,7 @@ public:
 
     void join(const FontScanJoiner& o);
 
-    const auto& GetValue() const { return nullptr == mScanResult ? EMPTY_VALUE : mScanResult->pattern->GetValue(); }
+    const auto& GetValue() const;
 private:
     FontScanResult* Scan(int32_t nW, int32_t nH, FontPattern::Ptr pPattern);
     FontScanResult* Compare(FontScanResult* l, FontScanResult* r);
@@ -45,8 +47,8 @@ public:
     FontScanner(int32_t nThreads);
 
     void Scan(FontCenterScanResponse& resp
-        , WindowAreas::iterator areaBegin
-        , WindowAreas::iterator areaEnd
+        , WindowAreas::const_iterator areaBegin
+        , WindowAreas::const_iterator areaEnd
         , CImg<uint8_t>& image
         , FontScanContext& context);
 

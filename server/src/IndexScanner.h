@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include "ReCaptcha_types.h"
-#include "FontScanDataTypes.h"
 #include "FontPattern.h"
 
 class FontScanContext;

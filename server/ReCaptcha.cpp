@@ -6,10 +6,11 @@
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <boost/program_options.hpp>
 #include "FontScanner.h"
 #include "IndexScanner.h"
 #include "FontScanContext.h"
-
+#include <thread>
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
@@ -19,8 +20,9 @@ using boost::shared_ptr;
 
 class ReCaptchaHandler : virtual public ReCaptchaIf {
  public:
-  ReCaptchaHandler(const std::string& fontRoot)
+  ReCaptchaHandler(const std::string& fontRoot, int32_t nThreads)
   :mContext(fontRoot)
+  ,mScanner(nThreads)
   ,mIndexScanner(mContext)
   {
   }
@@ -43,8 +45,8 @@ class ReCaptchaHandler : virtual public ReCaptchaIf {
 
 
       mScanner.Scan(_return
-         , req.centerWindows.begin()
-         , req.centerWindows.end()
+         , areas.cbegin()
+         , areas.cend()
          , image
          , mContext);
   }
@@ -62,14 +64,29 @@ private:
 };
 
 int main(int argc, char **argv) {
-    if(2 != argc)
+
+    using namespace boost::program_options;
+    options_description opts("Reca options");
+    opts.add_options()
+            ("help,h","print this help information.")
+            ("port,p", value<int32_t>()->default_value(9090), "listen port")
+            ("fontRoot,f",value<std::string>(),"root directory 4 font")
+            ("threads,t",value<int32_t>()->default_value(std::thread::hardware_concurrency()),"password");
+
+    variables_map vm;
+    store(parse_command_line(argc,argv,opts),vm);
+
+    if(vm.count("help") || vm.count("fontRoot"))
     {
-        printf("usage: ReCaptcha [font root directory]\n");
-        return -1;
+        std::cout<<opts<<std::endl;
+        return 0;
     }
 
-    int port = 9090;
-    shared_ptr<ReCaptchaHandler> handler(new ReCaptchaHandler(argv[1]));
+    std::string fontRoot = vm["fontRoot"].as<std::string>();
+    auto nThreads = vm["threads"].as<int32_t>();
+    auto port = vm["port"].as<int32_t>();
+
+    shared_ptr<ReCaptchaHandler> handler(new ReCaptchaHandler(fontRoot, nThreads));
     shared_ptr<TProcessor> processor(new ReCaptchaProcessor(handler));
     shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
     shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());

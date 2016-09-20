@@ -26,6 +26,11 @@ FontScanJoiner::~FontScanJoiner()
 
 }
 
+const auto& FontScanJoiner::GetValue() const
+{
+    return nullptr == mScanResult ? EMPTY_VALUE : mScanResult->pattern->GetValue();
+}
+
 FontScanResult* FontScanJoiner::Scan(int32_t nCW, int32_t nCH, FontPattern::Ptr pPattern)
 {
     FontScanResult* pCurrentResult = mContext.CreateFontScanResult();
@@ -132,8 +137,8 @@ FontScanner::FontScanner(int32_t nThreads)
 }
 
 void FontScanner::Scan(FontCenterScanResponse& resp
-    , WindowAreas::iterator areaBegin
-    , WindowAreas::iterator areaEnd
+    , WindowAreas::const_iterator areaBegin
+    , WindowAreas::const_iterator areaEnd
     , CImg<uint8_t>& image
     , FontScanContext& context)
 {

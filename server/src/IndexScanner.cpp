@@ -94,7 +94,7 @@ const WindowAreas& IndexScanner::Scan(const FontCenterScanIndexRequest& request,
     }
     else
     {
-
+        return request.centerWindows2;
     }
 }
 
@@ -105,8 +105,8 @@ void IndexScanner::AcceptFeedback(const FontCenterScanIndexFeedbackRequest& feed
         auto itGuessInfo = mGuessInfos.find(feedback.guessId);
         if(itGuessInfo != mGuessInfos.end())
         {
-            auto pPattern = itGuessInfo->second.pattern;
-            auto& value = itGuessInfo->second.guessValue;
+            auto pPattern = itGuessInfo->second->pattern;
+            auto& value = itGuessInfo->second->guessValue;
             mGuessValueInfos.erase(value);
             mGuessInfos.erase(itGuessInfo);
 

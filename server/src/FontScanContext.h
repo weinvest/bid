@@ -1,9 +1,18 @@
 #ifndef _FONT_CONTEXT_H
 #define _FONT_CONTEXT_H
-#include "FontScanDataTypes.h"
 #include <array>
 #include <atomic>
 #include <vector>
+#include "FontPattern.h"
+
+
+struct FontScanResult
+{
+    FontSample center;
+    FontPattern::Ptr pattern;
+    std::set<FontSample> matched;
+    std::set<FontSample> unMatched;
+};
 
 class FontScanContext
 {

@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include "FontScanDataTypes.h"
 
 struct FontSample
 {
@@ -18,7 +19,8 @@ class FontPattern
 {
 public:
     typedef std::shared_ptr<FontPattern> Ptr;
-    static  Ptr Load(const std::string& filePath);
+    static Ptr Load(const std::string& filePath);
+    static Ptr ClipFromArea(CImg<uint8_t>& img, WindowArea& area, const std::string& name);
 
     FontPattern(const std::string& name);
 
@@ -38,7 +40,7 @@ public:
     const auto& GetValue() const { return mValue; }
 
     void SetValue(const std::string& v) { mValue = v; }
-    
+
 private:
     void AddSample(const FontSample& sample);
     void ComputeSize( void );
@@ -55,4 +57,6 @@ private:
     std::set<FontSample> mSamples;
     std::string mValue;
 };
+
+typedef std::vector<FontPattern::Ptr> FontPatterns;
 #endif

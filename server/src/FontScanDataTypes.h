@@ -9,17 +9,7 @@
 
 #include "CImg.h"
 #include "proto/ReCaptcha_types.h"
-#include "FontPattern.h"
 using namespace cimg_library;
 typedef std::vector<WindowArea> WindowAreas;
-typedef std::vector<FontPattern::Ptr> FontPatterns;
-
-struct FontScanResult
-{
-    FontSample center;
-    FontPattern::Ptr pattern;
-    std::set<FontSample> matched;
-    std::set<FontSample> unMatched;
-};
 
 #endif
