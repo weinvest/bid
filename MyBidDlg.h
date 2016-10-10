@@ -41,4 +41,9 @@ private:
 	CBidWorkDlg m_pBidWorkDlg;
 public:
 	afx_msg void OnTcnSelchangeMainTab(NMHDR *pNMHDR, LRESULT *pResult);
+	HACCEL mHAccel;
+
+	static const int HOT_KEY_REFRESH_VERIFY_CODE = 1001;
+	static const int HOT_KEY_BID_AGAIN = 1002;
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

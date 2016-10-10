@@ -72,8 +72,8 @@ public:
 	afx_msg void OnDoubleClickVerifyCodePictureArea();
 	CComboBox mStrategyCombox;
 	afx_msg void OnBnClickedStartCollectData();
-	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
+	afx_msg void OnBnClickedVcodeConfirmBtn();
+	afx_msg void OnBnClickedVcodeRejectBtn();
+	afx_msg void OnBnClickedReBid();
 
-	static const int HOT_KEY_REFRESH_VERIFY_CODE = 1;
-	static const int HOT_KEY_BID_AGAIN = 2;
 };

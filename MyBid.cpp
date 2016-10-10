@@ -66,6 +66,8 @@ BOOL CMyBidApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	//mHacclTable = LoadAccelerators(AfxGetInstanceHandle(),
+	//	MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
 	CMyBidDlg dlg;
 	m_pMainWnd = &dlg;
@@ -87,8 +89,18 @@ BOOL CMyBidApp::InitInstance()
 		delete pShellManager;
 	}
 
+
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
 	return FALSE;
 }
 
+BOOL CMyBidApp::ProcessMessageFilter(int code, LPMSG lpMsg)
+{
+	//if (code >= 0 && m_pMainWnd && mHacclTable)
+	//{
+	//	if (::TranslateAccelerator(m_pMainWnd->m_hWnd, mHacclTable, lpMsg))
+	//		return TRUE;
+	//}
+	return CWinApp::ProcessMessageFilter(code, lpMsg);
+}

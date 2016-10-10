@@ -7,6 +7,7 @@
 #include "MyBidDlg.h"
 #include "afxdialogex.h"
 #include "OCREngine.h"
+#include "Log.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -98,6 +99,9 @@ BOOL CMyBidDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+	mHAccel = LoadAccelerators(AfxGetInstanceHandle(),
+		MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
 	COCREngine::GetInstance()->Load("font");
 
@@ -220,4 +224,29 @@ void CMyBidDlg::OnTcnSelchangeMainTab(NMHDR *pNMHDR, LRESULT *pResult)
 		break;
 	}
 	*pResult = 0;
+}
+
+
+BOOL CMyBidDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (m_pBidWorkDlg.IsWindowVisible() 
+		&& mHAccel && ::TranslateAccelerator(m_hWnd, mHAccel, pMsg))
+	{
+		switch (pMsg->wParam)
+		{
+		case 'Y':
+			m_pBidWorkDlg.OnBnClickedVcodeConfirmBtn();
+			break;
+		case 'N':
+			m_pBidWorkDlg.OnBnClickedVcodeRejectBtn();
+			break;
+		case 'R':
+			m_pBidWorkDlg.OnBnClickedReBid();
+			break;
+		}
+
+		return true;
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

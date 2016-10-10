@@ -63,7 +63,9 @@ BEGIN_MESSAGE_MAP(CBidWorkDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_CONFIRM, &CBidWorkDlg::OnDoubleClickVerifyCodeConfirmArea)
 	ON_STN_DBLCLK(IDC_BIDPI_VERIFYCODE_PICTURE, &CBidWorkDlg::OnDoubleClickVerifyCodePictureArea)
 	ON_BN_CLICKED(IDC_START_COLLECT_DATA, &CBidWorkDlg::OnBnClickedStartCollectData)
-	ON_WM_HOTKEY()
+	ON_BN_CLICKED(IDC_VCODE_CONFIRM_BTN, &CBidWorkDlg::OnBnClickedVcodeConfirmBtn)
+	ON_BN_CLICKED(IDC_VCODE_REJECT_BTN, &CBidWorkDlg::OnBnClickedVcodeRejectBtn)
+	ON_BN_CLICKED(IDC_RE_BID, &CBidWorkDlg::OnBnClickedReBid)
 END_MESSAGE_MAP()
 
 
@@ -286,15 +288,6 @@ BOOL CBidWorkDlg::OnInitDialog()
 
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
 
-	if (0 == RegisterHotKey(GetSafeHwnd(), HOT_KEY_REFRESH_VERIFY_CODE, MOD_ALT, 'r'))
-	{
-		LOG_INFO("registe refresh verify code failed, %s", GetLastError());
-	}
-
-	if (0 == RegisterHotKey(GetSafeHwnd(), HOT_KEY_BID_AGAIN, MOD_ALT, 'b'))
-	{
-		LOG_INFO("registe bid again verify code failed, %s", GetLastError());
-	}
 
 
 	PixelAnyalizeAll("C:\\Users\\shgli\\Desktop\\verifycode");
@@ -419,15 +412,23 @@ void CBidWorkDlg::OnBnClickedStartCollectData()
 	}
 }
 
-void CBidWorkDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
+
+
+void CBidWorkDlg::OnBnClickedVcodeConfirmBtn()
 {
-	if (HOT_KEY_REFRESH_VERIFY_CODE == nHotKeyId)
-	{
-		LOG_INFO0("refresh verify code");
-	}
-	else if (HOT_KEY_BID_AGAIN == nHotKeyId)
-	{
-		LOG_INFO0("Bid again");
-	}
-	__super::OnHotKey(nHotKeyId, nKey1, nKey2);
+	// TODO: 在此添加控件通知处理程序代码
 }
+
+
+void CBidWorkDlg::OnBnClickedVcodeRejectBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CBidWorkDlg::OnBnClickedReBid()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+

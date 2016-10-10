@@ -23,6 +23,9 @@ public:
 // Overrides
 public:
 	virtual BOOL InitInstance();
+	virtual BOOL ProcessMessageFilter(int code, LPMSG lpMsg);
+
+	HACCEL mHacclTable;
 
 // Implementation
 
