@@ -28,6 +28,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{e6d173a5-4486-4212-90d8-a827c9862a86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Recaptal">
+      <UniqueIdentifier>{05e098ae-fb1f-464e-83fa-b03f4250dd5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -117,6 +120,12 @@
     <ClInclude Include="ocr\PixelBitAnalyze.h">
       <Filter>OCR</Filter>
     </ClInclude>
+    <ClInclude Include="recaptal\Recaptal.h">
+      <Filter>Recaptal</Filter>
+    </ClInclude>
+    <ClInclude Include="recaptal\NetworkProtocol.h">
+      <Filter>Recaptal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">
@@ -181,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="ocr\PixelBitAnalyze.cpp">
       <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="recaptal\Recaptal.cpp">
+      <Filter>Recaptal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

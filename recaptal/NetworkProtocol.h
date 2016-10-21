@@ -3,48 +3,62 @@
 typedef uint8_t u_char;
 typedef uint16_t u_short;
 typedef uint32_t u_int;
-#define	ETHER_ADDR_LEN		6
-/*
-* define struct of ethernet header , ip address , ip header and tcp header
-*/
-/* ethernet header */
-typedef struct ether_header {
-	u_char ether_shost[ETHER_ADDR_LEN]; /* source ethernet address, 8 bytes */
-	u_char ether_dhost[ETHER_ADDR_LEN]; /* destination ethernet addresss, 8 bytes */
-	u_short ether_type;                 /* ethernet type, 16 bytes */
-}ether_header;
+/* default snap length (maximum bytes per packet to capture) */
+#define SNAP_LEN 1518
 
-/* four bytes ip address */
-typedef struct ip_address {
-	u_char byte1;
-	u_char byte2;
-	u_char byte3;
-	u_char byte4;
-}ip_address;
+/* ethernet headers are always exactly 14 bytes [1] */
+#define SIZE_ETHERNET 14
 
-/* ipv4 header */
-typedef struct ip_header {
-	u_char ver_ihl;         /* version and ip header length */
-	u_char tos;             /* type of service */
-	u_short tlen;           /* total length */
-	u_short identification; /* identification */
-	u_short flags_fo;       // flags and fragment offset
-	u_char ttl;             /* time to live */
-	u_char proto;           /* protocol */
-	u_short crc;            /* header checksum */
-	ip_address saddr;       /* source address */
-	ip_address daddr;       /* destination address */
-	u_int op_pad;           /* option and padding */
-}ip_header;
+/* Ethernet addresses are 6 bytes */
+#define ETHER_ADDR_LEN	6
 
-/* tcp header */
-typedef struct tcp_header {
-	u_short th_sport;         /* source port */
-	u_short th_dport;         /* destination port */
-	u_int th_seq;             /* sequence number */
-	u_int th_ack;             /* acknowledgement number */
-	u_short th_len_resv_code; /* datagram length and reserved code */
-	u_short th_window;        /* window */
-	u_short th_sum;           /* checksum */
-	u_short th_urp;           /* urgent pointer */
-}tcp_header;
+/* Ethernet header */
+struct sniff_ethernet {
+	u_char  ether_dhost[ETHER_ADDR_LEN];    /* destination host address */
+	u_char  ether_shost[ETHER_ADDR_LEN];    /* source host address */
+	u_short ether_type;                     /* IP? ARP? RARP? etc */
+};
+
+/* IP header */
+struct sniff_ip {
+	u_char  ip_vhl;                 /* version << 4 | header length >> 2 */
+	u_char  ip_tos;                 /* type of service */
+	u_short ip_len;                 /* total length */
+	u_short ip_id;                  /* identification */
+	u_short ip_off;                 /* fragment offset field */
+#define IP_RF 0x8000            /* reserved fragment flag */
+#define IP_DF 0x4000            /* dont fragment flag */
+#define IP_MF 0x2000            /* more fragments flag */
+#define IP_OFFMASK 0x1fff       /* mask for fragmenting bits */
+	u_char  ip_ttl;                 /* time to live */
+	u_char  ip_p;                   /* protocol */
+	u_short ip_sum;                 /* checksum */
+	struct  in_addr ip_src, ip_dst;  /* source and dest address */
+};
+#define IP_HL(ip)               (((ip)->ip_vhl) & 0x0f)
+#define IP_V(ip)                (((ip)->ip_vhl) >> 4)
+
+/* TCP header */
+typedef u_int tcp_seq;
+
+struct sniff_tcp {
+	u_short th_sport;               /* source port */
+	u_short th_dport;               /* destination port */
+	tcp_seq th_seq;                 /* sequence number */
+	tcp_seq th_ack;                 /* acknowledgement number */
+	u_char  th_offx2;               /* data offset, rsvd */
+#define TH_OFF(th)      (((th)->th_offx2 & 0xf0) >> 4)
+	u_char  th_flags;
+#define TH_FIN  0x01
+#define TH_SYN  0x02
+#define TH_RST  0x04
+#define TH_PUSH 0x08
+#define TH_ACK  0x10
+#define TH_URG  0x20
+#define TH_ECE  0x40
+#define TH_CWR  0x80
+#define TH_FLAGS        (TH_FIN|TH_SYN|TH_RST|TH_ACK|TH_URG|TH_ECE|TH_CWR)
+	u_short th_win;                 /* window */
+	u_short th_sum;                 /* checksum */
+	u_short th_urp;                 /* urgent pointer */
+};
