@@ -121,14 +121,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_ALLOW_KEYWORD_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%WCAP_HOME%\Include;ocr;info;act;strategy;utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_ALLOW_KEYWORD_MACROS;HAVE_REMOTE;HAVE_CONFIG_H=1;BOOST_ALL_NO_LIB=1;BOOST_DATE_TIME_NO_LIB=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%WCAP_HOME%\Include;ocr;info;act;strategy;utils;C:\thrift;C:\Boost\include\boost-1_55;recaptal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%WCAP_HOME%\Lib\x64;lib\64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>InputSimulator.lib;Packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%WCAP_HOME%\Lib\x64;lib\64\debug;C:\openssl\lib;C:\thrift\lib\debug;C:\Boost\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>InputSimulator.lib;Packet.lib;wpcap.lib;libthriftnb.lib;libthrift.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -216,8 +216,11 @@
     <ClInclude Include="ocr\PixelBitAnalyze.h" />
     <ClInclude Include="ocr\Recognizer.h" />
     <ClInclude Include="ocr\ScreenImage.h" />
+    <ClInclude Include="recaptal\HttpResponse.h" />
+    <ClInclude Include="recaptal\http_parser.h" />
     <ClInclude Include="recaptal\NetworkProtocol.h" />
     <ClInclude Include="recaptal\Recaptal.h" />
+    <ClInclude Include="recaptal\ReCaptcha.h" />
     <ClInclude Include="RecognizeDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenSelectionDialog.h" />
@@ -243,7 +246,11 @@
     <ClCompile Include="ocr\PixelBitAnalyze.cpp" />
     <ClCompile Include="ocr\Recognizer.cpp" />
     <ClCompile Include="ocr\ScreenImage.cpp" />
+    <ClCompile Include="recaptal\http_parser.cpp" />
     <ClCompile Include="recaptal\Recaptal.cpp" />
+    <ClCompile Include="recaptal\ReCaptcha.cpp" />
+    <ClCompile Include="recaptal\ReCaptcha_constants.cpp" />
+    <ClCompile Include="recaptal\ReCaptcha_types.cpp" />
     <ClCompile Include="RecognizeDlg.cpp" />
     <ClCompile Include="ScreenSelectionDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
