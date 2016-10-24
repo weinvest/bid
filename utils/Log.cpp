@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "stdafx.h"
 #include "Log.h"
 #include <stdarg.h>
 Log::Log()

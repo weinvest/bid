@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "OCREngine.h"
 #include "Log.h"
+#include "recaptal\Recaptal.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -133,7 +134,7 @@ BOOL CMyBidDlg::OnInitDialog()
 
 	m_pTabCtrl.SetCurSel(0);
 	// TODO: Add extra initialization here
-
+	Recaptal::GetInstance()->Start("51moni-sh.oss-cn-shanghai.aliyuncs.com", "80");
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
