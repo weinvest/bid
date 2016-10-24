@@ -19,6 +19,7 @@ struct FontCenterScanRequest
 {
     1: required binary image;
     2: required list<WindowArea> centerWindows;
+    3: required bool isPNG;
 }
 
 
@@ -38,6 +39,7 @@ struct FontCenterScanIndexRequest
     2: required list<WindowArea> centerWindows1; //first WindowAreas is index1
     3: required list<WindowArea> centerWindows2; //first WindowAreas is index2
     4: required string desiredIndexValue;
+    5: required bool isPNG;
 }
 
 typedef FontCenterScanResponse FontCenterScanIndexResponse;

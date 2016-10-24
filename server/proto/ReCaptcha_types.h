@@ -104,22 +104,27 @@ class FontCenterScanRequest {
 
   FontCenterScanRequest(const FontCenterScanRequest&);
   FontCenterScanRequest& operator=(const FontCenterScanRequest&);
-  FontCenterScanRequest() : image() {
+  FontCenterScanRequest() : image(), isPNG(0) {
   }
 
   virtual ~FontCenterScanRequest() throw();
   std::string image;
   std::vector<WindowArea>  centerWindows;
+  bool isPNG;
 
   void __set_image(const std::string& val);
 
   void __set_centerWindows(const std::vector<WindowArea> & val);
+
+  void __set_isPNG(const bool val);
 
   bool operator == (const FontCenterScanRequest & rhs) const
   {
     if (!(image == rhs.image))
       return false;
     if (!(centerWindows == rhs.centerWindows))
+      return false;
+    if (!(isPNG == rhs.isPNG))
       return false;
     return true;
   }
@@ -212,7 +217,7 @@ class FontCenterScanIndexRequest {
 
   FontCenterScanIndexRequest(const FontCenterScanIndexRequest&);
   FontCenterScanIndexRequest& operator=(const FontCenterScanIndexRequest&);
-  FontCenterScanIndexRequest() : image(), desiredIndexValue() {
+  FontCenterScanIndexRequest() : image(), desiredIndexValue(), isPNG(0) {
   }
 
   virtual ~FontCenterScanIndexRequest() throw();
@@ -220,6 +225,7 @@ class FontCenterScanIndexRequest {
   std::vector<WindowArea>  centerWindows1;
   std::vector<WindowArea>  centerWindows2;
   std::string desiredIndexValue;
+  bool isPNG;
 
   void __set_image(const std::string& val);
 
@@ -228,6 +234,8 @@ class FontCenterScanIndexRequest {
   void __set_centerWindows2(const std::vector<WindowArea> & val);
 
   void __set_desiredIndexValue(const std::string& val);
+
+  void __set_isPNG(const bool val);
 
   bool operator == (const FontCenterScanIndexRequest & rhs) const
   {
@@ -238,6 +246,8 @@ class FontCenterScanIndexRequest {
     if (!(centerWindows2 == rhs.centerWindows2))
       return false;
     if (!(desiredIndexValue == rhs.desiredIndexValue))
+      return false;
+    if (!(isPNG == rhs.isPNG))
       return false;
     return true;
   }

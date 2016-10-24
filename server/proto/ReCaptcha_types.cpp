@@ -193,6 +193,10 @@ void FontCenterScanRequest::__set_centerWindows(const std::vector<WindowArea> & 
   this->centerWindows = val;
 }
 
+void FontCenterScanRequest::__set_isPNG(const bool val) {
+  this->isPNG = val;
+}
+
 uint32_t FontCenterScanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -207,6 +211,7 @@ uint32_t FontCenterScanRequest::read(::apache::thrift::protocol::TProtocol* ipro
 
   bool isset_image = false;
   bool isset_centerWindows = false;
+  bool isset_isPNG = false;
 
   while (true)
   {
@@ -244,6 +249,14 @@ uint32_t FontCenterScanRequest::read(::apache::thrift::protocol::TProtocol* ipro
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->isPNG);
+          isset_isPNG = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -256,6 +269,8 @@ uint32_t FontCenterScanRequest::read(::apache::thrift::protocol::TProtocol* ipro
   if (!isset_image)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   if (!isset_centerWindows)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
+  if (!isset_isPNG)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
@@ -281,6 +296,10 @@ uint32_t FontCenterScanRequest::write(::apache::thrift::protocol::TProtocol* opr
   }
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("isPNG", ::apache::thrift::protocol::T_BOOL, 3);
+  xfer += oprot->writeBool(this->isPNG);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -290,15 +309,18 @@ void swap(FontCenterScanRequest &a, FontCenterScanRequest &b) {
   using ::std::swap;
   swap(a.image, b.image);
   swap(a.centerWindows, b.centerWindows);
+  swap(a.isPNG, b.isPNG);
 }
 
 FontCenterScanRequest::FontCenterScanRequest(const FontCenterScanRequest& other8) {
   image = other8.image;
   centerWindows = other8.centerWindows;
+  isPNG = other8.isPNG;
 }
 FontCenterScanRequest& FontCenterScanRequest::operator=(const FontCenterScanRequest& other9) {
   image = other9.image;
   centerWindows = other9.centerWindows;
+  isPNG = other9.isPNG;
   return *this;
 }
 void FontCenterScanRequest::printTo(std::ostream& out) const {
@@ -306,6 +328,7 @@ void FontCenterScanRequest::printTo(std::ostream& out) const {
   out << "FontCenterScanRequest(";
   out << "image=" << to_string(image);
   out << ", " << "centerWindows=" << to_string(centerWindows);
+  out << ", " << "isPNG=" << to_string(isPNG);
   out << ")";
 }
 
@@ -507,6 +530,10 @@ void FontCenterScanIndexRequest::__set_desiredIndexValue(const std::string& val)
   this->desiredIndexValue = val;
 }
 
+void FontCenterScanIndexRequest::__set_isPNG(const bool val) {
+  this->isPNG = val;
+}
+
 uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -523,6 +550,7 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
   bool isset_centerWindows1 = false;
   bool isset_centerWindows2 = false;
   bool isset_desiredIndexValue = false;
+  bool isset_isPNG = false;
 
   while (true)
   {
@@ -588,6 +616,14 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
           xfer += iprot->skip(ftype);
         }
         break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->isPNG);
+          isset_isPNG = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -604,6 +640,8 @@ uint32_t FontCenterScanIndexRequest::read(::apache::thrift::protocol::TProtocol*
   if (!isset_centerWindows2)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   if (!isset_desiredIndexValue)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
+  if (!isset_isPNG)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
@@ -645,6 +683,10 @@ uint32_t FontCenterScanIndexRequest::write(::apache::thrift::protocol::TProtocol
   xfer += oprot->writeString(this->desiredIndexValue);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("isPNG", ::apache::thrift::protocol::T_BOOL, 5);
+  xfer += oprot->writeBool(this->isPNG);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -656,6 +698,7 @@ void swap(FontCenterScanIndexRequest &a, FontCenterScanIndexRequest &b) {
   swap(a.centerWindows1, b.centerWindows1);
   swap(a.centerWindows2, b.centerWindows2);
   swap(a.desiredIndexValue, b.desiredIndexValue);
+  swap(a.isPNG, b.isPNG);
 }
 
 FontCenterScanIndexRequest::FontCenterScanIndexRequest(const FontCenterScanIndexRequest& other30) {
@@ -663,12 +706,14 @@ FontCenterScanIndexRequest::FontCenterScanIndexRequest(const FontCenterScanIndex
   centerWindows1 = other30.centerWindows1;
   centerWindows2 = other30.centerWindows2;
   desiredIndexValue = other30.desiredIndexValue;
+  isPNG = other30.isPNG;
 }
 FontCenterScanIndexRequest& FontCenterScanIndexRequest::operator=(const FontCenterScanIndexRequest& other31) {
   image = other31.image;
   centerWindows1 = other31.centerWindows1;
   centerWindows2 = other31.centerWindows2;
   desiredIndexValue = other31.desiredIndexValue;
+  isPNG = other31.isPNG;
   return *this;
 }
 void FontCenterScanIndexRequest::printTo(std::ostream& out) const {
@@ -678,6 +723,7 @@ void FontCenterScanIndexRequest::printTo(std::ostream& out) const {
   out << ", " << "centerWindows1=" << to_string(centerWindows1);
   out << ", " << "centerWindows2=" << to_string(centerWindows2);
   out << ", " << "desiredIndexValue=" << to_string(desiredIndexValue);
+  out << ", " << "isPNG=" << to_string(isPNG);
   out << ")";
 }
 

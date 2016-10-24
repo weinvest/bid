@@ -27,9 +27,20 @@ class ReCaptchaHandler : virtual public ReCaptchaIf {
   {
   }
 
+  void loadImage(CImg<uint8_t>& image, const std::string& buffer, bool ispng )
+  {
+      if(ispng)
+      {
+          image.load_png_buffer(buffer.c_str(), buffer.length());
+      }
+      else
+      {
+          image.load_jpeg_buffer((const uint8_t*)buffer.c_str(), buffer.length());
+      }
+  }
   void doCenterScan(FontCenterScanResponse& _return, const FontCenterScanRequest& req) {
       CImg<uint8_t> image;
-      image.load_jpeg_buffer((const uint8_t*)req.image.c_str(), req.image.length());
+      loadImage(image, req.image, req.isPNG);
       mScanner.Scan(_return
           , req.centerWindows.begin()
           , req.centerWindows.end()
@@ -76,7 +87,7 @@ int main(int argc, char **argv) {
     variables_map vm;
     store(parse_command_line(argc,argv,opts),vm);
 
-    if(vm.count("help") || vm.count("fontRoot"))
+    if(vm.count("help") || 0 == vm.count("fontRoot"))
     {
         std::cout<<opts<<std::endl;
         return 0;

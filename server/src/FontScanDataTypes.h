@@ -7,6 +7,9 @@
 #define cimg_use_jpeg CIMG_USE_JPEG
 #define cimg_plugin "plugins/jpeg_buffer.h"
 
+#define cimg_use_png CIMG_USE_PNG
+#define cimg_plugin1 "plugins/png_buffer.h"
+
 #include "CImg.h"
 #include "proto/ReCaptcha_types.h"
 using namespace cimg_library;
