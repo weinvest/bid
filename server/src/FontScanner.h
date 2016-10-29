@@ -24,7 +24,7 @@ public:
 
     void operator()(const tbb::blocked_range<FontPatterns::const_iterator>& b);
 
-    void join(const FontScanJoiner& o);
+    void join(FontScanJoiner& o);
 
     const auto& GetValue() const;
 private:

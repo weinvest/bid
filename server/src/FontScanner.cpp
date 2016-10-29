@@ -110,7 +110,7 @@ FontScanResult* FontScanJoiner::Compare(FontScanResult* l, FontScanResult* r)
 
 void FontScanJoiner::operator()(const tbb::blocked_range<FontPatterns::const_iterator>& b)
 {
-    FontScanResult* pFontScanResult = nullptr;
+    FontScanResult* pFontScanResult = mScanResult;
     for(auto itPattern = b.begin(); itPattern != b.end(); ++itPattern)
     {
         for(auto nH = mArea.top; nH < mArea.bottom; ++nH)
@@ -126,9 +126,10 @@ void FontScanJoiner::operator()(const tbb::blocked_range<FontPatterns::const_ite
     mScanResult = pFontScanResult;
 }
 
-void FontScanJoiner::join(const FontScanJoiner& o)
+void FontScanJoiner::join(FontScanJoiner& o)
 {
     mScanResult = Compare(mScanResult, o.mScanResult);
+    std::cout<<"join:"<<this<<"(" << mScanResult << ")" <<" and " << &o <<"("<< o.mScanResult << ")" << " result is:" << mScanResult << std::endl;
 }
 
 
