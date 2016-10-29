@@ -34,5 +34,6 @@ FontScanContext::FontScanContext(const std::string& fontRootDirectory)
 
 FontScanResult* FontScanContext::CreateFontScanResult( void )
 {
-    return &mFontScanResults[mCurrentFontScan.fetch_add(1, std::memory_order_relaxed) % MAX_FONT_SCAN_RESULT_POOL_SIZE];
+    FontScanResult* newInstanceAddress = &mFontScanResults[mCurrentFontScan.fetch_add(1, std::memory_order_relaxed) % MAX_FONT_SCAN_RESULT_POOL_SIZE];
+    return new(newInstanceAddress) FontScanResult();
 }

@@ -41,11 +41,20 @@ class ReCaptchaHandler : virtual public ReCaptchaIf {
   void doCenterScan(FontCenterScanResponse& _return, const FontCenterScanRequest& req) {
       CImg<uint8_t> image;
       loadImage(image, req.image, req.isPNG);
+    //   for(auto& area : req.centerWindows)
+    //   {
+    //       std::cout<<area.left << "," << area.right << "," << area.top << "," << area.bottom << std::endl;
+    //   }
       mScanner.Scan(_return
           , req.centerWindows.begin()
           , req.centerWindows.end()
           , image
           , mContext);
+    //    for(auto& result : _return.results)
+    //    {
+    //        std::cout << result ;
+    //    }
+       std::cout << std::endl;
   }
 
   void doCenterScanByIndex(FontCenterScanIndexResponse& _return, const FontCenterScanIndexRequest& req) {
