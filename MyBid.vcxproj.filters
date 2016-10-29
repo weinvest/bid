@@ -135,6 +135,12 @@
     <ClInclude Include="recaptal\ReCaptcha.h">
       <Filter>Recaptal</Filter>
     </ClInclude>
+    <ClInclude Include="recaptal\ReCaptcha_constants.h">
+      <Filter>Recaptal</Filter>
+    </ClInclude>
+    <ClInclude Include="recaptal\ReCaptcha_types.h">
+      <Filter>Recaptal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyBid.cpp">

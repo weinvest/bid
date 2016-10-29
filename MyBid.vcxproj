@@ -221,6 +221,8 @@
     <ClInclude Include="recaptal\NetworkProtocol.h" />
     <ClInclude Include="recaptal\Recaptal.h" />
     <ClInclude Include="recaptal\ReCaptcha.h" />
+    <ClInclude Include="recaptal\ReCaptcha_constants.h" />
+    <ClInclude Include="recaptal\ReCaptcha_types.h" />
     <ClInclude Include="RecognizeDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenSelectionDialog.h" />
