@@ -34,6 +34,7 @@ const auto& FontScanJoiner::GetValue() const
 FontScanResult* FontScanJoiner::Scan(int32_t nCW, int32_t nCH, FontPattern::Ptr pPattern)
 {
     FontScanResult* pCurrentResult = mContext.CreateFontScanResult();
+    pCurrentResult->pattern = pPattern;
     for(auto& sample : pPattern->GetSamples())
     {
         int32_t w = nCW + sample.w;
@@ -133,7 +134,8 @@ void FontScanJoiner::join(const FontScanJoiner& o)
 
 FontScanner::FontScanner(int32_t nThreads)
 {
-    tbb::task_scheduler_init init(nThreads);
+    //tbb::task_scheduler_init init(nThreads);
+    static tbb::task_scheduler_init init(1);
 }
 
 void FontScanner::Scan(FontCenterScanResponse& resp

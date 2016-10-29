@@ -109,9 +109,10 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
         int32_t nW = 0;
         for(auto c : cols)
         {
+            nW++;
             if(0 != c)
             {
-                pFontPattern->AddSample(FontSample(nW++, nH));
+                pFontPattern->AddSample(FontSample(nW, nH));
             }
         }
         nH++;
