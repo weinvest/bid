@@ -122,7 +122,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_ALLOW_KEYWORD_MACROS;HAVE_REMOTE;HAVE_CONFIG_H=1;BOOST_ALL_NO_LIB=1;BOOST_DATE_TIME_NO_LIB=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%WCAP_HOME%\Include;ocr;info;act;strategy;utils;C:\thrift;C:\Boost\include\boost-1_55;recaptal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%WCAP_HOME%\Include;ocr;info;act;strategy;utils;C:\thrift;C:\Boost\include\boost-1_55;recaptal;server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,12 +220,12 @@
     <ClInclude Include="recaptal\http_parser.h" />
     <ClInclude Include="recaptal\NetworkProtocol.h" />
     <ClInclude Include="recaptal\Recaptal.h" />
-    <ClInclude Include="recaptal\ReCaptcha.h" />
-    <ClInclude Include="recaptal\ReCaptcha_constants.h" />
-    <ClInclude Include="recaptal\ReCaptcha_types.h" />
     <ClInclude Include="RecognizeDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenSelectionDialog.h" />
+    <ClInclude Include="server\proto\ReCaptcha.h" />
+    <ClInclude Include="server\proto\ReCaptcha_constants.h" />
+    <ClInclude Include="server\proto\ReCaptcha_types.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="strategy\ActInTime.h" />
     <ClInclude Include="strategy\IStrategy.h" />
@@ -250,11 +250,11 @@
     <ClCompile Include="ocr\ScreenImage.cpp" />
     <ClCompile Include="recaptal\http_parser.cpp" />
     <ClCompile Include="recaptal\Recaptal.cpp" />
-    <ClCompile Include="recaptal\ReCaptcha.cpp" />
-    <ClCompile Include="recaptal\ReCaptcha_constants.cpp" />
-    <ClCompile Include="recaptal\ReCaptcha_types.cpp" />
     <ClCompile Include="RecognizeDlg.cpp" />
     <ClCompile Include="ScreenSelectionDialog.cpp" />
+    <ClCompile Include="server\proto\ReCaptcha.cpp" />
+    <ClCompile Include="server\proto\ReCaptcha_constants.cpp" />
+    <ClCompile Include="server\proto\ReCaptcha_types.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

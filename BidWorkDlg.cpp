@@ -288,7 +288,7 @@ BOOL CBidWorkDlg::OnInitDialog()
 
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
 
-
+	Recaptal::GetInstance()->SetListener(this);
 
 	PixelAnyalizeAll("C:\\Users\\shgli\\Desktop\\verifycode");
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -412,7 +412,16 @@ void CBidWorkDlg::OnBnClickedStartCollectData()
 	}
 }
 
+void CBidWorkDlg::OnRecaptal()
+{
+	auto& result = Recaptal::GetInstance()->GetResult(true);
+	ActionEngine::GetInstance()->InputSecurityCode(CString(result.c_str()));
+}
 
+void CBidWorkDlg::OnReFailed()
+{
+	ActionEngine::GetInstance()->RefreshSecurityCode();
+}
 
 void CBidWorkDlg::OnBnClickedVcodeConfirmBtn()
 {

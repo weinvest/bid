@@ -3,11 +3,12 @@
 #include "ScreenImage.h"
 #include "IOCRListener.h"
 #include "InfoEngine.h"
+#include "recaptal\Recaptal.h"
 #include "afxcmn.h"
 #include "afxwin.h"
 // CBidWorkDlg dialog
 
-class CBidWorkDlg : public CDialogEx, public IOCRListener, public IInfoListener
+class CBidWorkDlg : public CDialogEx, public IOCRListener, public IInfoListener, public IRecaptalListener
 {
 	DECLARE_DYNAMIC(CBidWorkDlg)
 
@@ -21,6 +22,8 @@ public:
 	void OnNewRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
 	void OnDelRecognizer(const std::string& name, CRecognizer* pRecognizer) override;
 	void OnUpdate(size_t updateFields) override;
+	void OnRecaptal() override;
+	void OnReFailed() override;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

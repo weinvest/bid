@@ -69,8 +69,9 @@ bool ActionEngine::InputSecurityCode(const CString& SecurityCode)
 	mMouseSimulator->LeftButtonClick();
 
 	mKeyboardSimulator->TextEntry(SecurityCode);
-	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_CONFIRM_BUTTON_AREA));
-	mMouseSimulator->LeftButtonClick();
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_CONFIRM_BUTTON_AREA));
+	//mMouseSimulator->LeftButtonClick();
 
 	return true;
 }

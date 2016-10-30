@@ -132,13 +132,13 @@
     <ClInclude Include="recaptal\HttpResponse.h">
       <Filter>Recaptal</Filter>
     </ClInclude>
-    <ClInclude Include="recaptal\ReCaptcha.h">
+    <ClInclude Include="server\proto\ReCaptcha.h">
       <Filter>Recaptal</Filter>
     </ClInclude>
-    <ClInclude Include="recaptal\ReCaptcha_constants.h">
+    <ClInclude Include="server\proto\ReCaptcha_constants.h">
       <Filter>Recaptal</Filter>
     </ClInclude>
-    <ClInclude Include="recaptal\ReCaptcha_types.h">
+    <ClInclude Include="server\proto\ReCaptcha_types.h">
       <Filter>Recaptal</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,13 +212,13 @@
     <ClCompile Include="recaptal\http_parser.cpp">
       <Filter>Recaptal</Filter>
     </ClCompile>
-    <ClCompile Include="recaptal\ReCaptcha_constants.cpp">
+    <ClCompile Include="server\proto\ReCaptcha.cpp">
       <Filter>Recaptal</Filter>
     </ClCompile>
-    <ClCompile Include="recaptal\ReCaptcha_types.cpp">
+    <ClCompile Include="server\proto\ReCaptcha_constants.cpp">
       <Filter>Recaptal</Filter>
     </ClCompile>
-    <ClCompile Include="recaptal\ReCaptcha.cpp">
+    <ClCompile Include="server\proto\ReCaptcha_types.cpp">
       <Filter>Recaptal</Filter>
     </ClCompile>
   </ItemGroup>
