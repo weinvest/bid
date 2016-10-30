@@ -111,8 +111,9 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
         {
             if(0 != c)
             {
-                pFontPattern->AddSample(FontSample(nW++, nH));
+                pFontPattern->AddSample(FontSample(nW, nH));
             }
+            nW++;
         }
         nH++;
     }

@@ -34,6 +34,7 @@ const auto& FontScanJoiner::GetValue() const
 FontScanResult* FontScanJoiner::Scan(int32_t nCW, int32_t nCH, FontPattern::Ptr pPattern)
 {
     FontScanResult* pCurrentResult = mContext.CreateFontScanResult();
+    pCurrentResult->pattern = pPattern;
     for(auto& sample : pPattern->GetSamples())
     {
         int32_t w = nCW + sample.w;
@@ -109,7 +110,7 @@ FontScanResult* FontScanJoiner::Compare(FontScanResult* l, FontScanResult* r)
 
 void FontScanJoiner::operator()(const tbb::blocked_range<FontPatterns::const_iterator>& b)
 {
-    FontScanResult* pFontScanResult = nullptr;
+    FontScanResult* pFontScanResult = mScanResult;
     for(auto itPattern = b.begin(); itPattern != b.end(); ++itPattern)
     {
         for(auto nH = mArea.top; nH < mArea.bottom; ++nH)
@@ -125,15 +126,17 @@ void FontScanJoiner::operator()(const tbb::blocked_range<FontPatterns::const_ite
     mScanResult = pFontScanResult;
 }
 
-void FontScanJoiner::join(const FontScanJoiner& o)
+void FontScanJoiner::join(FontScanJoiner& o)
 {
     mScanResult = Compare(mScanResult, o.mScanResult);
+    std::cout<<"join:"<<this<<"(" << mScanResult << ")" <<" and " << &o <<"("<< o.mScanResult << ")" << " result is:" << mScanResult << std::endl;
 }
 
 
 FontScanner::FontScanner(int32_t nThreads)
 {
-    tbb::task_scheduler_init init(nThreads);
+    //tbb::task_scheduler_init init(nThreads);
+    static tbb::task_scheduler_init init(1);
 }
 
 void FontScanner::Scan(FontCenterScanResponse& resp

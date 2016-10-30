@@ -5,10 +5,11 @@
 FontScanContext::FontScanContext(const std::string& fontRootDirectory)
     :mCurrentFontScan(0)
 {
+    fs::path rootPath = fs::canonical(fontRootDirectory);
     PathVec idxPatternPaths;
-    std::string idxWild(fontRootDirectory + "/*.ivc");
+    std::string idxWild(rootPath.string() + "/*.ivc");
     auto idxReg = Wildcard2Regex(idxWild);
-    FindFiles(fontRootDirectory, idxReg, idxPatternPaths);
+    FindFiles(rootPath, idxReg, idxPatternPaths);
     for(auto& p : idxPatternPaths)
     {
         auto pIdxPattern = FontPattern::Load(p.string());
@@ -19,8 +20,8 @@ FontScanContext::FontScanContext(const std::string& fontRootDirectory)
     }
 
     PathVec fontPatternPaths;
-    auto fontReg = Wildcard2Regex(fontRootDirectory + "/*.vc");
-    FindFiles(fontRootDirectory, fontReg, fontPatternPaths);
+    auto fontReg = Wildcard2Regex(rootPath.string() + "/*.vc");
+    FindFiles(rootPath, fontReg, fontPatternPaths);
     for(auto& p : fontPatternPaths)
     {
         auto pFontPattern = FontPattern::Load(p.string());
@@ -33,5 +34,6 @@ FontScanContext::FontScanContext(const std::string& fontRootDirectory)
 
 FontScanResult* FontScanContext::CreateFontScanResult( void )
 {
-    return &mFontScanResults[mCurrentFontScan.fetch_add(1, std::memory_order_relaxed) % MAX_FONT_SCAN_RESULT_POOL_SIZE];
+    FontScanResult* newInstanceAddress = &mFontScanResults[mCurrentFontScan.fetch_add(1, std::memory_order_relaxed) % MAX_FONT_SCAN_RESULT_POOL_SIZE];
+    return new(newInstanceAddress) FontScanResult();
 }
