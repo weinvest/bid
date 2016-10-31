@@ -12,6 +12,8 @@ public:
 	const StrategiesT& GetStrategies() const { return mStrategies; }
 
 	bool Load(const CString& strategyConf);
+
+	IStrategy* GetStrategy(const std::string& name);
 private:
 	IStrategy* Create(const std::string& type);
 
