@@ -4,7 +4,7 @@
 // but are changed infrequently
 
 #pragma once
-
+#ifdef WIN32
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif
@@ -52,6 +52,7 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #else
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#endif
 #endif
 #endif
 
