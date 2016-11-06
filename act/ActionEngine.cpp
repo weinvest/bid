@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include <fstream>
 #include <sstream>
 #include <thread>
@@ -63,13 +63,28 @@ bool ActionEngine::InputPrice(int price)
 	return true;
 }
 
+bool ActionEngine::ConfirmSecurityCode()
+{
+	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_CONFIRM_BUTTON_AREA));
+	mMouseSimulator->LeftButtonClick();
+	return true;
+}
+
+void ActionEngine::RejectSecurityCode()
+{
+	double x = X(SECURITY_CODE_INPUT_AREA);
+	double y = Y(SECURITY_CODE_CONFIRM_BUTTON_AREA);
+	mMouseSimulator->MoveMouseTo(x, y);
+	mMouseSimulator->LeftButtonClick();
+}
+
 bool ActionEngine::InputSecurityCode(const CString& SecurityCode)
 {
 	mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_INPUT_AREA));
 	mMouseSimulator->LeftButtonClick();
 
 	mKeyboardSimulator->TextEntry(SecurityCode);
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	//mMouseSimulator->MoveMouseTo(AREA_COORDINATE_X_Y(SECURITY_CODE_CONFIRM_BUTTON_AREA));
 	//mMouseSimulator->LeftButtonClick();
 

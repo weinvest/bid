@@ -30,9 +30,13 @@ public:
 
 	bool InputSecurityCode(const CString& SecurityCode);
 
+	bool ConfirmSecurityCode();
+
 	bool RefreshSecurityCode();
 
 	void CloseBidReslt();
+
+	void RejectSecurityCode();
 
 	static ActionEngine* GetInstance();
 
