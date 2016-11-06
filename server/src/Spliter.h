@@ -8,7 +8,7 @@ public:
         , int32_t nRowThreshold = 5, int32_t nColThreshold = 0
         , int32_t nColorThreshold = 3);
 
-    void Split(std::array<WindowAreas,4>& areas, CImg<uint8_t>& image, int32_t nLines);
+    void Split(std::array<WindowAreas*,4>& areas, CImg<uint8_t>& image, int32_t nLines);
 private:
     int32_t mWOffset;
     int32_t mHOffset;

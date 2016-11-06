@@ -12,7 +12,7 @@ Spliter::Spliter(int32_t nWOffset, int32_t nHOffset
     ,mColorThreshold(nColThreshold)
 {}
 
-void Spliter::Split(std::array<WindowAreas,4>& areas
+void Spliter::Split(std::array<WindowAreas*,4>& areas
     , CImg<uint8_t>& image
     , int32_t nLines)
 {
@@ -73,7 +73,7 @@ void Spliter::Split(std::array<WindowAreas,4>& areas
             WindowArea area;
             area.left = nCLeft, area.right = nCRight;
             area.top = nCTop, area.bottom = nCBottom;
-            areas[nLine].push_back(area);
+            areas[nLine]->push_back(area);
         }
     }
 
