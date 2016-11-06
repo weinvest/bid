@@ -60,6 +60,15 @@ def emplaceBits(bmp):
                 v += getValue(w+1, h-1) + getValue(w+1, h) + getValue(w+1, h+1)
                 result[h, w] = v
 
+    result[result <= 3] = 0
+    result[result > 0] = 1
+    result[0, 1:-1] = result[1:-1, 1:-1].sum(axis=0)
+    # result[0, result[0, :] <= 5] = 0
+    # result[0, result[0, :] > 5] = 1
+
+    result[1:-1, 0] = result[1:-1, 1:-1].sum(axis=1)
+    # result[result[:, 0] < 5] = 0
+    # result[result[:, 0] > 5] = 1
     return result
 
 
@@ -80,10 +89,8 @@ if __name__ == '__main__':
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
             result1 = emplaceBits(bmp)
-            numpy.savetxt('/tmp/result/' + fileName + '.1', result1, fmt="%d", delimiter='')
-            result1[result1<=3] = 0
-            result1[result1>0] = 1
-            numpy.savetxt('/tmp/result/' + fileName+'.2', result1, fmt="%d", delimiter='')
+            numpy.savetxt('/tmp/result/' + fileName + '.1', result1, fmt="%3d", delimiter='')
+
             #
             # import segment
             # import numpy as np
