@@ -20,7 +20,7 @@ class FontPattern
 public:
     typedef std::shared_ptr<FontPattern> Ptr;
     static Ptr Load(const std::string& filePath);
-    static Ptr ClipInArea(CImg<uint8_t>& img, WindowArea& area, const std::string& name);
+    static Ptr ClipInArea(CImg<uint8_t>& img, const WindowArea& area, const std::string& name);
 
     FontPattern(const std::string& name);
 

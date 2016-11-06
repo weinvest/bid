@@ -4,6 +4,7 @@
 
 IndexScanner::IndexScanner(FontScanContext& context)
     :mContext(context)
+    ,mNextGuessId(0)
 {
     for(auto pPattern : context.GetIndexPatterns())
     {
@@ -70,6 +71,32 @@ double IndexScanner::ScanIndex(FontPatterns::const_iterator begin
     return similar;
 }
 
+FontPattern::Ptr IndexScanner::FindPatternInArea(const WindowArea& area, CImg<uint8_t>& image)
+{
+    double maxSimilar = 0.0;
+    auto itResultPattern = mUnResolvedPatterns.end();
+    for(auto itPattern = mUnResolvedPatterns.begin(); itPattern != mUnResolvedPatterns.end(); ++itPattern)
+    {
+        double similar = ScanIndex(*itPattern, area, image);
+        if(similar > maxSimilar)
+        {
+            maxSimilar = similar;
+            itResultPattern = itPattern;
+        }
+    }
+
+    if(itResultPattern == mUnResolvedPatterns.end())
+    {
+        auto pResultPattern = FontPattern::ClipInArea(image, area, "index");
+        mUnResolvedPatterns.push_back(pResultPattern);
+        return pResultPattern;
+    }
+    else
+    {
+        return *itResultPattern;
+    }
+}
+
 const WindowAreas& IndexScanner::Scan(const FontCenterScanIndexRequest& request, CImg<uint8_t>& image, int32_t& guessId)
 {
     auto itPattern = mIndexPatterns.find(request.desiredIndexValue);
@@ -94,7 +121,47 @@ const WindowAreas& IndexScanner::Scan(const FontCenterScanIndexRequest& request,
     }
     else
     {
-        return request.centerWindows2;
+        auto itGuessValueInfo = mGuessValueInfos.find(request.desiredIndexValue);
+        auto pPattern1 = FindPatternInArea(request.centerWindows1[0], image);
+        auto pPattern2 = FindPatternInArea(request.centerWindows2[0], image);
+        GuessInfo::Ptr pGuessInfo = nullptr;
+        if(mGuessValueInfos.end() != itGuessValueInfo)
+        {
+            auto findGuessInfo = [this, itGuessValueInfo](FontPattern::Ptr pPattern, const std::string& value)
+            {
+                for(auto pGuessInfo : itGuessValueInfo->second)
+                {
+                    if(pGuessInfo->pattern == pPattern)
+                    {
+                        return pGuessInfo;
+                    }
+                }
+
+                auto pGuessInfo = new GuessInfo{pPattern, 0, value};
+                itGuessValueInfo->second.push_back(pGuessInfo);
+                return pGuessInfo;
+            };
+
+            auto pGuessInfo1 = findGuessInfo(pPattern1, request.desiredIndexValue);
+            auto pGuessInfo2 = findGuessInfo(pPattern2, request.desiredIndexValue);
+            pGuessInfo = pGuessInfo1->guessCount < pGuessInfo2->guessCount ? pGuessInfo1 : pGuessInfo2;
+        }
+        else
+        {
+            auto pGuessInfo1 = new GuessInfo{pPattern1, 0, request.desiredIndexValue};
+            auto pGuessInfo2 = new GuessInfo{pPattern2, 0, request.desiredIndexValue};
+
+            auto& guessInfos = mGuessValueInfos[request.desiredIndexValue];
+            guessInfos.push_back(pGuessInfo1);
+            guessInfos.push_back(pGuessInfo2);
+
+            pGuessInfo = pGuessInfo1;
+        }
+
+        pGuessInfo->guessCount += 1;
+        guessId = mNextGuessId++;
+        mGuessInfos[guessId] = pGuessInfo;
+        return pGuessInfo->pattern == pPattern1 ? request.centerWindows1 : request.centerWindows2;
     }
 }
 
@@ -109,6 +176,12 @@ void IndexScanner::AcceptFeedback(const FontCenterScanIndexFeedbackRequest& feed
             auto& value = itGuessInfo->second->guessValue;
             mGuessValueInfos.erase(value);
             mGuessInfos.erase(itGuessInfo);
+
+            auto itUnResolvedPattern = std::find(mUnResolvedPatterns.begin(), mUnResolvedPatterns.end(), pPattern);
+            if(itUnResolvedPattern != mUnResolvedPatterns.end())
+            {
+                mUnResolvedPatterns.erase(itUnResolvedPattern);
+            }
 
             pPattern->SetValue(value);
 

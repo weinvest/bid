@@ -123,7 +123,7 @@ std::shared_ptr<FontPattern> FontPattern::Load(const std::string& filePath)
     return pFontPattern;
 }
 
-FontPattern::Ptr FontPattern::ClipInArea(CImg<uint8_t>& img, WindowArea& area, const std::string& name)
+FontPattern::Ptr FontPattern::ClipInArea(CImg<uint8_t>& img, const WindowArea& area, const std::string& name)
 {
     auto pFontPattern = std::make_shared<FontPattern>(name);
     for(int32_t nH = area.top; nH < area.bottom; ++nH)

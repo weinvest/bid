@@ -2,6 +2,8 @@
 import sys
 import os
 import Image
+import numpy
+import color
 import InterferingLine
 from recognize import Regonizer
 from fullRecognize import FullRecognizer
@@ -46,6 +48,21 @@ def SelectAndSaveElement(bmp, fileName, outRoot, ext):
         np.savetxt(os.path.join(outDir, str(count) + '.txt'), binBmp, fmt='%1.0f')
         count -= 1
 
+def emplaceBits(bmp):
+    result = numpy.zeros((bmp.height, bmp.width), int)
+    for h in range(1, bmp.height - 1):
+        for w in range(1, bmp.width - 1):
+            c = bmp.getpixel((w, h))
+            if not color.isBackground(c):
+                def getValue(ww, hh):
+                    return 0 if color.isBackground(bmp.getpixel((ww, hh))) else 1
+                v = getValue(w-1, h-1) + getValue(w-1, h) + getValue(w-1, h+1) + getValue(w, h-1) + getValue(w,h+1)
+                v += getValue(w+1, h-1) + getValue(w+1, h) + getValue(w+1, h+1)
+                result[h, w] = v
+
+    return result
+
+
 if __name__ == '__main__':
     reg = FullRecognizer('./vcfonts')
     # m = reg.computeSelfSimilarMatrix()
@@ -62,6 +79,11 @@ if __name__ == '__main__':
             relValue, relValue2 = getRealValue(stem)
             bmpPath = os.path.join(bmpRoot, fileName)
             bmp = Image.open(bmpPath)
+            result1 = emplaceBits(bmp)
+            numpy.savetxt('/tmp/result/' + fileName + '.1', result1, fmt="%d", delimiter='')
+            result1[result1<=3] = 0
+            result1[result1>0] = 1
+            numpy.savetxt('/tmp/result/' + fileName+'.2', result1, fmt="%d", delimiter='')
             #
             # import segment
             # import numpy as np
@@ -74,12 +96,13 @@ if __name__ == '__main__':
             #InterferingLine.clean(bmp)
             print fileName
             # values = reg.regonize(bmp, (20, 2), (90, 45))
-            values = reg.regonizeEx(bmp)
-            v = ''.join(values)
-            if v != relValue and v != relValue2:
-                failed.append((fileName, v))
-            else:
-                success.append(v)
+
+            # values = reg.regonizeEx(bmp)
+            # v = ''.join(values)
+            # if v != relValue and v != relValue2:
+            #     failed.append((fileName, v))
+            # else:
+            #     success.append(v)
 
     print 'success:%d' % len(success)
     print success
