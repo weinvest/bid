@@ -7,7 +7,7 @@
 #include "afxcmn.h"
 #include "afxwin.h"
 // CBidWorkDlg dialog
-
+class IStrategy;
 class CBidWorkDlg : public CDialogEx, public IOCRListener, public IInfoListener, public IRecaptalListener
 {
 	DECLARE_DYNAMIC(CBidWorkDlg)
@@ -79,4 +79,9 @@ public:
 	afx_msg void OnBnClickedVcodeRejectBtn();
 	afx_msg void OnBnClickedReBid();
 
+	std::string mLastSecurityCode;
+	afx_msg void OnStrategyChanged();
+
+	IStrategy* mCurrentStrategy;
+	std::atomic<IStrategy*> mNewSelectedStrategy;
 };

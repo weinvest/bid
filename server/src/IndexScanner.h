@@ -25,6 +25,8 @@ private:
         , const WindowArea& area
         , CImg<uint8_t>& image);
 
+    FontPattern::Ptr FindPatternInArea(const WindowArea& area, CImg<uint8_t>& image);
+
     struct GuessInfo
     {
         typedef GuessInfo* Ptr;
@@ -35,6 +37,10 @@ private:
 
     FontScanContext& mContext;
     std::map<std::string, FontPatterns> mIndexPatterns;
+
+    std::vector<FontPattern::Ptr> mUnResolvedPatterns;
+
+    int32_t mNextGuessId;
     std::map<int32_t, GuessInfo::Ptr> mGuessInfos;
     std::map<std::string, std::vector<GuessInfo::Ptr> > mGuessValueInfos;
 };

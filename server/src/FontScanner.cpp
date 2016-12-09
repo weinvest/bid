@@ -136,7 +136,7 @@ void FontScanJoiner::join(FontScanJoiner& o)
 FontScanner::FontScanner(int32_t nThreads)
 {
     //tbb::task_scheduler_init init(nThreads);
-    static tbb::task_scheduler_init init(1);
+    static tbb::task_scheduler_init init(nThreads);
 }
 
 void FontScanner::Scan(FontCenterScanResponse& resp

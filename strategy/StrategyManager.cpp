@@ -68,3 +68,15 @@ bool StrategyManager::Load(const CString& strategyConf)
 	return true;
 }
 
+IStrategy* StrategyManager::GetStrategy(const std::string& name)
+{
+	for (auto pStrategy : mStrategies)
+	{
+		if (pStrategy->GetName() == name)
+		{
+			return pStrategy;
+		}
+	}
+
+	return nullptr;
+}

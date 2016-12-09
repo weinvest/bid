@@ -18,11 +18,12 @@ public:
 
 	bool Load(std::istream& s);
 	static void Trim(std::string& s);
-
+	void Rebid(void) { mNeedRebid = true; }
 protected:
 	virtual bool DoLoad(const std::map<std::string, std::string>& configurePairs);
-
+	bool NeedRebid() const { return mNeedRebid; }
 	std::string mName;
 	std::string mDescription;
+	bool mNeedRebid;
 };
 #endif // !_ISTRATEGY_H

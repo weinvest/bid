@@ -52,7 +52,7 @@ void ActInTime::OnUpdate(size_t updateFields)
 	auto& timeInfo = pInfoEngine->GetInfo(InfoEngine::CURRENT_TIME_RECT_INDEX);
 	auto& curPrice = pInfoEngine->GetInfo(InfoEngine::CURRENT_LOWEST_PRICE_INDEX);
 
-	LOG_INFO("ActInTime: %d:%d:%d\n", timeInfo.time.hour, timeInfo.time.minute, timeInfo.time.second);
+	//LOG_INFO("ActInTime: %d:%d:%d\n", timeInfo.time.hour, timeInfo.time.minute, timeInfo.time.second);
 	if ((mBidTime < timeInfo.time) && (0 == mBidTimes))
 	{
 		mBidTimes = 1;
@@ -62,5 +62,10 @@ void ActInTime::OnUpdate(size_t updateFields)
 	{
 		mBidTimes = 0;
 	}
+	else if (NeedRebid())
+	{
+		ActionEngine::GetInstance()->InputPrice(curPrice.price + 300);
+	}
+	mNeedRebid = false;
 }
 

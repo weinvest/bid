@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CBidWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_VCODE_CONFIRM_BTN, &CBidWorkDlg::OnBnClickedVcodeConfirmBtn)
 	ON_BN_CLICKED(IDC_VCODE_REJECT_BTN, &CBidWorkDlg::OnBnClickedVcodeRejectBtn)
 	ON_BN_CLICKED(IDC_RE_BID, &CBidWorkDlg::OnBnClickedReBid)
+	ON_CBN_SELCHANGE(IDC_COMBOX_STRATEGY, &CBidWorkDlg::OnStrategyChanged)
 END_MESSAGE_MAP()
 
 
@@ -170,6 +171,13 @@ void CBidWorkDlg::OnDoubleClickCaptureVerifybox()
 
 void CBidWorkDlg::OnUpdate(size_t updateFields)
 {
+	auto pNewSelectedStrategy = mNewSelectedStrategy.load();
+	if (pNewSelectedStrategy != mCurrentStrategy)
+	{
+		mCurrentStrategy = pNewSelectedStrategy;
+	}
+	mCurrentStrategy->OnUpdate(updateFields);
+
 	std::string text("OK");
 	for (size_t iInfo = 0; iInfo < InfoEngine::COUNT_OF_INFOS; ++iInfo)
 	{
@@ -281,10 +289,10 @@ BOOL CBidWorkDlg::OnInitDialog()
 
 	for (auto pStrategy : StrategyManager::GetInstance()->GetStrategies())
 	{
-		InfoEngine::GetInstance()->Registe(pStrategy);
 		mStrategyCombox.AddString(CString(pStrategy->GetName().c_str()));
 	}
 	mStrategyCombox.SetCurSel(0);
+	OnStrategyChanged();
 
 	InfoEngine::GetInstance()->Load(mInfoConfPath);
 
@@ -414,30 +422,56 @@ void CBidWorkDlg::OnBnClickedStartCollectData()
 
 void CBidWorkDlg::OnRecaptal()
 {
-	auto& result = Recaptal::GetInstance()->GetResult(true);
-	ActionEngine::GetInstance()->InputSecurityCode(CString(result.c_str()));
+	mLastSecurityCode = Recaptal::GetInstance()->GetResult(true);
+	ActionEngine::GetInstance()->InputSecurityCode(CString(mLastSecurityCode.c_str()));
+	SetForegroundWindow();
 }
 
 void CBidWorkDlg::OnReFailed()
 {
-	ActionEngine::GetInstance()->RefreshSecurityCode();
+	OnBnClickedReBid();
 }
 
 void CBidWorkDlg::OnBnClickedVcodeConfirmBtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	ActionEngine::GetInstance()->ConfirmSecurityCode();
+	SetForegroundWindow();
 }
 
 
 void CBidWorkDlg::OnBnClickedVcodeRejectBtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	auto& result = Recaptal::GetInstance()->GetResult(false);
+	if (result.empty() || result != mLastSecurityCode)
+	{
+		OnBnClickedReBid();
+	}
+	else
+	{
+		mLastSecurityCode = result;
+		ActionEngine::GetInstance()->InputSecurityCode(CString(mLastSecurityCode.c_str()));
+	}
+	SetForegroundWindow();
 }
 
 
 void CBidWorkDlg::OnBnClickedReBid()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	ActionEngine::GetInstance()->CloseBidReslt();
+	ActionEngine::GetInstance()->RejectSecurityCode();
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+	mCurrentStrategy->Rebid();
 }
 
 
+
+
+void CBidWorkDlg::OnStrategyChanged()
+{
+	auto index = mStrategyCombox.GetCurSel();
+	CString name;
+	mStrategyCombox.GetLBText(index, name);
+
+	std::string strategyName = CW2A(name);
+	mNewSelectedStrategy = StrategyManager::GetInstance()->GetStrategy(strategyName);
+}
