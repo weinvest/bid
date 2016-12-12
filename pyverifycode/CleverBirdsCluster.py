@@ -12,10 +12,12 @@ def createVertexProperties(dist):
     return pd.DataFrame(index=vertexIds
                         , data={'rtho': np.zeros((numOfVertics, 1)),
                                 'delta': [maxDelta] * numOfVertics,
+                                'nearestVertexId' : [-1] * numOfVertics,
                                 'gamma': [0] * numOfVertics,
-                                'cluster': [-1] * numOfVertics})
+                                'cluster': [-1] * numOfVertics,
+                                'halo': [0] * numOfVertics})
 
-def computeDistThreshold(vertexProperties, dist, avgPercentOfNeighbors):
+def computeDistThreshold(vertexProperties, dist, avgPercentOfNeighbors = 0.02):
     numOfVertices = len(vertexProperties)
     position = int(numOfVertices * numOfVertices * 0.5 * avgPercentOfNeighbors)
     threshold = sorted(dist.dist)[position]
@@ -30,14 +32,90 @@ def computeRtho(vertexProperties, dist, distThreshold):
 def computeDelta(vertexProperties, dist):
     numOfVertices = len(vertexProperties)
     vertexProperties.sort_values('rtho')
-    vertexProperties.map()
+
+    itRows = vertexProperties.iterrows()
+    nbVertexIds = [itRows.next()[0]]
+    for vertexId, pros in itRows:
+        nearest = dist.loc[dist.v1.isin(nbVertexIds) | dist.v2.isin(nbVertexIds)].dist.idxmin()
+        pros.nearestVertexId = nearest[0]
+        pros.delta = nearest[1].dist
+        nbVertexIds.append(vertexId)
 
 def computeGamma(vertexProperties, plot = False):
     vertexProperties.gamma = vertexProperties.rtho * vertexProperties.delta
 
     if plot:
         vertexProperties.plot(x = 'rho', y = 'delta')
-        vertexProperties.plot(x = '')
+        vertexProperties.plot(x = '', y = 'gamma')
 
-def
+def assignCluster(vertexProperties, clusters):
+    for vertexId, pros in vertexProperties.iterrows():
+        if pros.cluster == '-1':
+            if vertexId[0] in clusters:
+                pros.cluster = clusters.index(vertexId[0])
+            else:
+                pros.cluster = vertexProperties.loc[pros.nearestVertexId].cluster
+            pros.halo = vertexId[0]
 
+def computeHalo(vertexProperties, clusters, dist, distThreshold):
+    clusterBorderAvgRho = {c:0 for c in clusters}
+    for edge, d in dist.iterrows():
+        v1Id, v2Id = edge
+        if d < distThreshold:
+            v1 = vertexProperties.loc[v1Id]
+            v2 = vertexProperties.loc[v2Id]
+            avgRho = (v1.rtho + v2.rtho)
+            if avgRho > clusterBorderAvgRho[v1.cluster]:
+                clusterBorderAvgRho[v1.cluster] = avgRho
+
+            if avgRho > clusterBorderAvgRho[v2.cluster]:
+                clusterBorderAvgRho[v2.cluster] = avgRho
+
+    def assignHalo(r):
+        if r.rtho < clusterBorderAvgRho[r.cluster]:
+            r.halo = 0
+
+    vertexProperties.apply(assignHalo, axis = 1)
+
+def statCluster(vertexProperties):
+    return vertexProperties.groupby(vertexProperties.cluster).count().halo
+
+import sys
+import os
+import Image
+import numpy as np
+import pandas as pd
+import color
+if __name__ == '__main__':
+
+    def getVertexId(bmp, p):
+        return bmp.width * p[1] + p[0]
+
+    def id2position(bmp, id):
+        return id % bmp.width, id / bmp.width
+
+    rect = [1, 49, 20, 85]
+    bmpPath = sys.argv[1]
+    bmp = Image.open(bmpPath)
+
+    fromVertex = []
+    toVertex = []
+    dicDist = []
+    for h in range(rect[0], rect[1]):
+        for w in range(rect[2], rect[3]):
+            vId = getVertexId(bmp, (w,h))
+            c = bmp.getpixel((w,h))
+            neighbors =[(w+1, h), (w-1,h+1), (w,h+1), (w+1,h+1)]
+
+            fromVertex.extend([vId] * 4)
+            toVertex.extend([getVertexId(bmp, v) for v in neighbors])
+            dicDist.extend([color.dist(c, bmp.getpixel(v)) for v in neighbors])
+
+    dist = pd.DataFrame({'v1': fromVertex, 'v2': toVertex, 'dist': dicDist})
+    dist.set_index(['v1', 'v2'])
+
+    vertexProperties = createVertexProperties(dist)
+    distThreshold = computeDistThreshold(vertexProperties, dist)
+    computeRtho(vertexProperties, dist, distThreshold)
+    computeDelta(vertexProperties, dist)
+    computeGamma(vertexProperties, dist)
