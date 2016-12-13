@@ -77,13 +77,19 @@ def computeDelta(vertexProperties, dist):
 
 def computeGamma(vertexProperties, plot = False):
     vertexProperties.gamma = vertexProperties.rho * vertexProperties.delta
-    print vertexProperties
+    sortedGamma = vertexProperties.gamma.sort_values(ascending=False)
     if plot:
         import matplotlib.pyplot as plt
         plt.plot(vertexProperties.rho, vertexProperties.delta, '.')
         plt.xlabel('rho'), plt.ylabel('delta')
         plt.show()
+        plt.plot(np.arange(0, len(sortedGamma)), sortedGamma, '.')
+        plt.show()
         #vertexProperties.plot(x = '', y = 'gamma')
+
+def autoSelectCluster(vertexProperties, stdMultiple = 1):
+    selectedVertices = vertexProperties.loc[vertexProperties.gamma > vertexProperties.gamma.mean() + vertexProperties.gamma.std() * stdMultiple]
+    return selectedVertices.index.tolist()
 
 def assignCluster(vertexProperties, clusters):
     for vertexId, pros in vertexProperties.iterrows():
@@ -96,7 +102,7 @@ def assignCluster(vertexProperties, clusters):
 
 def computeHalo(vertexProperties, clusters, dist, distThreshold):
     clusterBorderAvgRho = {c:0 for c in clusters}
-    for edge, d in dist.iterrows():
+    for edge, d in dist.iterkv():
         v1Id, v2Id = edge
         if d < distThreshold:
             v1 = vertexProperties.loc[v1Id]
@@ -185,3 +191,8 @@ if __name__ == '__main__':
     computerho(vertexProperties, dist, distThreshold)
     vertexProperties = computeDelta(vertexProperties, dist)
     computeGamma(vertexProperties, True)
+    clusters = autoSelectCluster(vertexProperties)
+    assignCluster(vertexProperties, clusters)
+    computeHalo(vertexProperties, clusters, dist, distThreshold)
+    print vertexProperties
+    statCluster(vertexProperties)
