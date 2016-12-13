@@ -10,7 +10,7 @@ def createVertexProperties(dist):
     numOfVertics = len(vertexIds)
     maxDelta = dist.max()
     return pd.DataFrame(index=vertexIds
-                        , data={'rtho': [0] * numOfVertics,
+                        , data={'rho': [0] * numOfVertics,
                                 'delta': [maxDelta] * numOfVertics,
                                 'nearestVertexId': [-1] * numOfVertics,
                                 'gamma': [0] * numOfVertics,
@@ -25,28 +25,30 @@ def computeDistThreshold(vertexProperties, dist, avgPercentOfNeighbors = 0.02):
 
     return threshold
 
-def computeRtho(vertexProperties, dist, distThreshold):
-    deltaRtho = np.exp(-np.power(dist/distThreshold,2))
-    vertexProperties.rtho = deltaRtho.groupby(level='v1')\
+def computerho(vertexProperties, dist, distThreshold):
+    deltarho = np.exp(-np.power(dist/distThreshold,2))
+    vertexProperties.rho = deltarho.groupby(level='v1')\
         .sum()\
-        .add(deltaRtho.groupby(level='v2').sum(), fill_value=0)
+        .add(deltarho.groupby(level='v2').sum(), fill_value=0)
 
 def computeDelta(vertexProperties, dist):
-    vertexProperties = vertexProperties.sort_values('rtho')
-    print vertexProperties.index
+    vertexProperties = vertexProperties.sort_values('rho', ascending=False)
+    nbVertexIds = vertexProperties.index
     numOfVertices = len(vertexProperties)
     sDist = dist.swaplevel(0, 1)
     itRows = vertexProperties.iterrows()
     nbst = itRows.next()
-    nbVertexIds = [nbst[0]] * numOfVertices
     deltas = [nbst[1].delta] * numOfVertices
     nearestIds = [0] * numOfVertices
     iPos = 1
     for vertexId, pros in itRows:
         fDist = sDist.loc[:, vertexId]
         tDist = dist.loc[:, vertexId]
-        fCaniDist = fDist[np.intersect1d(fDist.index.get_level_values(0), nbVertexIds[:iPos])]
-        tCaniDist = tDist[np.intersect1d(tDist.index.get_level_values(0), nbVertexIds[:iPos])]
+        fIds = np.intersect1d(fDist.index, nbVertexIds[:iPos])
+        tIds = np.intersect1d(tDist.index, nbVertexIds[:iPos])
+
+        fCaniDist = fDist[fIds]
+        tCaniDist = tDist[tIds]
         if 0 == len(fCaniDist):
             nearestId = tCaniDist.idxmin()
             nearest = tCaniDist[nearestId]
@@ -67,18 +69,18 @@ def computeDelta(vertexProperties, dist):
 
         deltas[iPos] = nearest
         nearestIds[iPos] = nearestId
-        nbVertexIds[iPos] = vertexId
         iPos += 1
 
     vertexProperties.delta = deltas
     vertexProperties.nearestVertexId = nearestIds
     return vertexProperties
-def computeGamma(vertexProperties, plot = False):
-    vertexProperties.gamma = vertexProperties.rtho * vertexProperties.delta
 
+def computeGamma(vertexProperties, plot = False):
+    vertexProperties.gamma = vertexProperties.rho * vertexProperties.delta
+    print vertexProperties
     if plot:
         import matplotlib.pyplot as plt
-        plt.plot(vertexProperties.rtho, vertexProperties.delta, '.')
+        plt.plot(vertexProperties.rho, vertexProperties.delta, '.')
         plt.xlabel('rho'), plt.ylabel('delta')
         plt.show()
         #vertexProperties.plot(x = '', y = 'gamma')
@@ -99,7 +101,7 @@ def computeHalo(vertexProperties, clusters, dist, distThreshold):
         if d < distThreshold:
             v1 = vertexProperties.loc[v1Id]
             v2 = vertexProperties.loc[v2Id]
-            avgRho = (v1.rtho + v2.rtho)
+            avgRho = (v1.rho + v2.rho)
             if avgRho > clusterBorderAvgRho[v1.cluster]:
                 clusterBorderAvgRho[v1.cluster] = avgRho
 
@@ -107,7 +109,7 @@ def computeHalo(vertexProperties, clusters, dist, distThreshold):
                 clusterBorderAvgRho[v2.cluster] = avgRho
 
     def assignHalo(r):
-        if r.rtho < clusterBorderAvgRho[r.cluster]:
+        if r.rho < clusterBorderAvgRho[r.cluster]:
             r.halo = 0
 
     vertexProperties.apply(assignHalo, axis = 1)
@@ -152,7 +154,7 @@ def testImage():
 
     vertexProperties = createVertexProperties(dist)
     distThreshold = computeDistThreshold(vertexProperties, dist, 0.00002)
-    computeRtho(vertexProperties, dist, distThreshold)
+    computerho(vertexProperties, dist, distThreshold)
     computeDelta(vertexProperties, dist)
     computeGamma(vertexProperties, dist)
 
@@ -180,6 +182,6 @@ if __name__ == '__main__':
     dist.index.names = ['v1', 'v2']
     vertexProperties = createVertexProperties(dist)
     distThreshold = computeDistThreshold(vertexProperties, dist)
-    computeRtho(vertexProperties, dist, distThreshold)
+    computerho(vertexProperties, dist, distThreshold)
     vertexProperties = computeDelta(vertexProperties, dist)
     computeGamma(vertexProperties, True)
