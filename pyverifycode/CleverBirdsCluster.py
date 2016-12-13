@@ -8,7 +8,7 @@ import pandas as pd
 def createVertexProperties(dist):
     vertexIds = np.union1d(dist.index.get_level_values(0), dist.index.get_level_values(1))
     numOfVertics = len(vertexIds)
-    maxDelta = dist.dist.max()
+    maxDelta = dist.max()
     return pd.DataFrame(index=vertexIds
                         , data={'rtho': [0] * numOfVertics,
                                 'delta': [maxDelta] * numOfVertics,
@@ -19,38 +19,69 @@ def createVertexProperties(dist):
 
 def computeDistThreshold(vertexProperties, dist, avgPercentOfNeighbors = 0.02):
     numOfVertices = len(vertexProperties)
-    position = int(numOfVertices * numOfVertices * 0.5 * avgPercentOfNeighbors)
-    sortedDist = sorted(dist.dist)
-    threshold = sortedDist[int(len(sortedDist) * 0.1)]
+    position = int(numOfVertices * (numOfVertices - 1)* 0.5 * avgPercentOfNeighbors)
+    sortedDist = sorted(dist)
+    threshold = sortedDist[position]
 
     return threshold
 
 def computeRtho(vertexProperties, dist, distThreshold):
-    deltaRtho = np.exp(-dist.dist/distThreshold)
-    vertexProperties.rtho += deltaRtho.groupby(level='v1').sum()
-    vertexProperties.rtho += deltaRtho.groupby(level='v2').sum()
+    deltaRtho = np.exp(-np.power(dist/distThreshold,2))
+    vertexProperties.rtho = deltaRtho.groupby(level='v1')\
+        .sum()\
+        .add(deltaRtho.groupby(level='v2').sum(), fill_value=0)
 
 def computeDelta(vertexProperties, dist):
+    vertexProperties = vertexProperties.sort_values('rtho')
+    print vertexProperties.index
     numOfVertices = len(vertexProperties)
-    vertexProperties.sort_values('rtho')
-
+    sDist = dist.swaplevel(0, 1)
     itRows = vertexProperties.iterrows()
-    nbVertexIds = [itRows.next()[0]]
+    nbst = itRows.next()
+    nbVertexIds = [nbst[0]] * numOfVertices
+    deltas = [nbst[1].delta] * numOfVertices
+    nearestIds = [0] * numOfVertices
+    iPos = 1
     for vertexId, pros in itRows:
-        print dist.loc[vertexId,:]
+        fDist = sDist.loc[:, vertexId]
+        tDist = dist.loc[:, vertexId]
+        fCaniDist = fDist[np.intersect1d(fDist.index.get_level_values(0), nbVertexIds[:iPos])]
+        tCaniDist = tDist[np.intersect1d(tDist.index.get_level_values(0), nbVertexIds[:iPos])]
+        if 0 == len(fCaniDist):
+            nearestId = tCaniDist.idxmin()
+            nearest = tCaniDist[nearestId]
+        elif 0 == len(tCaniDist):
+            nearestId = fCaniDist.idxmin()
+            nearest = fCaniDist[nearestId]
+        else:
+            nearest1Id = fCaniDist.idxmin()
+            nearest2Id = tCaniDist.idxmin()
+            nearest1 = fCaniDist[nearest1Id]
+            nearest2 = tCaniDist[nearest2Id]
+            if nearest1 < nearest2:
+                nearestId = nearest1Id
+                nearest = nearest1
+            else:
+                nearestId = nearest2Id
+                nearest = nearest2
 
-        nearest = dist.loc[dist.index.get_level_values(0).isin(nbVertexIds) \
-                           | dist.index.get_level_values(1).isin(nbVertexIds)].dist.idxmin()
-        pros.nearestVertexId = nearest[0]
-        pros.delta = nearest[1].dist
-        nbVertexIds.append(vertexId)
+        deltas[iPos] = nearest
+        nearestIds[iPos] = nearestId
+        nbVertexIds[iPos] = vertexId
+        iPos += 1
 
+    vertexProperties.delta = deltas
+    vertexProperties.nearestVertexId = nearestIds
+    return vertexProperties
 def computeGamma(vertexProperties, plot = False):
     vertexProperties.gamma = vertexProperties.rtho * vertexProperties.delta
 
     if plot:
-        vertexProperties.plot(x = 'rho', y = 'delta')
-        vertexProperties.plot(x = '', y = 'gamma')
+        import matplotlib.pyplot as plt
+        plt.plot(vertexProperties.rtho, vertexProperties.delta, '.')
+        plt.xlabel('rho'), plt.ylabel('delta')
+        plt.show()
+        #vertexProperties.plot(x = '', y = 'gamma')
 
 def assignCluster(vertexProperties, clusters):
     for vertexId, pros in vertexProperties.iterrows():
@@ -113,7 +144,7 @@ def testImage():
 
             fromVertex.extend([vId] * 4)
             toVertex.extend([getVertexId(bmp, v) for v in neighbors])
-            dicDist.extend([color.dist(c, bmp.getpixel(v)) for v in neighbors])
+            dicDist.extend([color(c, bmp.getpixel(v)) for v in neighbors])
 
     dist = pd.DataFrame({'v1': fromVertex, 'v2': toVertex, 'dist': dicDist})
     dist.set_index(['v1', 'v2'], inplace=True)
@@ -141,24 +172,14 @@ if __name__ == '__main__':
     label = np.array(label)
     length = len(location)
 
-    print spatial.distance.pdist(location)
-    #Caculate distance
-    v1 = []
-    v2 = []
-    dist = []
-    begin = 0
-    while begin < length-1:
-        end = begin + 1
-        while end < length:
-            dd = np.linalg.norm(location[begin]-location[end])
-            v1.append(begin)
-            v2.append(end)
-            dist.append(dd)
-
-    dist = pd.DataFrame({'v1': v1, 'v2': v2, 'dist': dist})
-    dist.set_index(['v1', 'v2'], inplace=True)
+    distM = spatial.distance.squareform(spatial.distance.pdist(location))
+    distM = np.tril(distM, k=0).transpose()
+    d = pd.DataFrame(data = distM)
+    dist = d.stack()
+    dist = dist[~np.isclose(dist, 0)]
+    dist.index.names = ['v1', 'v2']
     vertexProperties = createVertexProperties(dist)
     distThreshold = computeDistThreshold(vertexProperties, dist)
     computeRtho(vertexProperties, dist, distThreshold)
-    computeDelta(vertexProperties, dist)
-    computeGamma(vertexProperties, dist)
+    vertexProperties = computeDelta(vertexProperties, dist)
+    computeGamma(vertexProperties, True)
