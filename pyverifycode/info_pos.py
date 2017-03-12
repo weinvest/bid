@@ -69,13 +69,7 @@ def getBidRects(img, area):
         else:
             break
 
-def getConfirmRects(img, area, mergeRate = 0.5):
-    #0: verify code inputbox
-    #1: conform button
-    #2: cancel button
-    #3: tips area
-
-    projectResult = projectAnalysis(img, area)
+def adjustRects(projectResult, mergeRate = 0.5):
     adjustResult = OrderedDict({})
     rects = []
     def appendAdjustResult(weight, h1, h2, wFrom, wTo):
@@ -113,6 +107,16 @@ def getConfirmRects(img, area, mergeRate = 0.5):
         appendAdjustResult(weight, h1, h2, wFrom, wTo)
         adjustResult[(h1, h2)] = adjustVeriWeight
 
+    return (adjustResult, rects)
+
+def getConfirmRects(img, area, mergeRate = 0.5):
+    #0: verify code inputbox
+    #1: conform button
+    #2: cancel button
+    #3: tips area
+
+    projectResult = projectAnalysis(img, area)
+    rects, adjustResult = adjustRects(projectResult)
     rects = sorted(rects, key = lambda x : x[0])
     results = [rects[0][1], rects[-2][1], rects[-1][1]]
 
@@ -122,15 +126,18 @@ def getConfirmRects(img, area, mergeRate = 0.5):
 
 def getResultRects(img, area):
     projectResult = projectAnalysis(img, area)
-    for (h1, h2), veriWeight in projectResult.iteritems():
-        print("%d,%d=%s" % (h1, h2, veriWeight))
+    adjustResult,rects = adjustRects(projectResult)
+    rects = sorted(rects, key=lambda x: x[0])
+    print rects[-1][1]
 
 if __name__ == '__main__':
     imgPath = sys.argv[1]
     left, top, right, bottom = (int(i) for i in sys.argv[2:])
     img = Image.open(imgPath)
-    #getInfoRects(img, (left, top, right, bottom))
-    #getBidRects(img, (left, top, right, bottom))
-    #getConfirmRects(img, (left, top, right, bottom))
+
+    infoImgPath = os.path.join(imgPath, '5.png')
+    getInfoRects(img, (left, top, right, bottom))
+    getBidRects(img, (left, top, right, bottom))
+    getConfirmRects(img, (left, top, right, bottom))
     getResultRects(img, (left, top, right, bottom))
 
